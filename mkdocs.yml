@@ -1,0 +1,27 @@
+site_name: Color
+site_url: https://blupo.github.io/Color
+repo_name: Blupo/Color
+repo_url: https://github.com/Blupo/Color
+
+theme:
+  name: material
+  palette:
+    scheme: slate
+    primary: white
+    accent: blue
+
+nav:
+  - Home: index.md
+  - Installation: install.md
+  - API:
+    - Color: api/color.md
+    - Gradient: api/gradient.md
+  - Changelog: changelog.md
+
+markdown_extensions:
+  - admonition
+  - codehilite:
+      guess_lang: false
+  - pymdownx.superfences
+  - toc:
+      permalink: true

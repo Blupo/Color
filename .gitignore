@@ -1,0 +1,6 @@
+# Roblox place files
+*.rbxm*
+*.rbxl*
+
+# roblox.toml
+/roblox.toml

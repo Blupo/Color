@@ -1,0 +1,26 @@
+name: Upload Plugin
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    name: Upload
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v2.3.4
+        with:
+          submodules: true
+
+      - name: Setup Foreman
+        uses: Roblox/setup-foreman@v1.0.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Upload
+        run: rojo upload --cookie "$ROBLOSECURITY" --asset_id 7933448750
+        env:
+          ROBLOSECURITY: ${{ secrets.ROBLOSECURITY }}

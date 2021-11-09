@@ -1,0 +1,29 @@
+{
+    "name": "Color",
+    
+    "tree": {
+        "$className": "DataModel",
+        
+        "ReplicatedStorage": {
+            "$className": "ReplicatedStorage",
+
+            "Color": {
+                "$path": "src",
+
+                "t": {
+                    "$path": "includes/t"
+                }
+            }
+        },
+
+        "ServerScriptService": {
+            "Tests": {
+                "$path": "tests",
+
+                "TestEZ": {
+                    "$path": "includes/testez"
+                }
+            }
+        }
+    }
+}
