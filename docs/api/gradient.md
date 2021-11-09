@@ -76,7 +76,7 @@ Returns a Gradient with reversed keypoints.
 Gradient.color(gradient: Gradient, time: number, mode: string? = "RGB", hueAdjustment: string? = "Shorter"): Color
 ```
 
-Returns a Color from the Gradient at the specified `time`, which should be in the range [0, 1]. `mode` is a [color mixing](color.md#colormix) mode.
+Returns a Color from the Gradient at the specified time, mixing mode, and hue adjustment (see [Color.mix](../color/#colormix) for what those are). `time` should be in the range [0, 1].
 
 ---
 
@@ -86,7 +86,7 @@ Returns a Color from the Gradient at the specified `time`, which should be in th
 Gradient.colors(gradient: Gradient, amount: number?, mode: string? = "RGB", hueAdjustment: string? = "Shorter"): array<Color>
 ```
 
-Returns an array of `amount` equidistant colors, using the [mixing `mode`](color.md#colormix). If `amount` is not specified, the function returns a copy of the GradientKeypoints used to construct it.
+Returns an array of `amount` equidistant colors, using the specified mixing mode and hue adjustment (see [Color.mix](../color/#colormix) for what those are).
 
 ---
 
@@ -96,7 +96,7 @@ Returns an array of `amount` equidistant colors, using the [mixing `mode`](color
 Gradient.toColorSequence(gradient: Gradient, steps: number? = 20, mode: string? = "RGB", hueAdjustment: string? = "Shorter"): ColorSequence
 ```
 
-Returns a [ColorSequence](https://developer.roblox.com/en-us/api-reference/datatype/ColorSequence) with `steps` equidistant colors. If the [mixing `mode`](color.md#colormix) is RGB, the ColorSequence will instead consist of the colors from the GradientKeypoints used to construct it.
+Returns a [ColorSequence](https://developer.roblox.com/en-us/api-reference/datatype/ColorSequence) with `steps` equidistant colors. If the [mixing mode](../color/#colormix) is RGB, the ColorSequence will instead consist of the colors from the GradientKeypoints used to construct it.
 
 !!! info
     Due to an engine limitation that only allows up to 20 keypoints in a ColorSequence, you may notice differences between the ColorSequence's intermediate colors and the Gradient's intermediate colors if you are using a mixing mode other than RGB.
@@ -105,7 +105,7 @@ Returns a [ColorSequence](https://developer.roblox.com/en-us/api-reference/datat
 
 ### Gradient == Gradient
 
-Comparing Gradients with `==` checks if they have the same number of keypoints, that the keypoints have the same Time values, and that the keypoints have the same Color values (using [Color.unclippedEq](color.md#colorunclippedeq)).
+Comparing Gradients with `==` checks if they have the same number of keypoints, that the keypoints have the same Time values, and that the keypoints have the same Color values (using [Color.unclippedEq](../color/#colorunclippedeq)).
 
 ```lua
 local gradient1 = Color.gradientFromColors(

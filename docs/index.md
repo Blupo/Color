@@ -15,7 +15,7 @@ Colors can be constructed how you would construct a normal Color3.
 local color = Color.new(1, 1, 1) -- or Color.from("RGB", 255, 255, 255)
 ```
 
-Alternatively, you can construct them from different color types using [Color.from](api/color.md/#colorfrom). The list of available color types is available in the [Color Types](api/color.md/#color-types) section of the API reference.
+Alternatively, you can construct them from different color types using [Color.from](api/color/#colorfrom). The list of available color types is available in the [Color Types](api/color/#color-types) section of the API reference.
 
 ```lua
 local color3Equivalent = Color.from("Color3", Color3.new(1, 1, 1))
@@ -33,7 +33,7 @@ local randomColor = Color.random() -- we also have random colors
 
 ## All the conversions
 
-Likewise, every color type can also be converted to, using [Color.to](api/color.md/#colorto).
+Likewise, every color type can also be converted to, using [Color.to](api/color/#colorto).
 
 ```lua
 local color = Color.from("Hex", "ff69b4")
@@ -56,7 +56,7 @@ RGB interpolations (e.g. using [Color3.Lerp](https://developer.roblox.com/en-us/
 
 ![CIELAB interpolation between red and green](images/lab-interpolation.png)
 
-Interpolations can be done using [Color.mix](api/color.md/#colormix).
+Interpolations can be done using [Color.mix](api/color/#colormix).
 
 ```lua
 local red = Color.new(1, 0, 0)
@@ -69,7 +69,7 @@ red:mix(green, 0.5, "Lab")
 
 ## Gradients
 
-Gradients are lists of Colors that can be used for generating intermediate Colors or ColorSequences. You can read its API reference [here](api/gradient.md).
+Gradients are lists of Colors that can be used for generating intermediate Colors or ColorSequences. You can read its API reference [here](api/gradient/).
 
 ```lua
 local color1 = Color.from("Hex", "4cbbfc")
