@@ -1,4 +1,4 @@
-name: Upload Plugin
+name: Upload Model
 
 on:
   push:
