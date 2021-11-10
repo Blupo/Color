@@ -20,8 +20,8 @@ local LChab = {}
 LChab.fromLab = function(l: number, a: number, b: number): (number, number, number)
     a, b = a * 100, b * 100
 
-    local c = math.sqrt(a^2 + b^2)
-    local h = math.atan2(b, a)
+    local c: number = math.sqrt(a^2 + b^2)
+    local h: number = math.atan2(b, a)
     h = (h < 0) and (h + (2 * math.pi)) or h
 
     return l, c / 100, math.deg(h)
@@ -30,8 +30,8 @@ end
 LChab.toLab = function(l: number, c: number, h: number): (number, number, number)
     h = math.rad(h % 360)
 
-    local a = c * math.cos(h)
-    local b = c * math.sin(h)
+    local a: number = c * math.cos(h)
+    local b: number = c * math.sin(h)
 
     return l, a, b
 end

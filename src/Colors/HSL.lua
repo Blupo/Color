@@ -13,10 +13,10 @@ local HSB = require(Colors.HSB)
 local HSL = {}
 
 HSL.fromRGB = function(r: number, g: number, b: number): (number, number, number)
-    local h, s, br = HSB.fromRGB(r, g, b)
+    local h: number, s: number, br: number = HSB.fromRGB(r, g, b)
 
-    local l = br * (1 - (s / 2))
-    local sL
+    local l: number = br * (1 - (s / 2))
+    local sL: number
 
     if ((l == 1) or (l == 0)) then
         sL = 0
@@ -28,8 +28,8 @@ HSL.fromRGB = function(r: number, g: number, b: number): (number, number, number
 end
 
 HSL.toRGB = t.wrap(function(h: number, s: number, l: number): (number, number, number)
-    local b = l + (s * math.min(l, 1 - l))
-    local sV
+    local b: number = l + (s * math.min(l, 1 - l))
+    local sV: number
 
     if (b == 0) then
         sV = 0

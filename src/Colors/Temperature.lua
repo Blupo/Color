@@ -8,14 +8,20 @@ local round = require(Utils.Round)
 
 ---
 
+type BestFitData = {
+    a: number,
+    b: number,
+    c: number,
+}
+
 -- Implementation based on Neil Bartlett's color-temperature
 -- https://github.com/neilbartlett/color-temperature
 
-local kelvinBestFit = function(a: number, b: number, c: number, x: number)
+local kelvinBestFit = function(a: number, b: number, c: number, x: number): number
     return a + (b * x) + (c * math.log(x))
 end
 
-local kelvinBestFitData = {
+local kelvinBestFitData: {[string]: BestFitData} = {
     Red = {
         a = 351.97690566805693,
         b = 0.114206453784165,
@@ -46,17 +52,20 @@ local kelvinBestFitData = {
 local Temperature = {}
 
 Temperature.toRGB = t.wrap(function(kelvin: number): (number, number, number)
-    local temperature = kelvin / 100
-    local r255, g255, b255
+    local temperature: number = kelvin / 100
+
+    local r255: number
+    local g255: number
+    local b255: number
 
     if (temperature < 66) then
-        local greenData = kelvinBestFitData.Green1
+        local greenData: BestFitData = kelvinBestFitData.Green1
 
         r255 = 255
         g255 = math.clamp(kelvinBestFit(greenData.a, greenData.b, greenData.c, temperature - 2), 0, 255)
     else
-        local redData = kelvinBestFitData.Red
-        local greenData = kelvinBestFitData.Green2
+        local redData: BestFitData = kelvinBestFitData.Red
+        local greenData: BestFitData = kelvinBestFitData.Green2
 
         r255 = math.clamp(kelvinBestFit(redData.a, redData.b, redData.c, temperature - 55), 0, 255)
         g255 = math.clamp(kelvinBestFit(greenData.a, greenData.b, greenData.c, temperature - 50), 0, 255)
@@ -67,7 +76,7 @@ Temperature.toRGB = t.wrap(function(kelvin: number): (number, number, number)
     elseif (temperature <= 20) then
         b255 = 0
     else
-        local blueData = kelvinBestFitData.Blue
+        local blueData: BestFitData = kelvinBestFitData.Blue
 
         b255 = math.clamp(kelvinBestFit(blueData.a, blueData.b, blueData.c, temperature - 10), 0, 255)
     end
@@ -79,10 +88,11 @@ Temperature.toRGB = t.wrap(function(kelvin: number): (number, number, number)
 end, t.number)
 
 Temperature.fromRGB = function(r: number, _: number, b: number): number
-    local minTemperature, maxTemperature = 1000, 40000
-    local epsilon = 0.4
+    local minTemperature: number = 1000
+    local maxTemperature: number = 40000
+    local epsilon: number = 0.4
     
-    local temperature, testColor
+    local temperature: number, testColor: {number}
 
     while ((maxTemperature - minTemperature) > epsilon) do
         temperature = (minTemperature + maxTemperature) / 2
@@ -95,7 +105,7 @@ Temperature.fromRGB = function(r: number, _: number, b: number): number
         end
     end
 
-    return round(temperature + 0.5)
+    return round(temperature)
 end
 
 return Temperature

@@ -17,7 +17,7 @@ Number.fromRGB = function(r: number, g: number, b: number): number
 end
 
 Number.toRGB = t.wrap(function(color: number): (number, number, number)
-    local r, g, b = bit32.rshift(color, 16), bit32.band(bit32.rshift(color, 8), 255), bit32.band(color, 255)
+    local r: number, g: number, b: number = bit32.rshift(color, 16), bit32.band(bit32.rshift(color, 8), 255), bit32.band(color, 255)
 
     return
         r / 255,

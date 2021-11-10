@@ -12,8 +12,8 @@ local lerp = require(Utils.Lerp)
     h2 [0, 360)
 ]]
 
-return function(h1: number, h2: number, t: number, adjustment: string?): number
-    adjustment = adjustment or "Shorter"
+return function(h1: number, h2: number, t: number, optionalAdjustment: string?): number
+    local adjustment = optionalAdjustment or "Shorter"
 
     if ((h1 ~= h1) and (h2 == h2)) then
         h1 = h2
@@ -23,7 +23,7 @@ return function(h1: number, h2: number, t: number, adjustment: string?): number
         h1, h2 = 0, 0
     end
 
-    local delta = h2 - h1
+    local delta: number = h2 - h1
 
     if (adjustment == "Shorter") then
         if (delta > 180) then

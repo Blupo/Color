@@ -14,9 +14,12 @@ local XYZ = require(Colors.XYZ)
         L*a*b* -> XYZ: http://www.brucelindbloom.com/Eqn_Lab_to_XYZ.html
 ]]
 
-local constants = XYZ.Constants
-local Xr, Yr, Zr = constants.Xr, constants.Yr, constants.Zr
-local k, e = constants.k, constants.e
+local XYZ_CONSTANTS: {[string]: number} = XYZ.Constants
+local Xr: number = XYZ_CONSTANTS.Xr
+local Yr: number = XYZ_CONSTANTS.Yr
+local Zr: number = XYZ_CONSTANTS.Zr
+local k: number = XYZ_CONSTANTS.k
+local e: number = XYZ_CONSTANTS.e
 
 local transform = function(n: number): number
     return (n > e) and n^(1/3) or (((k * n) + 16) / 116)
@@ -29,9 +32,9 @@ local Lab = {}
 Lab.fromXYZ = function(x: number, y: number, z: number): (number, number, number)
     x, y, z = x * 100, y * 100, z * 100
 
-    local l = (116 * transform(y / Yr)) - 16
-    local a = 500 * (transform(x / Xr) - transform(y / Yr))
-    local b = 200 * (transform(y / Yr) - transform(z / Zr))
+    local l: number = (116 * transform(y / Yr)) - 16
+    local a: number = 500 * (transform(x / Xr) - transform(y / Yr))
+    local b: number = 200 * (transform(y / Yr) - transform(z / Zr))
 
     return
         l / 100,
@@ -42,17 +45,17 @@ end
 Lab.toXYZ = function(l: number, a: number, b: number): (number, number, number)
     l, a, b = l * 100, a * 100, b * 100
 
-    local fy = (l + 16) / 116
-    local fx = (a / 500) + fy
-    local fz = fy - (b / 200)
+    local fy: number = (l + 16) / 116
+    local fx: number = (a / 500) + fy
+    local fz: number = fy - (b / 200)
 
-    local xr = ((fx^3) > e) and fx^3 or (((116 * fx) - 16) / k)
-    local yr = (l > (k * e)) and fy^3 or (l / k)
-    local zr = ((fz^3) > e) and fz^3 or (((116 * fz) - 16) / k)
+    local xr: number = ((fx^3) > e) and fx^3 or (((116 * fx) - 16) / k)
+    local yr: number = (l > (k * e)) and fy^3 or (l / k)
+    local zr: number = ((fz^3) > e) and fz^3 or (((116 * fz) - 16) / k)
 
-    local x = xr * Xr
-    local y = yr * Yr
-    local z = zr * Zr
+    local x: number = xr * Xr
+    local y: number = yr * Yr
+    local z: number = zr * Zr
 
     return
         x / 100,

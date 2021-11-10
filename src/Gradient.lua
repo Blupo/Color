@@ -1,29 +1,28 @@
 --!strict
 
 local root = script.Parent
-
 local Color = require(root.Color)
 
 ---
 
 type Color = Color.Color
 
-type GradientKeypoint = {
+export type GradientKeypoint = {
     Time: number,
     Color: Color,
 }
 
-local CS_MAX_KEYPOINTS
+local CS_MAX_KEYPOINTS: number
 
 do
-    local n = 2
-    local csConstructionOk = true
+    local n: number = 2
+    local csConstructionOk: boolean = true
     
     -- in case the limit is removed, cap at 100
     while ((csConstructionOk) and (n < 101)) do
         n = n + 1
 
-        local keypoints = {}
+        local keypoints: {ColorSequenceKeypoint} = {}
 
         for i = 1, n do
             table.insert(keypoints, ColorSequenceKeypoint.new((i - 1) / (n - 1), Color3.new()))
@@ -45,12 +44,12 @@ local gradientMetatable = table.freeze({
     __index = Gradient,
 
     __eq = function(gradient1, gradient2): boolean
-        local gradient1Keypoints = gradient1.Keypoints
-        local gradient2Keypoints = gradient2.Keypoints
+        local gradient1Keypoints: {GradientKeypoint} = gradient1.Keypoints
+        local gradient2Keypoints: {GradientKeypoint} = gradient2.Keypoints
 
         for i = 1, #gradient1Keypoints do
-            local gradient1Keypoint = gradient1Keypoints[i]
-            local gradient2Keypoint = gradient2Keypoints[i]
+            local gradient1Keypoint: GradientKeypoint = gradient1Keypoints[i]
+            local gradient2Keypoint: GradientKeypoint = gradient2Keypoints[i]
 
             if ((gradient1Keypoint.Time ~= gradient2Keypoint.Time) or (not gradient1Keypoint.Color:unclippedEq(gradient2Keypoint.Color))) then
                 return false
@@ -61,14 +60,14 @@ local gradientMetatable = table.freeze({
     end,
 
     __tostring = function(gradient): string
-        local keypoints = gradient.Keypoints
-        local keypointStrings = {}
+        local keypoints: {GradientKeypoint} = gradient.Keypoints
+        local keypointStrings: {string} = {}
 
         for i = 1, #keypoints do
-            local color = keypoints[i]
-            local r, g, b = color.Color:components()
+            local keypoint: GradientKeypoint = keypoints[i]
+            local r: number, g: number, b: number = keypoint.Color:components()
 
-            table.insert(keypointStrings, string.format("%f = [%f, %f, %f]", color.Time, r, g, b))
+            table.insert(keypointStrings, string.format("%f = [%f, %f, %f]", keypoint.Time, r, g, b))
         end
         
         return string.format("Gradient(%s)", table.concat(keypointStrings, ", "))
@@ -81,8 +80,8 @@ Gradient.new = function(keypoints: {GradientKeypoint})
     assert(keypoints[#keypoints].Time == 1, "Gradient must end at t = 1")
 
     for i = 1, (#keypoints - 1) do
-        local this = keypoints[i]
-        local next = keypoints[i + 1]
+        local this: GradientKeypoint = keypoints[i]
+        local next: GradientKeypoint = keypoints[i + 1]
 
         assert(next.Time > this.Time, "keypoints must be sorted by time")
         assert(Color.isAColor(this.Color), "keypoint colors must be Colors")
@@ -94,12 +93,12 @@ Gradient.new = function(keypoints: {GradientKeypoint})
 end
 
 Gradient.fromColors = function(...: Color): Gradient
-    local colors = {...}
-    local numColors = #colors
+    local colors: {Color} = {...}
+    local numColors: number = #colors
     assert(numColors >= 1, "no Colors provided")
 
     if (numColors == 1) then
-        local color = colors[1]
+        local color: Color = colors[1]
         assert(Color.isAColor(color), "color is not a Color")
 
         return Gradient.new({
@@ -107,8 +106,8 @@ Gradient.fromColors = function(...: Color): Gradient
             {Time = 1, Color = color},
         })
     elseif (numColors == 2) then
-        local startColor = colors[1]
-        local endColor = colors[2]
+        local startColor: Color = colors[1]
+        local endColor: Color = colors[2]
 
         assert(Color.isAColor(startColor), "start color is not a Color")
         assert(Color.isAColor(endColor), "end color is not a Color")
@@ -118,10 +117,10 @@ Gradient.fromColors = function(...: Color): Gradient
             {Time = 1, Color = endColor},
         })
     else
-        local keypoints = {}
+        local keypoints: {GradientKeypoint} = {}
 
         for i = 1, numColors do
-            local color = colors[i]
+            local color: Color = colors[i]
             assert(Color.isAColor(color), "cannot create a Gradient with a non-Color value")
 
             table.insert(keypoints, {
@@ -135,11 +134,11 @@ Gradient.fromColors = function(...: Color): Gradient
 end
 
 Gradient.fromColorSequence = function(colorSequence: ColorSequence): Gradient
-    local colors = {}
-    local keypoints = colorSequence.Keypoints
+    local colors: {GradientKeypoint} = {}
+    local keypoints: {ColorSequenceKeypoint} = colorSequence.Keypoints
 
     for i = 1, #keypoints do
-        local keypoint = keypoints[i]
+        local keypoint: ColorSequenceKeypoint = keypoints[i]
 
         table.insert(colors, {
             Time = keypoint.Time,
@@ -153,11 +152,11 @@ end
 ---
 
 Gradient.invert = function(gradient: Gradient): Gradient
-    local keypoints = gradient.Keypoints
-    local invertedKeypoints = {}
+    local keypoints: {GradientKeypoint} = gradient.Keypoints
+    local invertedKeypoints: {GradientKeypoint} = {}
 
     for i = #keypoints, 1, -1 do
-        local keypoint = keypoints[i]
+        local keypoint: GradientKeypoint = keypoints[i]
 
         table.insert(invertedKeypoints, {
             Time = 1 - keypoint.Time,
@@ -169,12 +168,11 @@ Gradient.invert = function(gradient: Gradient): Gradient
 end
 
 -- https://developer.roblox.com/en-us/api-reference/datatype/ColorSequence#evaluation
-Gradient.color = function(gradient: Gradient, time: number, mode: string?, hueAdjustment: string?): Color
+Gradient.color = function(gradient: Gradient, time: number, optionalMode: string?, optionalHueAdjustment: string?): Color
     assert((time >= 0) and (time <= 1), "time out of range [0, 1]")
-    mode = mode or "RGB"
 
-    local keypoints = gradient.Keypoints
-    local color
+    local keypoints: {GradientKeypoint} = gradient.Keypoints
+    local color: Color
 
     if (time == 0) then
         color = keypoints[1].Color
@@ -182,11 +180,11 @@ Gradient.color = function(gradient: Gradient, time: number, mode: string?, hueAd
         color = keypoints[#keypoints].Color
     else
         for i = 1, #keypoints - 1 do
-            local this = keypoints[i]
-            local next = keypoints[i + 1]
+            local this: GradientKeypoint = keypoints[i]
+            local next: GradientKeypoint = keypoints[i + 1]
 
             if ((time >= this.Time) and (time < next.Time)) then
-                color = this.Color:mix(next.Color, (time - this.Time) / (next.Time - this.Time), mode, hueAdjustment)
+                color = this.Color:mix(next.Color, (time - this.Time) / (next.Time - this.Time), optionalMode, optionalHueAdjustment)
                 break
             end
         end
@@ -195,34 +193,33 @@ Gradient.color = function(gradient: Gradient, time: number, mode: string?, hueAd
     return color
 end
 
-Gradient.colors = function(gradient: Gradient, amount: number, mode: string?, hueAdjustment: string?): {Color}
-    local colors = {}
+Gradient.colors = function(gradient: Gradient, amount: number, optionalMode: string?, optionalHueAdjustment: string?): {Color}
+    local colors: {Color} = {}
 
     for i = 1, amount do
-        table.insert(colors, Gradient.color(gradient, (i - 1) / (amount - 1), mode, hueAdjustment))
+        table.insert(colors, Gradient.color(gradient, (i - 1) / (amount - 1), optionalMode, optionalHueAdjustment))
     end
 
     return colors
 end
 
-Gradient.toColorSequence = function(gradient: Gradient, steps: number?, mode: string?, hueAdjustment: string?): ColorSequence
-    mode = mode or "RGB"
-
-    local csKeypoints = {}
+Gradient.toColorSequence = function(gradient: Gradient, optionalSteps: number?, optionalMode: string?, optionalHueAdjustment: string?): ColorSequence
+    local mode = optionalMode or "RGB"
+    local csKeypoints: {ColorSequenceKeypoint} = {}
 
     if (mode == "RGB") then
-        local keypoints = gradient.Keypoints
+        local keypoints: {GradientKeypoint} = gradient.Keypoints
 
         for i = 1, #keypoints do
-            local color = keypoints[i]
+            local keypoint: GradientKeypoint = keypoints[i]
 
-            table.insert(csKeypoints, ColorSequenceKeypoint.new(color.Time, color.Color:to("Color3")))
+            table.insert(csKeypoints, ColorSequenceKeypoint.new(keypoint.Time, keypoint.Color:to("Color3")))
         end
     else
-        steps = steps or CS_MAX_KEYPOINTS
+        local steps: number = optionalSteps or CS_MAX_KEYPOINTS
         assert((steps >= 2) and (steps <= CS_MAX_KEYPOINTS), "number of steps out of range [2, " .. CS_MAX_KEYPOINTS .. "]")
 
-        local colors = Gradient.colors(gradient, steps, mode, hueAdjustment)
+        local colors: {Color} = Gradient.colors(gradient, steps, mode, optionalHueAdjustment)
 
         for i = 1, steps do
             table.insert(csKeypoints, ColorSequenceKeypoint.new((i - 1) / (steps - 1), colors[i]:to("Color3")))

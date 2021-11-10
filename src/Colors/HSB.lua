@@ -10,14 +10,14 @@ local t = require(root.t)
 local HSB = {}
 
 HSB.fromRGB = function(r: number, g: number, b: number): (number, number, number)
-    local br = math.max(r, g, b)
-    local x = math.min(r, g, b)
-    local s = (br ~= 0) and ((br - x) / br) or 0
+    local br: number = math.max(r, g, b)
+    local x: number = math.min(r, g, b)
+    local s: number = (br ~= 0) and ((br - x) / br) or 0
 
-    local h
-    local rp = (br - r) / (br - x)
-    local gp = (br - g) / (br - x)
-    local bp = (br - b) / (br - x)
+    local h: number
+    local rp: number = (br - r) / (br - x)
+    local gp: number = (br - g) / (br - x)
+    local bp: number = (br - b) / (br - x)
 
     if (r == br) then
         h = (g == x) and (5 + bp) or (1 - gp)
@@ -36,12 +36,12 @@ HSB.toRGB = t.wrap(function(h: number, s: number, b: number): (number, number, n
     else
         h = (h % 360) / 60
 
-        local i = math.floor(h)
-        local f = h - i
+        local i: number = math.floor(h)
+        local f: number = h - i
 
-        local m = b * (1 - s)
-        local n = b * (1 - (s * f))
-        local k = b * (1 - (s * (1 - f)))
+        local m: number = b * (1 - s)
+        local n: number = b * (1 - (s * f))
+        local k: number = b * (1 - (s * (1 - f)))
 
         if (i == 0) then
             return b, k, m

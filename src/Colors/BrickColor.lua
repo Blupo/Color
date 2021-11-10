@@ -13,7 +13,7 @@ BrickColor.fromRGB = function(r: number, g: number, b: number): BrickColor
 end
 
 BrickColor.toRGB = t.wrap(function(brickColor: BrickColor): (number, number, number)
-    local color = brickColor.Color
+    local color: Color3 = brickColor.Color
 
     return color.R, color.G, color.B
 end, t.BrickColor)

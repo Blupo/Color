@@ -77,10 +77,10 @@ end
 ---
 
 return function(baseColorComponents: {number}, topColorComponents: {number}, blendMode: string): (number, number, number)
-    local blendingFunction = blendingFunctions[blendMode]
+    local blendingFunction: ((number, number) -> number)? = blendingFunctions[blendMode]
     assert(blendingFunction, "invalid blend mode")
 
-    local blend = {}
+    local blend: {number} = {}
 
     for i = 1, 3 do
         blend[i] = blendingFunction(baseColorComponents[i], topColorComponents[i])

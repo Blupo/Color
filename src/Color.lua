@@ -99,12 +99,14 @@ local colorMetatable = table.freeze({
     end,
 
     __tostring = function(color): string
-        return tonumber(color.R) .. ", " .. tonumber(color.G) .. ", " .. tonumber(color.B)
+        return tostring(color.R) .. ", " .. tostring(color.G) .. ", " .. tostring(color.B)
     end,
 })
 
 Color.new = t.wrap(function(r: number, g: number, b: number)
-    local clippedR: number, clippedG: number, clippedB: number = math.clamp(r, 0, 1), math.clamp(g, 0, 1), math.clamp(b, 0, 1)
+    local clippedR: number = math.clamp(r, 0, 1)
+    local clippedG: number = math.clamp(g, 0, 1)
+    local clippedB: number = math.clamp(b, 0, 1)
 
     return table.freeze(setmetatable({
         __r = r,
@@ -122,10 +124,10 @@ Color.random = function(): Color
 end
 
 Color.from = function(colorType: string, ...: any): Color
-    local colorTypeModule = colorTypes[colorType]
+    local colorTypeModule: ColorModule? = colorTypes[colorType]
     assert(colorTypeModule, "invalid color type")
 
-    local r, g, b = colorTypeModule.toRGB(...)
+    local r: number, g: number, b: number = colorTypeModule.toRGB(...)
     assert(r and g and b, "invalid components")
 
     return Color.new(r, g, b)
@@ -157,10 +159,10 @@ Color.components = function(color: Color): (number, number, number)
 end
 
 Color.to = function(color: Color, colorType: string): ...any
-    local colorTypeModule = colorTypes[colorType]
+    local colorTypeModule: ColorModule? = colorTypes[colorType]
     assert(colorTypeModule, "invalid color type")
 
-    local clip = clippedColorTypes[colorType]
+    local clip: boolean = clippedColorTypes[colorType]
 
     return colorTypeModule.fromRGB(
         color[clip and "R" or "__r"],
@@ -173,28 +175,28 @@ Color.invert = function(color: Color): Color
     return Color.new(1 - color.__r, 1 - color.__g, 1 - color.__b)
 end
 
-Color.mix = function(startColor: Color, endColor: Color, ratio: number, mode: string?, hueAdjustment: string?): Color
-    mode = mode or "RGB"
+Color.mix = function(startColor: Color, endColor: Color, ratio: number, optionalMode: string?, optionalHueAdjustment: string?): Color
+    local mode: string = optionalMode or "RGB"
 
-    local interpolator = interpolators[mode]
+    local interpolator: Interpolator? = interpolators[mode]
     assert(interpolator, "invalid interpolator")
 
-    local startColorComponents, endColorComponents
+    local startColorComponents: {number}, endColorComponents: {number}
 
     if ((mode == "RGB") or (mode == "lRGB")) then
         startColorComponents, endColorComponents = { startColor:components() }, { endColor:components() }
 
-        return Color.new(interpolator(startColorComponents, endColorComponents, ratio, hueAdjustment))
+        return Color.new(interpolator(startColorComponents, endColorComponents, ratio, optionalHueAdjustment))
     else
         startColorComponents, endColorComponents = { startColor:to(mode) }, { endColor:to(mode) }
 
-        return Color.from(mode, interpolator(startColorComponents, endColorComponents, ratio, hueAdjustment))
+        return Color.from(mode, interpolator(startColorComponents, endColorComponents, ratio, optionalHueAdjustment))
     end
 end
 
 Color.blend = function(baseColor: Color, topColor: Color, mode: string): Color
-    local baseColorComponents = { baseColor:components() }
-    local topColorComponents = { topColor:components() }
+    local baseColorComponents: {number} = { baseColor:components() }
+    local topColorComponents: {number} = { topColor:components() }
 
     return Color.new(blend(baseColorComponents, topColorComponents, mode))
 end
@@ -202,11 +204,13 @@ end
 -- WCAG definition of relative luminance
 -- https://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef
 Color.luminance = function(color: Color): number
-    local r1, g1, b1 = color.R, color.G, color.B
+    local r1: number = color.R
+    local g1: number = color.G
+    local b1: number = color.B
 
-    local r2 = (r1 <= 0.03928) and (r1 / 12.92) or (((r1 + 0.055) / 1.055) ^ 2.4)
-    local g2 = (g1 <= 0.03928) and (g1 / 12.92) or (((g1 + 0.055) / 1.055) ^ 2.4)
-    local b2 = (b1 <= 0.03928) and (b1 / 12.92) or (((b1 + 0.055) / 1.055) ^ 2.4)
+    local r2: number = (r1 <= 0.03928) and (r1 / 12.92) or (((r1 + 0.055) / 1.055) ^ 2.4)
+    local g2: number = (g1 <= 0.03928) and (g1 / 12.92) or (((g1 + 0.055) / 1.055) ^ 2.4)
+    local b2: number = (b1 <= 0.03928) and (b1 / 12.92) or (((b1 + 0.055) / 1.055) ^ 2.4)
 
     return (0.2126 * r2) + (0.7152 * g2) + (0.0722 * b2)
 end
@@ -214,7 +218,8 @@ end
 -- WCAG definition of contrast ratio
 -- https://www.w3.org/TR/2008/REC-WCAG20-20081211/#contrast-ratiodef
 Color.contrast = function(refColor: Color, testColor: Color): number
-    local refColorLuminance, testColorLuminance = Color.luminance(refColor), Color.luminance(testColor)
+    local refColorLuminance: number = Color.luminance(refColor)
+    local testColorLuminance: number = Color.luminance(testColor)
 
     return (refColorLuminance > testColorLuminance) and
         ((refColorLuminance + 0.05) / (testColorLuminance + 0.05))
@@ -222,7 +227,7 @@ Color.contrast = function(refColor: Color, testColor: Color): number
 end
 
 Color.bestContrastingColor = function(refColor: Color, ...: Color): (Color, number)
-    local options = {...}
+    local options: {Color} = {...}
     assert(#options >= 1, "no colors to compare")
 
     if (#options >= 2) then
@@ -234,14 +239,14 @@ Color.bestContrastingColor = function(refColor: Color, ...: Color): (Color, numb
         end)
     end
 
-    local bestColor = options[1]
+    local bestColor: Color = options[1]
     return bestColor, Color.contrast(refColor, bestColor)
 end
 
-Color.brighten = function(color: Color, amount: number?): Color
-    amount = amount or 1
+Color.brighten = function(color: Color, optionalAmount: number?): Color
+    local amount: number = optionalAmount or 1
 
-    local l, a, b = Lab.fromXYZ(Color.to(color, "XYZ"))
+    local l: number, a: number, b: number = Lab.fromXYZ(Color.to(color, "XYZ"))
     l = l + (amount * 18 / 100)
 
     return Color.from("XYZ", Lab.toXYZ(l, a, b))
@@ -251,10 +256,10 @@ Color.darken = function(color: Color, amount: number?): Color
     return Color.brighten(color, -(amount or 1))
 end
 
-Color.saturate = function(color: Color, amount: number?): Color
-    amount = amount or 1
+Color.saturate = function(color: Color, optionalAmount: number?): Color
+    local amount: number = optionalAmount or 1
 
-    local l, c, h = LChab.fromLab(Lab.fromXYZ(Color.to(color, "XYZ")))
+    local l: number, c: number, h: number = LChab.fromLab(Lab.fromXYZ(Color.to(color, "XYZ")))
     c = c + (amount * 18 / 100)
     c = (c < 0) and 0 or c
 
