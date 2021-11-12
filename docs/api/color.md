@@ -278,7 +278,7 @@ The hex string can be in the format `ABC` or `AABBCC`, with or without a leading
 
 ### HSB
 
-- `h: number` [0, 360)
+- `h: number` [0, 360) or NaN
 - `s: number` [0, 1]
 - `b: number` [0, 1]
 
@@ -292,7 +292,7 @@ Alias for [`HSB`](#hsb)
 
 ### HWB
 
-- `h: number` [0, 360)
+- `h: number` [0, 360) or NaN
 - `w: number` [0, 1]
 - `b: number` [0, 1]
 
@@ -300,7 +300,7 @@ Alias for [`HSB`](#hsb)
 
 ### HSL
 
-- `h: number` [0, 360)
+- `h: number` [0, 360) or NaN
 - `s: number` [0, 1]
 - `l: number` [0, 1]
 

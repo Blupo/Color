@@ -9,23 +9,21 @@ Color is a Roblox Luau library for color management and manipulation, inspired b
 
 ## All the constructors
 
-Colors can be constructed how you would construct a normal Color3.
+Colors can be constructed how you would construct a typical Color3.
 
 ```lua
 local color = Color.new(1, 1, 1) -- or Color.from("RGB", 255, 255, 255)
 ```
 
-Alternatively, you can construct them from different color types using [Color.from](api/color/#colorfrom). The list of available color types is available in the [Color Types](api/color/#color-types) section of the API reference.
+Alternatively, you can construct them from different color types using [Color.from](api/color/#colorfrom). The list of available color types is available in the [Color Types](api/color/#color-types) section of the Color API reference.
 
 ```lua
 local color3Equivalent = Color.from("Color3", Color3.new(1, 1, 1))
 local brickColorEquivalent = Color.from("BrickColor", BrickColor.random())
 
+local hexColor = Color.from("Hex", "6e05ff")
 local hsvColor = Color.from("HSV", 120, 1, 1)
 local hslColor = Color.from("HSL", 120, 1, 0.5)
-
-local hexColor = Color.from("Hex", "6e05ff")
-
 local tempColor = Color.from("Temperature", 6500)
 
 local randomColor = Color.random() -- we also have random colors
@@ -48,7 +46,7 @@ color:to("Temperature") --> 4358
 
 ## Better interpolation
 
-RGB interpolations (e.g. using [Color3.Lerp](https://developer.roblox.com/en-us/api-reference/datatype/Color3#functions)) can result in grey or dark intermediate colors. Using linear RGB interpolation or perceptually uniform color spaces such as [CIELAB](https://en.wikipedia.org/wiki/CIELAB_color_space) or [CIELUV](https://en.wikipedia.org/wiki/CIELUV) can help avoid these problems.
+RGB interpolation (e.g. using [Color3.Lerp](https://developer.roblox.com/en-us/api-reference/datatype/Color3#functions)) can result in grey or dark intermediate colors. Using linear RGB, or interpolating in perceptually uniform color spaces such as [CIELAB](https://en.wikipedia.org/wiki/CIELAB_color_space) or [CIELUV](https://en.wikipedia.org/wiki/CIELUV) can help avoid these problems.
 
 ![RGB interpolation between red and green](images/rgb-interpolation.png)
 
@@ -56,7 +54,7 @@ RGB interpolations (e.g. using [Color3.Lerp](https://developer.roblox.com/en-us/
 
 ![CIELAB interpolation between red and green](images/lab-interpolation.png)
 
-Interpolations can be done using [Color.mix](api/color/#colormix).
+Interpolation can be done using [Color.mix](api/color/#colormix).
 
 ```lua
 local red = Color.new(1, 0, 0)
@@ -69,7 +67,7 @@ red:mix(green, 0.5, "Lab")
 
 ## Gradients
 
-Gradients are lists of Colors that can be used for generating intermediate Colors or ColorSequences. You can read its API reference [here](api/gradient/).
+Gradients are lists of Colors that can be used for generating [ColorSequences](https://developer.roblox.com/api-reference/datatype/ColorSequence) or intermediate Colors, and are themselves similar to ColorSequences. You can read the Gradient API reference [here](api/gradient/).
 
 ```lua
 local color1 = Color.from("Hex", "4cbbfc")
@@ -85,6 +83,6 @@ local cs = gradient:toColorSequence(20, "lRGB")
 
 ## Installing
 
-The module is available in the library [here](https://roblox.com/library/7933448750). You can also grab a [release](https://github.com/Blupo/Color/releases) from GitHub and install it manually.
+The module is available in the library [here](https://roblox.com/library/7933448750) if you want to install it using the Toolbox. You can also grab a [release](https://github.com/Blupo/Color/releases) from GitHub and install it manually.
 
 If you know how to use [Rojo](https://rojo.space), you can build the latest code from the development branch to get the newest features. Keep in mind that this is **development code**, and things can break or change quickly.
