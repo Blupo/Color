@@ -28,6 +28,9 @@ Color.from(colorType: string, ...: any): Color
 
 Creates a Color from various color types. See the [Color Types](#color-types) section for the list of available conversions and what arguments they require.
 
+!!! info
+    You can also use an alternative constructor using `Color.from[ColorType]`, e.g. `Color.fromColor3(...)` instead of `Color.from("Color3", ...)`.
+
 ---
 
 ## Properties
@@ -121,6 +124,9 @@ Color.to(color: Color, colorType: string): ...any
 ```
 
 Converts a color to different formats. See the [Color Types](#color-types) section for the list of available conversions and what values they output.
+
+!!! info
+    You can also use an alternative converter using `Color.to[ColorType]`, e.g. `Color:toColor3()` instead of `Color:to("Color3")`.
 
 ---
 

@@ -43,12 +43,10 @@ local colorTypes: dictionary<ColorModule> = {
     Color3 = require(Colors.Color3),
     Hex = require(Colors.Hex),
     HSB = require(Colors.HSB),
-    HSV = require(Colors.HSB), -- Alias for HSB
     HSL = require(Colors.HSL),
     HWB = require(Colors.HWB),
     Lab = Lab,
     LChab = LChab,
-    LCh = LChab, -- Alias for LChab
     LChuv = require(Colors.LChuv),
     Luv = require(Colors.Luv),
     Number = require(Colors.Number),
@@ -60,12 +58,10 @@ local colorTypes: dictionary<ColorModule> = {
 local interpolators: dictionary<Interpolator> = {
     CMYK = require(Interpolators.CMYK),
     HSB = require(Interpolators.HSB),
-    HSV = require(Interpolators.HSB), -- Alias for HSB
     HSL = require(Interpolators.HSL),
     HWB = require(Interpolators.HWB),
     Lab = require(Interpolators.Lab),
     LChab = require(Interpolators.LChab),
-    LCh = require(Interpolators.LChab), -- Alias for LChab
     LChuv = require(Interpolators.LChuv),
     Luv = require(Interpolators.Luv),
     lRGB = require(Interpolators.lRGB),
@@ -79,13 +75,20 @@ local clippedColorTypes: dictionary<boolean> = {
     Color3 = true,
     Hex = true,
     HSB = true,
-    HSV = true,
     HSL = true,
     HWB = true,
     Number = true,
     RGB = true,
     Temperature = true,
 }
+
+colorTypes.HSV = colorTypes.HSB
+colorTypes.LCh = colorTypes.LChab
+
+interpolators.HSV = interpolators.HSB
+interpolators.LCh = interpolators.LChab
+
+clippedColorTypes.HSV = clippedColorTypes.HSB
 
 ---
 
@@ -118,6 +121,10 @@ Color.new = t.wrap(function(r: number, g: number, b: number)
         B = clippedB,
     }, colorMetatable))
 end, t.tuple(t.number, t.number, t.number))
+
+---
+
+export type Color = typeof(Color.new(0, 0, 0))
 
 Color.random = function(): Color
     return Color.new(math.random(), math.random(), math.random())
@@ -272,6 +279,41 @@ end
 
 ---
 
-export type Color = typeof(Color.new(0, 0, 0))
+local fromAlternative = function(colorType: string): (...any) -> Color
+    local colorTypeModule: ColorModule? = colorTypes[colorType]
+    assert(colorTypeModule, "invalid color type")
+
+    return function(...: any): Color
+        return Color.from(colorType, ...)
+    end
+end
+
+local toAlternative = function(colorType: string): (color: Color) -> ...any
+    local colorTypeModule: ColorModule? = colorTypes[colorType]
+    assert(colorTypeModule, "invalid color type")
+
+    return function(color: Color): ...any
+        return Color.to(color, colorType)
+    end
+end
+
+Color.fromBrickColor, Color.toBrickColor = fromAlternative("BrickColor"), toAlternative("BrickColor")
+Color.fromCMYK, Color.toCMYK = fromAlternative("CMYK"), toAlternative("CMYK")
+Color.fromColor3, Color.toColor3 = fromAlternative("Color3"), toAlternative("Color3")
+Color.fromHex, Color.toHex = fromAlternative("Hex"), toAlternative("Hex")
+Color.fromHSB, Color.toHSB = fromAlternative("HSB"), toAlternative("HSB")
+Color.fromHSL, Color.toHSL = fromAlternative("HSL"), toAlternative("HSL")
+Color.fromHWB, Color.toHWB = fromAlternative("HWB"), toAlternative("HWB")
+Color.fromLab, Color.toLab = fromAlternative("Lab"), toAlternative("Lab")
+Color.fromLChab, Color.toLChab = fromAlternative("LChab"), toAlternative("LChab")
+Color.fromLChuv, Color.toLChuv = fromAlternative("LChuv"), toAlternative("LChuv")
+Color.fromLuv, Color.toLuv = fromAlternative("Luv"), toAlternative("Luv")
+Color.fromNumber, Color.toNumber = fromAlternative("Number"), toAlternative("Number")
+Color.fromRGB, Color.toRGB = fromAlternative("RGB"), toAlternative("RGB")
+Color.fromTemperature, Color.toTemperature = fromAlternative("Temperature"), toAlternative("Temperature")
+Color.fromXYZ, Color.toXYZ = fromAlternative("XYZ"), toAlternative("XYZ")
+
+Color.fromHSV, Color.toHSV = Color.fromHSB, Color.toHSB
+Color.fromLCh, Color.toLCh = Color.fromLChab, Color.toLChab
 
 return table.freeze(Color)
