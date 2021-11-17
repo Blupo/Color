@@ -2,6 +2,8 @@
 
 ### Color.new
 
+<img src="https://img.shields.io/badge/-static-blue" alt="Static function" />
+
 ```
 Color.new(r: number, g: number, b: number): Color
 ```
@@ -12,6 +14,8 @@ Standard Color constructor. Arguments should be in the range [0, 1], similar to 
 
 ### Color.random
 
+<img src="https://img.shields.io/badge/-static-blue" alt="Static function" />
+
 ```
 Color.random(): Color
 ```
@@ -20,7 +24,21 @@ Creates a Color with random RGB components.
 
 ---
 
+### Color.gray
+
+<img src="https://img.shields.io/badge/-static-blue" alt="Static function" />
+
+```
+Color.gray(scale: number): Color
+```
+
+Creates an achromatic Color using the scale, which should be in the range [0, 1].
+
+---
+
 ### Color.from
+
+<img src="https://img.shields.io/badge/-static-blue" alt="Static function" />
 
 ```
 Color.from(colorType: string, ...: any): Color
@@ -37,37 +55,45 @@ Creates a Color from various color types. See the [Color Types](#color-types) se
 
 ### Color.R
 
+<img src="https://img.shields.io/badge/-read--only-blue" alt="Read-only property" />
+
 ```
 Color.R: number
 ```
 
-The [clipped](#colorisclipped) red RGB channel of the color, in the range [0, 1]. Read-only.
+The [clipped](#colorisclipped) red RGB channel of the color, in the range [0, 1].
 
 ---
 
 ### Color.G
 
+<img src="https://img.shields.io/badge/-read--only-blue" alt="Read-only property" />
+
 ```
 Color.G: number
 ```
 
-The [clipped](#colorisclipped) green RGB channel of the color, in the range [0, 1]. Read-only.
+The [clipped](#colorisclipped) green RGB channel of the color, in the range [0, 1].
 
 ---
 
 ### Color.B
 
+<img src="https://img.shields.io/badge/-read--only-blue" alt="Read-only property" />
+
 ```
 Color.B: number
 ```
 
-The [clipped](#colorisclipped) blue RGB channel of the color, in the range [0, 1]. Read-only.
+The [clipped](#colorisclipped) blue RGB channel of the color, in the range [0, 1].
 
 ---
 
 ## Functions
 
 ### Color.isAColor
+
+<img src="https://img.shields.io/badge/-static-blue" alt="Static function" />
 
 ```
 Color.isAColor(color: any): boolean
@@ -98,7 +124,7 @@ print(Color.new(2, 2, 2):isClipped()) --> true
 Color.unclippedEq(refColor: Color, testColor: Color): boolean
 ```
 
-Returns whether the [*unclipped*](#colorisclipped) components of two Colors are equal.
+Compares the [unclipped](#colorisclipped) components of the Colors for equality.
 
 ```lua
 print(Color.new(1, 1, 1) == Color.new(2, 2, 2)) --> true
@@ -110,10 +136,12 @@ print(Color.new(1, 1, 1):unclippedEq(Color.new(2, 2, 2))) --> false
 ### Color.components
 
 ```
-Color.components(color: Color): (number, number, number)
+Color.components(color: Color, unclipped: boolean? = false): (number, number, number)
 ```
 
-Returns the [clipped](#colorisclipped) RGB components of the Color in the range [0, 1]. You can also access the individual components using [Color.R](#colorr), [Color.G](#colorg), and [Color.B](#colorb).
+Returns the RGB components of the Color, either [clipped or unclipped](#colorisclipped).
+
+You can also access the individual clipped components using [Color.R](#colorr), [Color.G](#colorg), and [Color.B](#colorb).
 
 ---
 
@@ -146,9 +174,11 @@ Returns a Color with inverted RGB components.
 Color.mix(startColor: Color, endColor: Color, ratio: number, mode: string? = "RGB", hueAdjustment: string? = "Shorter"): Color
 ```
 
-Interpolates the start and end Colors in various mixing modes. Available mixing modes are: `RGB` (default), `lRGB`, `CMYK`, `HSB` (or `HSV`), `HWB`, `HSL`, `Lab`, `Luv`, `LChab` (or `LCh`), `LChuv`, and `XYZ`. The `ratio` should be in the range [0, 1].
+Interpolates the start and end Colors in various mixing modes. Available mixing modes are: `RGB` (default), `CMYK`, `HSB` (or `HSV`), `HWB`, `HSL`, `Lab`, `Luv`, `LChab` (or `LCh`), `LChuv`, and `XYZ`. The `ratio` should be in the range [0, 1].
 
 For color spaces with a hue component (e.g. HSB/L or LCh), there are different ways to interpolate the hue, and you can specify how it should be done, either `Shorter` (default), `Longer`, `Increasing`, `Decreasing`, or `Raw`. These adjustments correspond to those specified in [CSS Color Module Level 4](https://www.w3.org/TR/css-color-4/#hue-interpolation).
+
+(The `XYZ` interpolation mode is also used for what's known as "linear RGB interpolation".)
 
 ---
 
@@ -158,7 +188,7 @@ For color spaces with a hue component (e.g. HSB/L or LCh), there are different w
 Color.blend(baseColor: Color, topColor: Color, mode: string): Color
 ```
 
-Blends the base and top Colors in various mixing modes. Available blending modes are: `Normal`, `Multiply`, `Screen`, `Overlay`, `Darken`, `Lighten`, `ColorDodge`, `ColorBurn`, `HardLight`, `SoftLight`, `Difference`, and `Exclusion`.
+Blends the base and top Colors in various mixing modes. The available blending modes are: `Normal`, `Multiply`, `Screen`, `Overlay`, `Darken`, `Lighten`, `ColorDodge`, `ColorBurn`, `HardLight`, `SoftLight`, `Difference`, and `Exclusion`. The blending modes correspond to those specified in [Compositing and Blending Level 1](https://www.w3.org/TR/2015/CR-compositing-1-20150113/#blendingseparable).
 
 ---
 
@@ -178,7 +208,7 @@ Returns the [relative luminance](https://www.w3.org/TR/2008/REC-WCAG20-20081211/
 Color.contrast(refColor: Color, testColor: Color): number
 ```
 
-Returns the [contrast ratio](https://www.w3.org/TR/2008/REC-WCAG20-20081211/#contrast-ratiodef) between the two Colors.
+Returns the [contrast ratio](https://www.w3.org/TR/2008/REC-WCAG20-20081211/#contrast-ratiodef) between two Colors.
 
 ---
 
@@ -198,7 +228,7 @@ Returns the Color with the highest contrast ratio to the reference color, along 
 Color.brighten(color: Color, amount: number? = 1): Color
 ```
 
-Brightens a Color by modifying its L* (L\*a\*b\*) component.
+Brightens a Color by modifying its [L\*](#lab) component.
 
 ---
 
@@ -218,7 +248,7 @@ Equivalent to `Color.brighten(color, -amount)`.
 Color.saturate(color: Color, amount: number? = 1): Color
 ```
 
-Saturates a Color by modifying its C* (L\*C\*h) component.
+Saturates a Color by modifying its [C\*](#lchab) component.
 
 ---
 
@@ -264,7 +294,7 @@ print(Color.new(1, 1, 1) == Color.new(2, 2, 2)) --> true
 
 - `hex: string`
 
-The hex string can be in the format `ABC` or `AABBCC`, with or without a leading `#`.
+The hex string can be in the format `ABC` or `AABBCC`, with or without a leading `#`. 
 
 ---
 
@@ -288,6 +318,8 @@ The hex string can be in the format `ABC` or `AABBCC`, with or without a leading
 - `s: number` [0, 1]
 - `b: number` [0, 1]
 
+For an explanation on HSB, you can read the [Wikipedia article](https://en.wikipedia.org/wiki/HSL_and_HSV) on it.
+
 ---
 
 ### HSV
@@ -302,6 +334,8 @@ Alias for [`HSB`](#hsb)
 - `w: number` [0, 1]
 - `b: number` [0, 1]
 
+For an explanation on HWB, you can read the [Wikipedia article](https://en.wikipedia.org/wiki/HWB_color_model) on it.
+
 ---
 
 ### HSL
@@ -309,6 +343,8 @@ Alias for [`HSB`](#hsb)
 - `h: number` [0, 360) or NaN
 - `s: number` [0, 1]
 - `l: number` [0, 1]
+
+For an explanation on HSL, you can read the [Wikipedia article](https://en.wikipedia.org/wiki/HSL_and_HSV) on it.
 
 ---
 
@@ -319,13 +355,15 @@ Alias for [`HSB`](#hsb)
 - `y: number` [0, 1]
 - `k: number` [0, 1]
 
+For an explanation on CMYK, you can read the [Wikipedia article](https://en.wikipedia.org/wiki/CMYK_color_model) on it. The RGB-CMYK conversions are naive and do not take color profiles into account.
+
 ---
 
 ### Temperature
 
 - `kelvin: number`
 
-For best results, use temperatures in the range [1000, 40000].
+For best results, use temperatures in the range [1000, 40000]. The RGB-Temperature conversions are on based on Neil Bartlett's [color-temperature](https://github.com/neilbartlett/color-temperature).
 
 ---
 
@@ -335,6 +373,8 @@ For best results, use temperatures in the range [1000, 40000].
 - `y: number` [0, 1]
 - `z: number` [0, 1] (typical)
 
+For an explanation on XYZ, you can read the [Wikipedia article](https://en.wikipedia.org/wiki/CIE_1931_color_space) on it. The RGB-XYZ conversions use [illuminant D65](https://en.wikipedia.org/wiki/Illuminant_D65).
+
 ---
 
 ### Lab
@@ -343,6 +383,8 @@ For best results, use temperatures in the range [1000, 40000].
 - `a: number` [-1.28, 1.27] (typically)
 - `b: number` [-1.28, 1.27] (typically)
 
+For an explanation on CIELAB, you can read the [Wikipedia article](https://en.wikipedia.org/wiki/CIELAB_color_space) on it.
+
 ---
 
 ### LChab
@@ -350,6 +392,8 @@ For best results, use temperatures in the range [1000, 40000].
 - `l: number` [0, 1]
 - `c: number` [0, 1.50] (typically)
 - `h: number` [0, 360)
+
+LCh(ab) is the cylindrical model of [CIELAB](https://en.wikipedia.org/wiki/CIELAB_color_space#Cylindrical_model).
 
 ---
 
@@ -365,6 +409,8 @@ Alias for [`LChab`](#lchab)
 - `u: number` [-1, 1] (typically)
 - `v: number` [-1, 1] (typically)
 
+For an explanation on CIELUV, you can read the [Wikipedia article](https://en.wikipedia.org/wiki/CIELUV) on it.
+
 ---
 
 ### LChuv
@@ -372,3 +418,5 @@ Alias for [`LChab`](#lchab)
 - `l: number` [0, 1]
 - `c: number` [0, 1.50] (typically)
 - `h: number` [0, 360)
+
+LCh(uv) is the cylindrical model of [CIELUV](https://en.wikipedia.org/wiki/CIELUV#Cylindrical_representation_(CIELCh)).

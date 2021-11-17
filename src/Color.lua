@@ -9,6 +9,7 @@ local LChab = require(Colors.LChab)
 
 local Utils = root.Utils
 local blend = require(Utils.Blend)
+local GammaCorrection = require(Utils.GammaCorrection)
 
 local Interpolators = root.Interpolators
 
@@ -130,6 +131,10 @@ Color.random = function(): Color
     return Color.new(math.random(), math.random(), math.random())
 end
 
+Color.gray = function(scale: number): Color
+    return Color.new(scale, scale, scale)
+end
+
 Color.from = function(colorType: string, ...: any): Color
     local colorTypeModule: ColorModule? = colorTypes[colorType]
     assert(colorTypeModule, "invalid color type")
@@ -161,8 +166,12 @@ Color.unclippedEq = function(refColor: Color, testColor: Color): boolean
     return (refColor.__r == testColor.__r) and (refColor.__g == testColor.__g) and (refColor.__b == testColor.__b)
 end
 
-Color.components = function(color: Color): (number, number, number)
-    return color.R, color.G, color.B
+Color.components = function(color: Color, unclipped: boolean?): (number, number, number)
+    if (unclipped) then
+        return color.__r, color.__g, color.__b
+    else
+        return color.R, color.G, color.B
+    end
 end
 
 Color.to = function(color: Color, colorType: string): ...any
@@ -210,16 +219,14 @@ end
 
 -- WCAG definition of relative luminance
 -- https://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef
+-- Errata: https://www.w3.org/WAI/GL/wiki/index.php?title=Relative_luminance&oldid=11187
 Color.luminance = function(color: Color): number
-    local r1: number = color.R
-    local g1: number = color.G
-    local b1: number = color.B
+    local rgb: {number} = { color:components() }
 
-    local r2: number = (r1 <= 0.03928) and (r1 / 12.92) or (((r1 + 0.055) / 1.055) ^ 2.4)
-    local g2: number = (g1 <= 0.03928) and (g1 / 12.92) or (((g1 + 0.055) / 1.055) ^ 2.4)
-    local b2: number = (b1 <= 0.03928) and (b1 / 12.92) or (((b1 + 0.055) / 1.055) ^ 2.4)
-
-    return (0.2126 * r2) + (0.7152 * g2) + (0.0722 * b2)
+    return
+        (0.2126 * GammaCorrection.toLinear(rgb[1])) +
+        (0.7152 * GammaCorrection.toLinear(rgb[2])) +
+        (0.0722 * GammaCorrection.toLinear(rgb[3]))
 end
 
 -- WCAG definition of contrast ratio

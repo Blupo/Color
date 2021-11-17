@@ -10,6 +10,7 @@ return function()
     it("should have a public API", function()
         expect(Color.new).to.be.a("function")
         expect(Color.random).to.be.a("function")
+        expect(Color.gray).to.be.a("function")
         expect(Color.invert).to.be.a("function")
         expect(Color.components).to.be.a("function")
         expect(Color.unclippedEq).to.be.a("function")
@@ -96,6 +97,8 @@ return function()
 
             expect(Color.from("RGB", 123, 456, 789)).to.be.ok()
             expect(Color.from("RGB", 123, 456, 789)).never.to.equal(Color.new(123, 456, 789))
+
+            expect(Color.gray(0.5)).to.equal(Color.new(0.5, 0.5, 0.5))
         end)
 
         it("should support Color3", function()

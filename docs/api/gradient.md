@@ -15,6 +15,8 @@
 
 ### Color.gradient
 
+<img src="https://img.shields.io/badge/-static-blue" alt="Static function" />
+
 ```
 Color.gradient(keypoints: array<GradientKeypoint>): Gradient
 ```
@@ -28,6 +30,8 @@ Standard Gradient constructor. The first keypoint must have a `Time` of 0, and t
 
 ### Color.gradientFromColors
 
+<img src="https://img.shields.io/badge/-static-blue" alt="Static function" />
+
 ```
 Color.gradientFromColors(...: Color): Gradient
 ```
@@ -37,6 +41,8 @@ Creates a Gradient from one or more Colors. If one Color is passed, the start an
 ---
 
 ### Color.gradientFromColorSequence
+
+<img src="https://img.shields.io/badge/-static-blue" alt="Static function" />
 
 ```
 Color.gradientFromColorSequence(colorSequence: ColorSequence): Gradient
@@ -50,11 +56,11 @@ Creates a Gradient from a [ColorSequence](https://developer.roblox.com/en-us/api
 
 ### Gradient.Keypoints
 
+<img src="https://img.shields.io/badge/-read--only-blue" alt="Static function" />
+
 ```
 Gradient.Keypoints: array<GradientKeypoint>
 ```
-
-The keypoint list is read-only.
 
 ---
 
