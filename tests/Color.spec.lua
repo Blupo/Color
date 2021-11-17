@@ -26,6 +26,7 @@ return function()
         expect(Color.darken).to.be.a("function")
         expect(Color.saturate).to.be.a("function")
         expect(Color.desaturate).to.be.a("function")
+        expect(Color.harmonies).to.be.a("function")
 
         expect(Color.from).to.be.a("function")
         expect(Color.to).to.be.a("function")
@@ -469,6 +470,41 @@ return function()
             expect(hotpink:desaturate():to("Hex")).to.equal("e77dae")
             expect(hotpink:desaturate(2):to("Hex")).to.equal("cd8ca8")
             expect(hotpink:desaturate(3):to("Hex")).to.equal("b199a3")
+        end)
+
+        it("should support harmony generation", function()
+            local red = Color.new(1, 0, 0)
+
+            local complementary = red:harmonies("Complementary")
+            local triadic = red:harmonies("Triadic")
+            local square = red:harmonies("Square")
+
+            local analogous = red:harmonies("Analogous")
+            local splitComplementary = red:harmonies("SplitComplementary")
+            local tetradic = red:harmonies("Tetradic")
+
+            expect(complementary[1]:to("Hex")).to.equal("00ffff")
+
+            expect(triadic[1]:to("Hex")).to.equal("00ff00")
+            expect(triadic[2]:to("Hex")).to.equal("0000ff")
+
+            expect(square[1]:to("Hex")).to.equal("80ff00")
+            expect(square[2]:to("Hex")).to.equal("00ffff")
+            expect(square[3]:to("Hex")).to.equal("8000ff")
+
+            expect(analogous[1]:to("Hex")).to.equal("ff0080")
+            expect(analogous[2]:to("Hex")).to.equal("ff8000")
+
+            expect(splitComplementary[1]:to("Hex")).to.equal("00ff80")
+            expect(splitComplementary[2]:to("Hex")).to.equal("0080ff")
+
+            expect(tetradic[1]:to("Hex")).to.equal("ff8000")
+            expect(tetradic[2]:to("Hex")).to.equal("00ffff")
+            expect(tetradic[3]:to("Hex")).to.equal("0080ff")
+
+            expect(function()
+                red:harmonies("InvalidHarmony")
+            end).to.throw()
         end)
 
         it("should support interpolation", function()

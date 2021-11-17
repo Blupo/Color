@@ -284,6 +284,46 @@ Color.desaturate = function(color: Color, amount: number?): Color
     return Color.saturate(color, -(amount or 1))
 end
 
+Color.harmonies = function(color: Color, harmony: string, optionalAnalogyAngle: number?): {Color}
+    local h: number, s: number, b: number = Color.to(color, "HSB")
+    local analogyAngle: number = optionalAnalogyAngle or math.deg(2 * math.pi / 12)
+    local harmonies: {Color} = {}
+
+    if (harmony == "Complementary") then
+        table.insert(harmonies, Color.from("HSB", h + math.deg(math.pi), s, b))
+    elseif (harmony == "Triadic") then
+        local harmonyAngle: number = math.deg(2 * math.pi) / 3
+
+        for i = 1, 2 do
+            table.insert(harmonies, Color.from("HSB", h + (i * harmonyAngle), s, b))
+        end
+    elseif (harmony == "Square") then
+        local harmonyAngle: number = math.deg(2 * math.pi) / 4
+
+        for i = 1, 3 do
+            table.insert(harmonies, Color.from("HSB", h + (i * harmonyAngle), s, b))
+        end
+    elseif (harmony == "Analogous") then
+        table.insert(harmonies, Color.from("HSB", h - analogyAngle, s, b))
+        table.insert(harmonies, Color.from("HSB", h + analogyAngle, s, b))
+    elseif (harmony == "SplitComplementary") then
+        local complementaryAngle: number = h + math.deg(math.pi)
+
+        table.insert(harmonies, Color.from("HSB", complementaryAngle - analogyAngle, s, b))
+        table.insert(harmonies, Color.from("HSB", complementaryAngle + analogyAngle, s, b))
+    elseif (harmony == "Tetradic") then
+        local complementaryAngle: number = h + math.deg(math.pi)
+
+        table.insert(harmonies, Color.from("HSB", h + analogyAngle, s, b))
+        table.insert(harmonies, Color.from("HSB", complementaryAngle, s, b))
+        table.insert(harmonies, Color.from("HSB", complementaryAngle + analogyAngle, s, b))
+    else
+        error("invalid harmony")
+    end
+
+    return harmonies
+end
+
 ---
 
 local fromAlternative = function(colorType: string): (...any) -> Color

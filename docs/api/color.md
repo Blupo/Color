@@ -262,6 +262,18 @@ Equivalent to `Color.saturate(color, -amount)`.
 
 ---
 
+### Color.harmonies
+
+```
+Color.harmonies(color: Color, harmony: string, analogyAngle: number? = 60): array<Color>
+```
+
+Generates a list of Colors with a certain [harmony](https://en.wikipedia.org/wiki/Harmony_(color)) to the reference Color. The available harmonies are: `Analogous`, `Complementary`, `SplitComplementary`, `Triadic`, `Tetradic` (sometimes known as *rectangle*), and `Square`.
+
+You may also specify an angle for the `Analogous`, `SplitComplementary`, and `Tetradic` harmonies.
+
+---
+
 ## Math Operations
 
 ### Color == Color
