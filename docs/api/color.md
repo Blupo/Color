@@ -145,13 +145,23 @@ You can also access the individual clipped components using [Color.R](#colorr), 
 
 ---
 
+### Color.deltaE
+
+```
+Color.deltaE(refColor: Color, testColor: Color, kL: number? = 1, kC: number? = 1, kH: number? = 1): number
+```
+
+Calculates the [color difference](https://en.wikipedia.org/wiki/Color_difference) of two Colors using [CIEDE2000](https://en.wikipedia.org/wiki/Color_difference#CIEDE2000), which can be used to compare the similarity (or difference) between colors. Smaller numbers correspond to greater similarity, while larger numbers correspond to less similarity.
+
+---
+
 ### Color.to
 
 ```
 Color.to(color: Color, colorType: string): ...any
 ```
 
-Converts a color to different formats. See the [Color Types](#color-types) section for the list of available conversions and what values they output.
+Converts a Color to different formats. See the [Color Types](#color-types) section for the list of available conversions and what values they output.
 
 !!! info
     You can also use an alternative converter using `Color.to[ColorType]`, e.g. `Color:toColor3()` instead of `Color:to("Color3")`.
@@ -268,7 +278,7 @@ Equivalent to `Color.saturate(color, -amount)`.
 Color.harmonies(color: Color, harmony: string, analogyAngle: number? = 60): array<Color>
 ```
 
-Generates a list of Colors with a certain [harmony](https://en.wikipedia.org/wiki/Harmony_(color)) to the reference Color. The available harmonies are: `Analogous`, `Complementary`, `SplitComplementary`, `Triadic`, `Tetradic` (sometimes known as *rectangle*), and `Square`.
+Generates a list of Colors with a certain HSB [harmony](https://en.wikipedia.org/wiki/Harmony_(color)) to the reference Color. The available harmonies are: `Analogous`, `Complementary`, `SplitComplementary`, `Triadic`, `Tetradic` (sometimes known as *rectangle*), and `Square`.
 
 You may also specify an angle for the `Analogous`, `SplitComplementary`, and `Tetradic` harmonies.
 

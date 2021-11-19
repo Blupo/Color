@@ -7,6 +7,7 @@
     - e.g. `Color:toColor3()` instead of `Color:to("Color3")`
 - Added `Color.gray` as a shortcut for creating achromatic Colors
 - Added `Color.harmonies` for generating Color harmonies
+- Added `Color.deltaE` for calculating Color differences
 - Added links in the documentation for further reading on various color types
 
 ### Removed

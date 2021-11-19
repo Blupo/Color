@@ -13,6 +13,7 @@ return function()
         expect(Color.gray).to.be.a("function")
         expect(Color.invert).to.be.a("function")
         expect(Color.components).to.be.a("function")
+        expect(Color.deltaE).to.be.a("function")
         expect(Color.unclippedEq).to.be.a("function")
         expect(Color.isClipped).to.be.a("function")
         expect(Color.isAColor).to.be.a("function")
@@ -505,6 +506,57 @@ return function()
             expect(function()
                 red:harmonies("InvalidHarmony")
             end).to.throw()
+        end)
+
+        it("should support ΔE* calculation", function()
+            -- Test data from: http://www2.ece.rochester.edu/~gsharma/ciede2000/ciede2000noteCRNA.pdf
+
+            local tests = {
+                { Color.fromLab(0.5, 0.026772, -0.797751), Color.fromLab(0.5, 0, -0.827485), 2.0425 },
+                { Color.fromLab(0.5, 0.031571, -0.772803), Color.fromLab(0.5, 0, -0.827485), 2.8615 },
+                { Color.fromLab(0.5, 0.028361, -0.740200), Color.fromLab(0.5, 0, -0.827485), 3.4412 },
+                { Color.fromLab(0.5, -0.013802, -0.842814), Color.fromLab(0.5, 0, -0.827485), 1 },
+                { Color.fromLab(0.5, -0.011848, -0.848006), Color.fromLab(0.5, 0, -0.827485), 1 },
+                { Color.fromLab(0.5, -0.009009, -0.855211), Color.fromLab(0.5, 0, -0.827485), 1 },
+                { Color.fromLab(0.5, 0, 0), Color.fromLab(0.5, -0.01, 0.02), 2.3669 },
+                { Color.fromLab(0.5, -0.01, 0.02), Color.fromLab(0.5, 0, 0), 2.3669 },
+                { Color.fromLab(0.5, 0.0249, -0.00001), Color.fromLab(0.5, -0.0249, 0.000009), 7.1792 },
+                { Color.fromLab(0.5, 0.0249, -0.00001), Color.fromLab(0.5, -0.0249, 0.00001), 7.1792 },
+                { Color.fromLab(0.5, 0.0249, -0.00001), Color.fromLab(0.5, -0.0249, 0.000011), 7.2195 },
+                { Color.fromLab(0.5, 0.0249, -0.00001), Color.fromLab(0.5, -0.0249, 0.000012), 7.2195 },
+                { Color.fromLab(0.5, -0.00001, 0.0249), Color.fromLab(0.5, 0.000009, -0.0249), 4.8045 },
+                { Color.fromLab(0.5, -0.00001, 0.0249), Color.fromLab(0.5, 0.00001, -0.0249), 4.8045 },
+                { Color.fromLab(0.5, -0.00001, 0.0249), Color.fromLab(0.5, 0.000011, -0.0249), 4.7461 },
+                { Color.fromLab(0.5, 0.025, 0), Color.fromLab(0.5, 0, -0.025), 4.3065 },
+                { Color.fromLab(0.5, 0.025, 0), Color.fromLab(0.73, 0.25, -0.18), 27.1492 },
+                { Color.fromLab(0.5, 0.025, 0), Color.fromLab(0.61, -0.05, 0.29), 22.8977 },
+                { Color.fromLab(0.5, 0.025, 0), Color.fromLab(0.56, -0.27, -0.03), 31.9030 },
+                { Color.fromLab(0.5, 0.025, 0), Color.fromLab(0.58, 0.24, 0.15), 19.4535 },
+                { Color.fromLab(0.5, 0.025, 0), Color.fromLab(0.5, 0.031736, 0.005854), 1 },
+                { Color.fromLab(0.5, 0.025, 0), Color.fromLab(0.5, 0.032972, 0), 1 },
+                { Color.fromLab(0.5, 0.025, 0), Color.fromLab(0.5, 0.018634, 0.005757), 1 },
+                { Color.fromLab(0.5, 0.025, 0.), Color.fromLab(0.5, 0.032592, 0.003350), 1 },
+                { Color.fromLab(0.602574, -0.340099, 0.362677), Color.fromLab(0.604626, -0.341751, 0.394387), 1.2644 },
+                { Color.fromLab(0.630109, -0.310961, -0.058663), Color.fromLab(0.628187, -0.297946, -0.040864), 1.2630 },
+                { Color.fromLab(0.612901, 0.037196, -0.053901), Color.fromLab(0.614292, 0.022480, -0.049620), 1.8731 },
+                { Color.fromLab(0.350831, -0.441164, 0.037933), Color.fromLab(0.350232, -0.400716, 0.015901), 1.8645 },
+                { Color.fromLab(0.227233, 0.200904, -0.466940), Color.fromLab(0.230331, 0.149730, -0.425619), 2.0373 },
+                { Color.fromLab(0.364612, 0.478580, 0.183852), Color.fromLab(0.362715, 0.505065, 0.212231), 1.4146 },
+                { Color.fromLab(0.908027, -0.020831, 0.014410), Color.fromLab(0.911528, -0.016435, 0.000447), 1.4441 },
+                { Color.fromLab(0.909257, -0.005406, -0.009208), Color.fromLab(0.886381, -0.008985, -0.007239), 1.5381 },
+                { Color.fromLab(0.067747, -0.002908, -0.024247), Color.fromLab(0.058714, -0.000985, -0.022286), 0.6377 },
+                { Color.fromLab(0.020776, 0.000795, -0.011350), Color.fromLab(0.009033, -0.000636, -0.005514), 0.9082 },
+            }
+
+            for i = 1, #tests do
+                local test = tests[i]
+
+                local testColor1, testColor2 = test[1], test[2]
+                local expectedResult = test[3]
+
+                expect(testColor1:deltaE(testColor2)).to.be.near(expectedResult, 10^-4)
+                expect(testColor2:deltaE(testColor1)).to.be.near(expectedResult, 10^-4)
+            end
         end)
 
         it("should support interpolation", function()

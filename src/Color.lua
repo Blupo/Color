@@ -8,6 +8,7 @@ local Lab = require(Colors.Lab)
 local LChab = require(Colors.LChab)
 
 local Utils = root.Utils
+local deltaE = require(Utils.DeltaE)
 local blend = require(Utils.Blend)
 local GammaCorrection = require(Utils.GammaCorrection)
 
@@ -172,6 +173,13 @@ Color.components = function(color: Color, unclipped: boolean?): (number, number,
     else
         return color.R, color.G, color.B
     end
+end
+
+Color.deltaE = function(refColor: Color, testColor: Color, kL: number?, kC: number?, kH: number?): number
+    local refColorComponents: {number} = { Color.to(refColor, "Lab") }
+    local testColorComponents: {number} = { Color.to(testColor, "Lab") }
+
+    return deltaE(refColorComponents, testColorComponents, kL, kC, kH)
 end
 
 Color.to = function(color: Color, colorType: string): ...any
