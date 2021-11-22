@@ -2,8 +2,10 @@
 
 local root = script.Parent
 local t = require(root.t)
+local WebColors = require(root.WebColors)
 
 local Colors = root.Colors
+local Hex = require(Colors.Hex)
 local Lab = require(Colors.Lab)
 local LChab = require(Colors.LChab)
 
@@ -43,7 +45,7 @@ local colorTypes: dictionary<ColorModule> = {
     BrickColor = require(Colors.BrickColor),
     CMYK = require(Colors.CMYK),
     Color3 = require(Colors.Color3),
-    Hex = require(Colors.Hex),
+    Hex = Hex,
     HSB = require(Colors.HSB),
     HSL = require(Colors.HSL),
     HWB = require(Colors.HWB),
@@ -135,6 +137,13 @@ end
 
 Color.gray = function(scale: number): Color
     return Color.new(scale, scale, scale)
+end
+
+Color.named = function(name: string): Color
+    local hex = WebColors[string.lower(name)]
+    assert(hex, "invalid name")
+
+    return Color.new(Hex.toRGB(hex))
 end
 
 Color.from = function(colorType: string, ...: any): Color

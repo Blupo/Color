@@ -9,6 +9,7 @@
 - Added `Color.gray` as a shortcut for creating achromatic Colors
 - Added `Color.harmonies` for generating Color harmonies
 - Added `Color.deltaE` for calculating Color differences
+- Added `Color.named` for referencing CSS colors
 - Added the `xyY` color type
 
 ### Removed

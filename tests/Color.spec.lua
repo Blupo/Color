@@ -297,6 +297,15 @@ return function()
             expect(Color.from("LChuv", 0.91113, 0.72099, 192.174):to("Hex")).to.equal("00ffff")
         end)
 
+        it("should support CSS colors", function()
+            expect(Color.named("hotpink"):toHex()).to.equal("ff69b4")
+            expect(Color.named("hoTpINk")).to.equal(Color.named("hotpink"))
+
+            expect(function()
+                Color.named("InvalidName")
+            end).to.throw()
+        end)
+
         it("should not support invalid color types", function()
             expect(function()
                 Color.from("InvalidColorType", 1, "A", "F")

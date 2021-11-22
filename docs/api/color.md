@@ -32,7 +32,19 @@ Creates a Color with random RGB components.
 Color.gray(scale: number): Color
 ```
 
-Creates an achromatic Color using the scale, which should be in the range [0, 1].
+Creates an achromatic Color using the scale, which should be in the range [0, 1]. `0` corresponds to black, and `1` corresponds to white.
+
+---
+
+### Color.named
+
+<img src="https://img.shields.io/badge/-static-blue" alt="Static function" />
+
+```
+Color.named(name: string): Color
+```
+
+Creates a Color based on a [named CSS color](https://www.w3.org/TR/2021/REC-css-color-3-20210805/#svg-color). Names are case-insensitive.
 
 ---
 
