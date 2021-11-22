@@ -47,7 +47,7 @@ Color.from(colorType: string, ...: any): Color
 Creates a Color from various color types. See the [Color Types](#color-types) section for the list of available conversions and what arguments they require.
 
 !!! info
-    You can also use an alternative constructor using `Color.from[ColorType]`, e.g. `Color.fromColor3(...)` instead of `Color.from("Color3", ...)`.
+    You can also use an alternative constructor using `Color.from[ColorType]` (e.g. `Color.fromColor3(...)` instead of `Color.from("Color3", ...)`), **except** for the [`xyY`](#xyy) color type.
 
 ---
 
@@ -396,6 +396,16 @@ For best results, use temperatures in the range [1000, 40000]. The RGB-Temperatu
 - `z: number` [0, 1] (typical)
 
 For an explanation on XYZ, you can read the [Wikipedia article](https://en.wikipedia.org/wiki/CIE_1931_color_space) on it. The RGB-XYZ conversions use [illuminant D65](https://en.wikipedia.org/wiki/Illuminant_D65).
+
+---
+
+### xyY
+
+- `x: number` [0, 1]
+- `y: number` [0, 1]
+- `Y: number` [0, 1]
+
+[xyY](https://en.wikipedia.org/wiki/CIE_1931_color_space#CIE_xy_chromaticity_diagram_and_the_CIE_xyY_color_space) is a color space related to [XYZ](https://en.wikipedia.org/wiki/CIE_1931_color_space).
 
 ---
 

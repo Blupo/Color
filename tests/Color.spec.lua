@@ -230,6 +230,19 @@ return function()
             expect(Color.from("XYZ", 0.53801, 0.78733, 1.06950):to("Hex")).to.equal("00ffff")
         end)
 
+        it("should support xyY", function()
+            expect(Color.from("xyY", 0, 0, 0):to("Hex")).to.equal("000000")
+            expect(Color.from("xyY", 0.31271, 0.32902, 1):to("Hex")).to.equal("ffffff")
+
+            expect(Color.from("xyY", 0.64, 0.33, 0.21267):to("Hex")).to.equal("ff0000")
+            expect(Color.from("xyY", 0.3, 0.6, 0.71515):to("Hex")).to.equal("00ff00")
+            expect(Color.from("xyY", 0.15, 0.06, 0.07217):to("Hex")).to.equal("0000ff")
+
+            expect(Color.from("xyY", 0.41932, 0.50525, 0.92783):to("Hex")).to.equal("ffff00")
+            expect(Color.from("xyY", 0.32094, 0.15419, 0.28485):to("Hex")).to.equal("ff00ff")
+            expect(Color.from("xyY", 0.22466, 0.32876, 0.78733):to("Hex")).to.equal("00ffff")
+        end)
+
         it("should support L*a*b*", function()
             expect(Color.from("Lab", 0, 0, 0):to("Hex")).to.equal("000000")
             expect(Color.from("Lab", 1, 0, 0):to("Hex")).to.equal("ffffff")

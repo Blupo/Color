@@ -23,7 +23,7 @@ type ColorModule = {
     fromRGB: (number, number, number) -> ...any,
     toRGB: (...any) -> (number, number, number),
 
-    -- Lab/Luv
+    -- Lab/Luv/xyY
     fromXYZ: ((number, number, number) -> ...any)?,
     toXYZ: ((...any) -> (number, number, number))?,
 
@@ -54,6 +54,7 @@ local colorTypes: dictionary<ColorModule> = {
     Number = require(Colors.Number),
     RGB = require(Colors.RGB),
     Temperature = require(Colors.Temperature),
+    xyY = require(Colors.xyY),
     XYZ = require(Colors.XYZ),
 }
 

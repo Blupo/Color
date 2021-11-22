@@ -2,13 +2,14 @@
 
 ## [0.2.0]
 ### Added
+- Added links in the documentation for further reading on various color types
 - Added alternative from/to functions for the various color types
     - e.g. `Color.fromColor3(...)` instead of `Color.from("Color3", ...)`
     - e.g. `Color:toColor3()` instead of `Color:to("Color3")`
 - Added `Color.gray` as a shortcut for creating achromatic Colors
 - Added `Color.harmonies` for generating Color harmonies
 - Added `Color.deltaE` for calculating Color differences
-- Added links in the documentation for further reading on various color types
+- Added the `xyY` color type
 
 ### Removed
 - The `lRGB` interpolation mode has been removed, since it is the same as `XYZ` mode
