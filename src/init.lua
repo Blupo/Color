@@ -12,6 +12,8 @@ export type GradientKeypoint = Gradient.GradientKeypoint
 return {
     new = Color.new,
     random = Color.random,
+    gray = Color.gray,
+    named = Color.named,
     from = Color.from,
 
     isAColor = Color.isAColor,
@@ -25,6 +27,7 @@ return {
     mix = Color.mix,
     blend = Color.blend,
 
+    deltaE = Color.deltaE,
     luminance = Color.luminance,
     contrast = Color.contrast,
     bestContrastingColor = Color.bestContrastingColor,
@@ -33,6 +36,7 @@ return {
     darken = Color.darken,
     saturate = Color.saturate,
     desaturate = Color.desaturate,
+    harmonies = Color.harmonies,
 
     gradient = Gradient.new,
     gradientFromColors = Gradient.fromColors,

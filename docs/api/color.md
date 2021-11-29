@@ -196,11 +196,9 @@ Returns a Color with inverted RGB components.
 Color.mix(startColor: Color, endColor: Color, ratio: number, mode: string? = "RGB", hueAdjustment: string? = "Shorter"): Color
 ```
 
-Interpolates the start and end Colors in various mixing modes. Available mixing modes are: `RGB` (default), `CMYK`, `HSB` (or `HSV`), `HWB`, `HSL`, `Lab`, `Luv`, `LChab` (or `LCh`), `LChuv`, and `XYZ`. The `ratio` should be in the range [0, 1].
+Interpolates the start and end Colors in various color spaces. `ratio` should be in the range [0, 1]. Supported spaces are: `RGB` (default), `CMYK`, `HSB` (or `HSV`), `HWB`, `HSL`, `Lab`, `Luv`, `LChab` (or `LCh`), `LChuv`, and `XYZ` (`XYZ` interpolation can also be used for linear RGB interpolation).
 
-For color spaces with a hue component (e.g. HSB/L or LCh), there are different ways to interpolate the hue, and you can specify how it should be done, either `Shorter` (default), `Longer`, `Increasing`, `Decreasing`, or `Raw`. These adjustments correspond to those specified in [CSS Color Module Level 4](https://www.w3.org/TR/css-color-4/#hue-interpolation).
-
-(The `XYZ` interpolation mode is also used for what's known as "linear RGB interpolation".)
+For color spaces with a hue component (e.g. HSB/L or LCh), there are different ways to interpolate the hue, and you can specify how it should be done by passing `hueAdjustment`: `Shorter` (default), `Longer`, `Increasing`, `Decreasing`, or `Raw`. These adjustments correspond to those specified in [CSS Color Module Level 4](https://www.w3.org/TR/css-color-4/#hue-interpolation).
 
 ---
 

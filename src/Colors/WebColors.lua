@@ -1,3 +1,4 @@
+--!strict
 -- https://www.w3.org/TR/2021/REC-css-color-3-20210805/#svg-color
 
 return {

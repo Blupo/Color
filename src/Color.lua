@@ -2,24 +2,23 @@
 
 local root = script.Parent
 local t = require(root.t)
-local WebColors = require(root.WebColors)
 
 local Colors = root.Colors
 local Hex = require(Colors.Hex)
 local Lab = require(Colors.Lab)
 local LChab = require(Colors.LChab)
+local WebColors = require(Colors.WebColors)
 
 local Utils = root.Utils
 local deltaE = require(Utils.DeltaE)
 local blend = require(Utils.Blend)
 local GammaCorrection = require(Utils.GammaCorrection)
-
-local Interpolators = root.Interpolators
+local hueLerp = require(Utils.HueLerp)
+local lerp = require(Utils.Lerp)
 
 ---
 
 type dictionary<T> = {[string]: T}
-type Interpolator = ({number}, {number}, number, string?) -> ...any
 
 type ColorModule = {
     fromRGB: (number, number, number) -> ...any,
@@ -60,19 +59,6 @@ local colorTypes: dictionary<ColorModule> = {
     XYZ = require(Colors.XYZ),
 }
 
-local interpolators: dictionary<Interpolator> = {
-    CMYK = require(Interpolators.CMYK),
-    HSB = require(Interpolators.HSB),
-    HSL = require(Interpolators.HSL),
-    HWB = require(Interpolators.HWB),
-    Lab = require(Interpolators.Lab),
-    LChab = require(Interpolators.LChab),
-    LChuv = require(Interpolators.LChuv),
-    Luv = require(Interpolators.Luv),
-    RGB = require(Interpolators.RGB),
-    XYZ = require(Interpolators.XYZ),
-}
-
 local clippedColorTypes: dictionary<boolean> = {
     BrickColor = true,
     CMYK = true,
@@ -86,13 +72,21 @@ local clippedColorTypes: dictionary<boolean> = {
     Temperature = true,
 }
 
+local hueComponents: dictionary<number> = {
+    HSB = 1,
+    HSL = 1,
+    HWB = 1,
+    LChab = 3,
+    LChuv = 3,
+}
+
 colorTypes.HSV = colorTypes.HSB
 colorTypes.LCh = colorTypes.LChab
 
-interpolators.HSV = interpolators.HSB
-interpolators.LCh = interpolators.LChab
-
 clippedColorTypes.HSV = clippedColorTypes.HSB
+
+hueComponents.HSV = hueComponents.HSB
+hueComponents.LCh = hueComponents.LChab
 
 ---
 
@@ -184,13 +178,6 @@ Color.components = function(color: Color, unclipped: boolean?): (number, number,
     end
 end
 
-Color.deltaE = function(refColor: Color, testColor: Color, kL: number?, kC: number?, kH: number?): number
-    local refColorComponents: {number} = { Color.to(refColor, "Lab") }
-    local testColorComponents: {number} = { Color.to(testColor, "Lab") }
-
-    return deltaE(refColorComponents, testColorComponents, kL, kC, kH)
-end
-
 Color.to = function(color: Color, colorType: string): ...any
     local colorTypeModule: ColorModule? = colorTypes[colorType]
     assert(colorTypeModule, "invalid color type")
@@ -210,21 +197,29 @@ end
 
 Color.mix = function(startColor: Color, endColor: Color, ratio: number, optionalMode: string?, optionalHueAdjustment: string?): Color
     local mode: string = optionalMode or "RGB"
+    assert(colorTypes[mode] and (mode ~= "Hex"), "invalid interpolation " .. mode)
 
-    local interpolator: Interpolator? = interpolators[mode]
-    assert(interpolator, "invalid interpolator")
-
-    local startColorComponents: {number}, endColorComponents: {number}
+    local startColorComponents: {number}
+    local endColorComponents: {number}
+    local mixedColorComponents: {number} = {}
 
     if (mode == "RGB") then
         startColorComponents, endColorComponents = { startColor:components() }, { endColor:components() }
-
-        return Color.new(interpolator(startColorComponents, endColorComponents, ratio, optionalHueAdjustment))
     else
         startColorComponents, endColorComponents = { startColor:to(mode) }, { endColor:to(mode) }
-
-        return Color.from(mode, interpolator(startColorComponents, endColorComponents, ratio, optionalHueAdjustment))
     end
+
+    for i = 1, #startColorComponents do
+        if (i == hueComponents[mode]) then
+            mixedColorComponents[i] = hueLerp(startColorComponents[i], endColorComponents[i], ratio, optionalHueAdjustment)
+        else
+            mixedColorComponents[i] = lerp(startColorComponents[i], endColorComponents[i], ratio)
+        end
+    end
+
+    return (mode == "RGB") and
+        Color.new(table.unpack(mixedColorComponents))
+    or Color.from(mode, table.unpack(mixedColorComponents))
 end
 
 Color.blend = function(baseColor: Color, topColor: Color, mode: string): Color
@@ -232,6 +227,13 @@ Color.blend = function(baseColor: Color, topColor: Color, mode: string): Color
     local topColorComponents: {number} = { topColor:components() }
 
     return Color.new(blend(baseColorComponents, topColorComponents, mode))
+end
+
+Color.deltaE = function(refColor: Color, testColor: Color, kL: number?, kC: number?, kH: number?): number
+    local refColorComponents: {number} = { Color.to(refColor, "Lab") }
+    local testColorComponents: {number} = { Color.to(testColor, "Lab") }
+
+    return deltaE(refColorComponents, testColorComponents, kL, kC, kH)
 end
 
 -- WCAG definition of relative luminance

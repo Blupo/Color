@@ -6,10 +6,6 @@
 
         "t": {
             "$path": "includes/t"
-        },
-
-        "WebColors": {
-            "$path": "includes/WebColors.lua"
         }
     }
   }
