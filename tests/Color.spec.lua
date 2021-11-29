@@ -593,7 +593,6 @@ return function()
             expect(red:mix(blue, 0.5, "LChab"):to("Hex")).to.equal("fa0080")
             expect(red:mix(blue, 0.5, "Luv"):to("Hex")).to.equal("be0090")
             expect(red:mix(blue, 0.5, "LChuv"):to("Hex")).to.equal("f000cc")
-            expect(red:mix(blue, 0.5, "lRGB"):to("Hex")).to.equal("bc00bc")
             expect(red:mix(blue, 0.5, "XYZ"):to("Hex")).to.equal("bc00bc")
 
             expect(red:mix(blue, 0.5, "HSB", "Shorter"):to("Hex")).never.to.equal(red:mix(blue, 0.5, "HSB", "Longer"))

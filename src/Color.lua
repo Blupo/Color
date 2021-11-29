@@ -69,7 +69,6 @@ local interpolators: dictionary<Interpolator> = {
     LChab = require(Interpolators.LChab),
     LChuv = require(Interpolators.LChuv),
     Luv = require(Interpolators.Luv),
-    lRGB = require(Interpolators.lRGB),
     RGB = require(Interpolators.RGB),
     XYZ = require(Interpolators.XYZ),
 }
@@ -217,7 +216,7 @@ Color.mix = function(startColor: Color, endColor: Color, ratio: number, optional
 
     local startColorComponents: {number}, endColorComponents: {number}
 
-    if ((mode == "RGB") or (mode == "lRGB")) then
+    if (mode == "RGB") then
         startColorComponents, endColorComponents = { startColor:components() }, { endColor:components() }
 
         return Color.new(interpolator(startColorComponents, endColorComponents, ratio, optionalHueAdjustment))

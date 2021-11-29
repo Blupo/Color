@@ -161,7 +161,7 @@ return function()
 
             expect(gradient:toColorSequence()).to.be.ok()
             expect(gradient:toColorSequence()).to.equal(ColorSequence.new(Color3.new(0, 0, 0), Color3.new(1, 1, 1)))
-            expect(gradient:toColorSequence(nil, "lRGB")).never.to.equal(ColorSequence.new(Color3.new(0, 0, 0), Color3.new(1, 1, 1)))
+            expect(gradient:toColorSequence(nil, "XYZ")).never.to.equal(ColorSequence.new(Color3.new(0, 0, 0), Color3.new(1, 1, 1)))
         end)
     end)
 end
