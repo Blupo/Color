@@ -1,10 +1,41 @@
 return function()
-    local Color = require(game:GetService("ReplicatedStorage").Color.Color)
+    local ColorLib = require(game:GetService("ReplicatedStorage"):FindFirstChild("Color"))
+    local Color = ColorLib.Color
 
     it("should be immutable", function()
         expect(function()
             Color.new = nil
         end).to.throw()
+    end)
+
+    it("should have a public API", function()
+        expect(Color.isAColor).to.be.a("function")
+        expect(Color.isClipped).to.be.a("function")
+
+        expect(Color.new).to.be.a("function")
+        expect(Color.random).to.be.a("function")
+        expect(Color.gray).to.be.a("function")
+        expect(Color.named).to.be.a("function")
+        expect(Color.from).to.be.a("function")
+
+        expect(Color.unclippedEq).to.be.a("function")
+        expect(Color.components).to.be.a("function")
+        expect(Color.to).to.be.a("function")
+
+        expect(Color.invert).to.be.a("function")
+        expect(Color.mix).to.be.a("function")
+        expect(Color.blend).to.be.a("function")
+
+        expect(Color.deltaE).to.be.a("function")
+        expect(Color.luminance).to.be.a("function")
+        expect(Color.contrast).to.be.a("function")
+        expect(Color.bestContrastingColor).to.be.a("function")
+
+        expect(Color.brighten).to.be.a("function")
+        expect(Color.darken).to.be.a("function")
+        expect(Color.saturate).to.be.a("function")
+        expect(Color.desaturate).to.be.a("function")
+        expect(Color.harmonies).to.be.a("function")
     end)
 
     it("should have alternative construction functions", function()

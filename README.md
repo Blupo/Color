@@ -21,6 +21,12 @@ Some of the library's features includes:
 - Creating gradients
 
 ```lua
+-- Accessing the modules
+local ColorLib = require(...)
+
+local Color = ColorLib.Color
+local Gradient = ColorLib.Gradient
+
 -- Constructors
 local pink = Color.fromHex("#ff69b4")
 local blue = Color.from("HSB", 240, 1, 1)
@@ -47,7 +53,7 @@ red:mix(aqua, 0.5, "Lab")
 red:mix(aqua, 0.5, "Luv")
 
 -- Gradients
-local gradient = Color.gradientFromColors(
+local gradient = Gradient.fromColors(
     Color.named("red"),
     Color.named("green"),
     Color.named("blue")

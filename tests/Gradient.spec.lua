@@ -1,8 +1,8 @@
-local ColorModule = game:GetService("ReplicatedStorage").Color
-
 return function()
-    local Color = require(ColorModule.Color)
-    local Gradient = require(ColorModule.Gradient)
+    local ColorLib = require(game:GetService("ReplicatedStorage"):FindFirstChild("Color"))
+
+    local Color = ColorLib.Color
+    local Gradient = ColorLib.Gradient
 
     it("should be immutable", function()
         expect(function()

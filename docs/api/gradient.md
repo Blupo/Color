@@ -13,12 +13,12 @@
 
 ## Constructors
 
-### Color.gradient
+### Gradient.new
 
 <img src="https://img.shields.io/badge/-static-blue" alt="Static function" />
 
 ```
-Color.gradient(keypoints: array<GradientKeypoint>): Gradient
+Gradient.new(keypoints: array<GradientKeypoint>): Gradient
 ```
 
 Standard Gradient constructor. The first keypoint must have a `Time` of 0, and the last keypoint must have a `Time` of 1. (Consequently, there must be at least 2 keypoints.) The keypoint list must be sorted by time.
@@ -28,24 +28,24 @@ Standard Gradient constructor. The first keypoint must have a `Time` of 0, and t
 
 ---
 
-### Color.gradientFromColors
+### Gradient.fromColors
 
 <img src="https://img.shields.io/badge/-static-blue" alt="Static function" />
 
 ```
-Color.gradientFromColors(...: Color): Gradient
+Gradient.fromColors(...: Color): Gradient
 ```
 
 Creates a Gradient from one or more Colors. If one Color is passed, the start and end keypoints will have the same color. If two Colors are passed, the start and end keypoints will have the first and second color, respectively. If 3 or more Colors is passed, the keypoints will be equidistant with respect to time.
 
 ---
 
-### Color.gradientFromColorSequence
+### Gradient.fromColorSequence
 
 <img src="https://img.shields.io/badge/-static-blue" alt="Static function" />
 
 ```
-Color.gradientFromColorSequence(colorSequence: ColorSequence): Gradient
+Gradient.fromColorSequence(colorSequence: ColorSequence): Gradient
 ```
 
 Creates a Gradient from a [ColorSequence](https://developer.roblox.com/en-us/api-reference/datatype/ColorSequence).
@@ -114,17 +114,17 @@ Returns a [ColorSequence](https://developer.roblox.com/en-us/api-reference/datat
 Comparing Gradients with `==` checks if they have the same number of keypoints, that the keypoints have the same Time values, and that the keypoints have the same Color values (using [Color.unclippedEq](../color/#colorunclippedeq)).
 
 ```lua
-local gradient1 = Color.gradientFromColors(
+local gradient1 = Gradient.fromColors(
     Color.new(0, 0, 0),
     Color.new(1, 1, 1)
 )
 
-local gradient2 = Color.gradient({
+local gradient2 = Gradient.new({
     {Time = 0, Color = Color.new(0, 0, 0)},
     {Time = 1, Color = Color.new(1, 1, 1)}
 })
 
-local gradient3 = Color.gradient({
+local gradient3 = Gradient.new({
     {Time = 0, Color = Color.new(1, 1, 1)},
     {Time = 1, Color = Color.new(0, 0, 0)}
 }) 

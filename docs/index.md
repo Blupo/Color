@@ -8,6 +8,15 @@ The module is available in the library [here](https://roblox.com/library/7933448
 
 If you know how to use [Rojo](https://rojo.space), you can build the latest code from the development branch to get the newest features. Keep in mind that this is **development code**, and things can break or change quickly.
 
+The library has two parts: the Color module and the Gradient module. You can access them using `[Module].Color` and `[Module].Gradient`.
+
+```lua
+local ColorLib = require(...)
+
+local Color = ColorLib.Color
+local Gradient = ColorLib.Gradient
+```
+
 ## Conversions
 
 Colors can be constructed from different [color types](api/color/#color-types), including hex strings, HSB/L, and L\*a\*b\*. You can use [`Color.from`](api/color/#colorfrom) or `Color.from[ColorType]` (e.g. `Color.fromHex`).
@@ -90,7 +99,7 @@ There are also functions that don't fall into a general category:
 
 Gradients are similar in construction and behaviour to ColorSequences. They can be used to generate intermediate colors or ColorSequences so that they can be used in places where they're required, such as ParticleEmitters or UIGradients.
 
-A Gradient can be constructed using an array of "gradient keypoints", which is just a dictionary with a `Time` and `Color` field, similar to the `Time` and `Value` fields of a [ColorSequenceKeypoint](https://developer.roblox.com/api-reference/datatype/ColorSequenceKeypoint). The constructor for this method is [`Color.gradient`](api/gradient/#colorgradient).
+A Gradient can be constructed using an array of "gradient keypoints", which is just a dictionary with a `Time` and `Color` field, similar to the `Time` and `Value` fields of a [ColorSequenceKeypoint](https://developer.roblox.com/api-reference/datatype/ColorSequenceKeypoint). The constructor for this method is [`Gradient.new`](api/gradient/#gradientnew).
 
 ```lua
 local keypoints = {
@@ -99,20 +108,20 @@ local keypoints = {
     {Time = 1, Color = Color.grey(1)}
 }
 
-local gradient = Color.gradient(keypoints)
+local gradient = Gradient.new(keypoints)
 ```
 
-You can also construct a Gradient with a list of Colors using [`Color.gradientFromColors`](api/gradient/#colorgradientfromcolors). This creates a gradient where the colors are equidistant from each other.
+You can also construct a Gradient with a list of Colors using [`Gradient.fromColors`](api/gradient/#gradientfromcolors). This creates a gradient where the colors are equidistant from each other.
 
 ```lua
-local gradient = Color.gradientFromColors(
+local gradient = Gradient.fromColors(
     Color.named("red"),
     Color.named("green"),
     Color.named("blue")
 )
 ```
 
-Finally, the constructor [`Color.gradientFromColorSequence`](api/gradient/#colorgradientfromcolorsequence) creates a gradient from a ColorSequence.
+Finally, the constructor [`Gradient.fromColorSequence`](api/gradient/#gradientfromcolorsequence) creates a gradient from a ColorSequence.
 
 ```lua
 local cs = ColorSequence.new(
@@ -120,13 +129,13 @@ local cs = ColorSequence.new(
     Color3.new(1, 1, 1)
 )
 
-local gradient = Color.gradientFromColorSequence(cs)
+local gradient = Gradient.fromColorSequence(cs)
 ```
 
 Generating colors from a gradient is similar to mixing colors, using [`Gradient.color`](api/gradient/#gradientcolor). If you need a list of colors, you can use [`Gradient.colors`](api/gradient/#gradientcolors). If you need a ColorSequence, you can use [`Gradient.colorSequence`](api/gradient/#gradientcolorsequence).
 
 ```lua
-local gradient = Color.gradientFromColors(
+local gradient = Gradient.fromColors(
     Color.named("red"),
     Color.named("green"),
     Color.named("blue")

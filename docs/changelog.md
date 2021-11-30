@@ -20,6 +20,8 @@
 - Documentation now reflects that the Hue component for some color types can be NaN
 - Static functions in the documentation now have a badge
 - Read-only properties in the documentation now have a badge
+- The Color and Gradient modules of the library are now split apart
+    - You can access the modules using `[Module].Color` and `[Module].Gradient`
 - Updated the allowed interpolations for `Color.mix`
 - `Color.components` now allows you to obtain unclipped components
 - `Color.luminance` now corrects the [error](https://www.w3.org/WAI/GL/wiki/index.php?title=Relative_luminance&oldid=11187) from the equation provided in WCAG 2
