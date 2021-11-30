@@ -196,9 +196,31 @@ Returns a Color with inverted RGB components.
 Color.mix(startColor: Color, endColor: Color, ratio: number, mode: string? = "RGB", hueAdjustment: string? = "Shorter"): Color
 ```
 
-Interpolates the start and end Colors in various color spaces. `ratio` should be in the range [0, 1]. Supported spaces are: `RGB` (default), `CMYK`, `HSB` (or `HSV`), `HWB`, `HSL`, `Lab`, `Luv`, `LChab` (or `LCh`), `LChuv`, and `XYZ` (`XYZ` interpolation can also be used for linear RGB interpolation).
+Interpolates the start and end Colors in various color spaces. `ratio` should be in the range [0, 1]. Supported spaces are: `RGB` (default), `CMYK`, `HSB` (or `HSV`), `HWB`, `HSL`, `Lab`, `Luv`, `LChab` (or `LCh`), `LChuv`, and `XYZ` (`XYZ` interpolation can be used for linear RGB interpolation).
 
 For color spaces with a hue component (e.g. HSB/L or LCh), there are different ways to interpolate the hue, and you can specify how it should be done by passing `hueAdjustment`: `Shorter` (default), `Longer`, `Increasing`, `Decreasing`, or `Raw`. These adjustments correspond to those specified in [CSS Color Module Level 4](https://www.w3.org/TR/css-color-4/#hue-interpolation).
+
+Here are images of what the various interpolations look like, using red and aqua as example colors (with the default hue adjustment):
+
+![RGB interpolaiton of red and aqua](../images/rgb-interpolation.png)
+
+![CMYK interpolaiton of red and aqua](../images/cmyk-interpolation.png)
+
+![HSB interpolaiton of red and aqua](../images/hsb-interpolation.png)
+
+![HWB interpolaiton of red and aqua](../images/hwb-interpolation.png)
+
+![HSL interpolaiton of red and aqua](../images/hsl-interpolation.png)
+
+![Lab interpolaiton of red and aqua](../images/lab-interpolation.png)
+
+![Luv interpolaiton of red and aqua](../images/luv-interpolation.png)
+
+![LChab interpolaiton of red and aqua](../images/lchab-interpolation.png)
+
+![LChuv interpolaiton of red and aqua](../images/lchuv-interpolation.png)
+
+![XYZ interpolaiton of red and aqua](../images/xyz-interpolation.png)
 
 ---
 

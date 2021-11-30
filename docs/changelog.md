@@ -21,7 +21,7 @@
 - Static functions in the documentation now have a badge
 - Read-only properties in the documentation now have a badge
 - `Color.components` now allows you to obtain unclipped components
-- `Color.luminance` now corrects the [error](https://www.w3.org/WAI/GL/wiki/index.php?title=Relative_luminance&oldid=11187) from the equation in the definition of relative luminance
+- `Color.luminance` now corrects the [error](https://www.w3.org/WAI/GL/wiki/index.php?title=Relative_luminance&oldid=11187) from the equation provided in WCAG 2
 - `Color.mix` now accepts any color type except `Hex`
 
 ## [0.1.0] - 2021-11-09
