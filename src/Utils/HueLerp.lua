@@ -1,8 +1,6 @@
 --!strict
 
-local root = script.Parent.Parent
-
-local Utils = root.Utils
+local Utils = script.Parent
 local lerp = require(Utils.Lerp)
 
 ---

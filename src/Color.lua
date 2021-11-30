@@ -59,6 +59,28 @@ local colorTypes: dictionary<ColorModule> = {
     XYZ = require(Colors.XYZ),
 }
 
+local allowedColorInterpolations: dictionary<boolean> = {
+    CMYK = true,
+    HSB = true,
+    HSL = true,
+    HWB = true,
+    Lab = true,
+    LChab = true,
+    LChuv = true,
+    Luv = true,
+    RGB = true,
+    xyY = true,
+    XYZ = true,
+}
+
+local interpolationHueComponents: dictionary<number> = {
+    HSB = 1,
+    HSL = 1,
+    HWB = 1,
+    LChab = 3,
+    LChuv = 3,
+}
+
 local clippedColorTypes: dictionary<boolean> = {
     BrickColor = true,
     CMYK = true,
@@ -72,21 +94,16 @@ local clippedColorTypes: dictionary<boolean> = {
     Temperature = true,
 }
 
-local hueComponents: dictionary<number> = {
-    HSB = 1,
-    HSL = 1,
-    HWB = 1,
-    LChab = 3,
-    LChuv = 3,
-}
-
 colorTypes.HSV = colorTypes.HSB
 colorTypes.LCh = colorTypes.LChab
 
-clippedColorTypes.HSV = clippedColorTypes.HSB
+allowedColorInterpolations.HSV = allowedColorInterpolations.HSB
+allowedColorInterpolations.LCh = allowedColorInterpolations.LChab
 
-hueComponents.HSV = hueComponents.HSB
-hueComponents.LCh = hueComponents.LChab
+interpolationHueComponents.HSV = interpolationHueComponents.HSB
+interpolationHueComponents.LCh = interpolationHueComponents.LChab
+
+clippedColorTypes.HSV = clippedColorTypes.HSB
 
 ---
 
@@ -197,7 +214,7 @@ end
 
 Color.mix = function(startColor: Color, endColor: Color, ratio: number, optionalMode: string?, optionalHueAdjustment: string?): Color
     local mode: string = optionalMode or "RGB"
-    assert(colorTypes[mode] and (mode ~= "Hex"), "invalid interpolation " .. mode)
+    assert(colorTypes[mode] and allowedColorInterpolations[mode], "invalid interpolation " .. mode)
 
     local startColorComponents: {number}
     local endColorComponents: {number}
@@ -210,7 +227,7 @@ Color.mix = function(startColor: Color, endColor: Color, ratio: number, optional
     end
 
     for i = 1, #startColorComponents do
-        if (i == hueComponents[mode]) then
+        if (i == interpolationHueComponents[mode]) then
             mixedColorComponents[i] = hueLerp(startColorComponents[i], endColorComponents[i], ratio, optionalHueAdjustment)
         else
             mixedColorComponents[i] = lerp(startColorComponents[i], endColorComponents[i], ratio)
@@ -222,11 +239,11 @@ Color.mix = function(startColor: Color, endColor: Color, ratio: number, optional
     or Color.from(mode, table.unpack(mixedColorComponents))
 end
 
-Color.blend = function(baseColor: Color, topColor: Color, mode: string): Color
-    local baseColorComponents: {number} = { baseColor:components() }
-    local topColorComponents: {number} = { topColor:components() }
+Color.blend = function(backgroundColor: Color, foregroundColor: Color, mode: string): Color
+    local backgroundColorComponents: {number} = { backgroundColor:components() }
+    local foregroundColorComponents: {number} = { foregroundColor:components() }
 
-    return Color.new(blend(baseColorComponents, topColorComponents, mode))
+    return Color.new(blend(backgroundColorComponents, foregroundColorComponents, mode))
 end
 
 Color.deltaE = function(refColor: Color, testColor: Color, kL: number?, kC: number?, kH: number?): number

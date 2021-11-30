@@ -157,16 +157,6 @@ You can also access the individual clipped components using [Color.R](#colorr), 
 
 ---
 
-### Color.deltaE
-
-```
-Color.deltaE(refColor: Color, testColor: Color, kL: number? = 1, kC: number? = 1, kH: number? = 1): number
-```
-
-Calculates the [color difference](https://en.wikipedia.org/wiki/Color_difference) of two Colors using [CIEDE2000](https://en.wikipedia.org/wiki/Color_difference#CIEDE2000), which can be used to compare the similarity (or difference) between colors. Smaller numbers correspond to greater similarity, while larger numbers correspond to less similarity.
-
----
-
 ### Color.to
 
 ```
@@ -196,7 +186,7 @@ Returns a Color with inverted RGB components.
 Color.mix(startColor: Color, endColor: Color, ratio: number, mode: string? = "RGB", hueAdjustment: string? = "Shorter"): Color
 ```
 
-Interpolates the start and end Colors in various color spaces. `ratio` should be in the range [0, 1]. Supported spaces are: `RGB` (default), `CMYK`, `HSB` (or `HSV`), `HWB`, `HSL`, `Lab`, `Luv`, `LChab` (or `LCh`), `LChuv`, and `XYZ` (`XYZ` interpolation can be used for linear RGB interpolation).
+Interpolates the start and end Colors in various color spaces. `ratio` should be in the range [0, 1]. Supported spaces are: `RGB` (default), `CMYK`, `HSB` (or `HSV`), `HWB`, `HSL`, `Lab`, `Luv`, `LChab` (or `LCh`), `LChuv`, `xyY`, and `XYZ` (`XYZ` interpolation can be used for linear RGB interpolation).
 
 For color spaces with a hue component (e.g. HSB/L or LCh), there are different ways to interpolate the hue, and you can specify how it should be done by passing `hueAdjustment`: `Shorter` (default), `Longer`, `Increasing`, `Decreasing`, or `Raw`. These adjustments correspond to those specified in [CSS Color Module Level 4](https://www.w3.org/TR/css-color-4/#hue-interpolation).
 
@@ -220,6 +210,8 @@ Here are images of what the various interpolations look like, using red and aqua
 
 ![LChuv interpolaiton of red and aqua](../images/lchuv-interpolation.png)
 
+![xyY interpolaiton of red and aqua](../images/xyy-interpolation.png)
+
 ![XYZ interpolaiton of red and aqua](../images/xyz-interpolation.png)
 
 ---
@@ -227,10 +219,20 @@ Here are images of what the various interpolations look like, using red and aqua
 ### Color.blend
 
 ```
-Color.blend(baseColor: Color, topColor: Color, mode: string): Color
+Color.blend(backgroundColor: Color, foregroundColor: Color, mode: string): Color
 ```
 
-Blends the base and top Colors in various mixing modes. The available blending modes are: `Normal`, `Multiply`, `Screen`, `Overlay`, `Darken`, `Lighten`, `ColorDodge`, `ColorBurn`, `HardLight`, `SoftLight`, `Difference`, and `Exclusion`. The blending modes correspond to those specified in [Compositing and Blending Level 1](https://www.w3.org/TR/2015/CR-compositing-1-20150113/#blendingseparable).
+Blends the background and foreground Colors in various modes. The available blending modes are: `Normal`, `Multiply`, `Screen`, `Overlay`, `Darken`, `Lighten`, `ColorDodge`, `ColorBurn`, `HardLight`, `SoftLight`, `Difference`, and `Exclusion`. The blending modes correspond to those specified in [Compositing and Blending Level 1](https://www.w3.org/TR/2015/CR-compositing-1-20150113/#blendingseparable).
+
+---
+
+### Color.deltaE
+
+```
+Color.deltaE(refColor: Color, testColor: Color, kL: number? = 1, kC: number? = 1, kH: number? = 1): number
+```
+
+Calculates the [color difference](https://en.wikipedia.org/wiki/Color_difference) of two Colors using [CIEDE2000](https://en.wikipedia.org/wiki/Color_difference#CIEDE2000), which can be used to compare the similarity (or difference) between colors. Smaller numbers correspond to greater similarity, while larger numbers correspond to less similarity.
 
 ---
 

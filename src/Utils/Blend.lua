@@ -76,14 +76,14 @@ end
 
 ---
 
-return function(baseColorComponents: {number}, topColorComponents: {number}, blendMode: string): (number, number, number)
+return function(backgroundColorComponents: {number}, foregroundColorComponents: {number}, blendMode: string): (number, number, number)
     local blendingFunction: ((number, number) -> number)? = blendingFunctions[blendMode]
     assert(blendingFunction, "invalid blend mode")
 
     local blend: {number} = {}
 
     for i = 1, 3 do
-        blend[i] = blendingFunction(baseColorComponents[i], topColorComponents[i])
+        blend[i] = blendingFunction(backgroundColorComponents[i], foregroundColorComponents[i])
     end
 
     return table.unpack(blend)

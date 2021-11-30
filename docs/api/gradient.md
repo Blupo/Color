@@ -96,10 +96,10 @@ Returns an array of `amount` equidistant colors, using the specified mixing mode
 
 ---
 
-### Gradient.toColorSequence
+### Gradient.colorSequence
 
 ```
-Gradient.toColorSequence(gradient: Gradient, steps: number? = 20, mode: string? = "RGB", hueAdjustment: string? = "Shorter"): ColorSequence
+Gradient.colorSequence(gradient: Gradient, steps: number? = 20, mode: string? = "RGB", hueAdjustment: string? = "Shorter"): ColorSequence
 ```
 
 Returns a [ColorSequence](https://developer.roblox.com/en-us/api-reference/datatype/ColorSequence) with `steps` equidistant colors. If the [mixing mode](../color/#colormix) is RGB, the ColorSequence will instead consist of the colors from the GradientKeypoints used to construct it.

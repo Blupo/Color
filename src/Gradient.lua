@@ -203,7 +203,7 @@ Gradient.colors = function(gradient: Gradient, amount: number, optionalMode: str
     return colors
 end
 
-Gradient.toColorSequence = function(gradient: Gradient, optionalSteps: number?, optionalMode: string?, optionalHueAdjustment: string?): ColorSequence
+Gradient.colorSequence = function(gradient: Gradient, optionalSteps: number?, optionalMode: string?, optionalHueAdjustment: string?): ColorSequence
     local mode = optionalMode or "RGB"
     local csKeypoints: {ColorSequenceKeypoint} = {}
 

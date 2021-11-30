@@ -17,7 +17,7 @@ There are also a few additional constructors:
 - [`Color.new`](api/color/#colornew), which is equivalent to `Color3.new`
 - [`Color.random`](api/color/#colorrandom) for making random colors
 - [`Color.gray`](api/color/#colorgray) for making greyscale colors
-- [`Color.named`](api/color/#colornamed) for referencing [web colors](https://www.w3.org/TR/2021/REC-css-color-3-20210805/#svg-color)
+- [`Color.named`](api/color/#colornamed) for referencing [CSS colors](https://www.w3.org/TR/2021/REC-css-color-3-20210805/#svg-color)
 
 ```lua
 local pink = Color.fromHex("#ff69b4")
