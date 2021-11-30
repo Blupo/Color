@@ -51,7 +51,7 @@ local gradientMetatable = table.freeze({
             local gradient1Keypoint: GradientKeypoint = gradient1Keypoints[i]
             local gradient2Keypoint: GradientKeypoint = gradient2Keypoints[i]
 
-            if ((gradient1Keypoint.Time ~= gradient2Keypoint.Time) or (not gradient1Keypoint.Color:unclippedEq(gradient2Keypoint.Color))) then
+            if ((gradient1Keypoint.Time ~= gradient2Keypoint.Time) or (not Color.unclippedEq(gradient1Keypoint.Color, gradient2Keypoint.Color))) then
                 return false
             end
         end
@@ -65,7 +65,7 @@ local gradientMetatable = table.freeze({
 
         for i = 1, #keypoints do
             local keypoint: GradientKeypoint = keypoints[i]
-            local r: number, g: number, b: number = keypoint.Color:components()
+            local r: number, g: number, b: number = Color.components(keypoint.Color)
 
             table.insert(keypointStrings, string.format("%f = [%f, %f, %f]", keypoint.Time, r, g, b))
         end
@@ -184,7 +184,7 @@ Gradient.color = function(gradient: Gradient, time: number, optionalMode: string
             local next: GradientKeypoint = keypoints[i + 1]
 
             if ((time >= this.Time) and (time < next.Time)) then
-                color = this.Color:mix(next.Color, (time - this.Time) / (next.Time - this.Time), optionalMode, optionalHueAdjustment)
+                color = Color.mix(this.Color, next.Color, (time - this.Time) / (next.Time - this.Time), optionalMode, optionalHueAdjustment)
                 break
             end
         end
@@ -213,7 +213,7 @@ Gradient.colorSequence = function(gradient: Gradient, optionalSteps: number?, op
         for i = 1, #keypoints do
             local keypoint: GradientKeypoint = keypoints[i]
 
-            table.insert(csKeypoints, ColorSequenceKeypoint.new(keypoint.Time, keypoint.Color:to("Color3")))
+            table.insert(csKeypoints, ColorSequenceKeypoint.new(keypoint.Time, Color.to(keypoint.Color, "Color3")))
         end
     else
         local steps: number = optionalSteps or CS_MAX_KEYPOINTS
@@ -222,7 +222,7 @@ Gradient.colorSequence = function(gradient: Gradient, optionalSteps: number?, op
         local colors: {Color} = Gradient.colors(gradient, steps, mode, optionalHueAdjustment)
 
         for i = 1, steps do
-            table.insert(csKeypoints, ColorSequenceKeypoint.new((i - 1) / (steps - 1), colors[i]:to("Color3")))
+            table.insert(csKeypoints, ColorSequenceKeypoint.new((i - 1) / (steps - 1), Color.to(colors[i], "Color3")))
         end
     end
 

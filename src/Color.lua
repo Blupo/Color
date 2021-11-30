@@ -59,18 +59,12 @@ local colorTypes: dictionary<ColorModule> = {
     XYZ = require(Colors.XYZ),
 }
 
-local allowedColorInterpolations: dictionary<boolean> = {
-    CMYK = true,
-    HSB = true,
-    HSL = true,
-    HWB = true,
-    Lab = true,
-    LChab = true,
-    LChuv = true,
-    Luv = true,
-    RGB = true,
-    xyY = true,
-    XYZ = true,
+local disallowedColorInterpolations: dictionary<boolean> = {
+    BrickColor = true,
+    Color3 = true,
+    Hex = true,
+    Number = true,
+    Temperature = true,
 }
 
 local interpolationHueComponents: dictionary<number> = {
@@ -96,9 +90,6 @@ local clippedColorTypes: dictionary<boolean> = {
 
 colorTypes.HSV = colorTypes.HSB
 colorTypes.LCh = colorTypes.LChab
-
-allowedColorInterpolations.HSV = allowedColorInterpolations.HSB
-allowedColorInterpolations.LCh = allowedColorInterpolations.LChab
 
 interpolationHueComponents.HSV = interpolationHueComponents.HSB
 interpolationHueComponents.LCh = interpolationHueComponents.LChab
@@ -214,16 +205,16 @@ end
 
 Color.mix = function(startColor: Color, endColor: Color, ratio: number, optionalMode: string?, optionalHueAdjustment: string?): Color
     local mode: string = optionalMode or "RGB"
-    assert(colorTypes[mode] and allowedColorInterpolations[mode], "invalid interpolation " .. mode)
+    assert(colorTypes[mode] and (not disallowedColorInterpolations[mode]), "invalid interpolation " .. mode)
 
     local startColorComponents: {number}
     local endColorComponents: {number}
     local mixedColorComponents: {number} = {}
 
     if (mode == "RGB") then
-        startColorComponents, endColorComponents = { startColor:components() }, { endColor:components() }
+        startColorComponents, endColorComponents = { Color.components(startColor) }, { Color.components(endColor) }
     else
-        startColorComponents, endColorComponents = { startColor:to(mode) }, { endColor:to(mode) }
+        startColorComponents, endColorComponents = { Color.to(startColor, mode) }, { Color.to(endColor, mode) }
     end
 
     for i = 1, #startColorComponents do
@@ -240,8 +231,8 @@ Color.mix = function(startColor: Color, endColor: Color, ratio: number, optional
 end
 
 Color.blend = function(backgroundColor: Color, foregroundColor: Color, mode: string): Color
-    local backgroundColorComponents: {number} = { backgroundColor:components() }
-    local foregroundColorComponents: {number} = { foregroundColor:components() }
+    local backgroundColorComponents: {number} = { Color.components(backgroundColor) }
+    local foregroundColorComponents: {number} = { Color.components(foregroundColor) }
 
     return Color.new(blend(backgroundColorComponents, foregroundColorComponents, mode))
 end
@@ -257,7 +248,7 @@ end
 -- https://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef
 -- Errata: https://www.w3.org/WAI/GL/wiki/index.php?title=Relative_luminance&oldid=11187
 Color.luminance = function(color: Color): number
-    local rgb: {number} = { color:components() }
+    local rgb: {number} = { Color.components(color) }
 
     return
         (0.2126 * GammaCorrection.toLinear(rgb[1])) +
