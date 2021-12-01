@@ -1,6 +1,4 @@
-## [Unreleased]
-
-## [0.2.0]
+## [0.2.0] - 2021-12-01
 ### Added
 - Added links in the documentation for further reading on various color types
 - Added alternative from/to functions for the various color types
