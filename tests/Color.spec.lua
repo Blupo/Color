@@ -80,21 +80,30 @@ return function()
         expect(Color.toLCh).to.equal(Color.toLChab)
     end)
 
-    it("should be able to identify non-Colors", function()
+    it("should be able to identify Colors", function()
         local color = Color.new(0, 0, 0)
 
-        local fakeColor = table.freeze({
+        local noPassFakeColor = table.freeze({
+            R = 0,
+            G = 0,
+            B = 0,
+        })
+
+        local passFakeColor = table.freeze({
             R = 0,
             G = 0,
             B = 0,
 
             __r = 0,
             __g = 0,
-            __b = 0
+            __b = 0,
+
+            to = function() end,
         })
 
         expect(Color.isAColor(color)).to.equal(true)
-        expect(Color.isAColor(fakeColor)).to.equal(false)
+        expect(Color.isAColor(noPassFakeColor)).to.equal(false)
+        expect(Color.isAColor(passFakeColor)).to.equal(true)
     end)
 
     describe("constructors", function()

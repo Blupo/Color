@@ -111,7 +111,11 @@ The [clipped](#colorisclipped) blue RGB channel of the color, in the range [0, 1
 Color.isAColor(color: any): boolean
 ```
 
-Returns whether the provided value behaves as a Color.
+Returns whether the provided value is a Color. Checks if the value is a table with the following properties:
+
+- The table is frozen
+- The table has keys `R`, `G`, `B`, `__r`, `__g`, `__b` with numeric values
+- The table has a `to` function
 
 ---
 

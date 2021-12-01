@@ -158,16 +158,17 @@ Color.from = function(colorType: string, ...: any): Color
 end
 
 Color.isAColor = function(color: any): boolean
-    if (type(color) ~= "table") then return false end
-    if (not table.isfrozen(color)) then return false end
-
-    for key in pairs(Color) do
-        if (type(color[key]) ~= "function") then
-            return false
-        end
-    end
-
-    return true
+    return (
+        (type(color) == "table") and
+        table.isfrozen(color) and
+        (type(color.R) == "number") and
+        (type(color.G) == "number") and
+        (type(color.B) == "number") and
+        (type(color.__r) == "number") and
+        (type(color.__g) == "number") and
+        (type(color.__b) == "number") and
+        (type(color.to) == "function")
+    )
 end
 
 Color.isClipped = function(color: Color): boolean

@@ -23,6 +23,7 @@
 - The Color and Gradient modules of the library are now split apart
     - You can access the modules using `[Module].Color` and `[Module].Gradient`
 - Updated the allowed interpolations for `Color.mix`
+- `Color.isAColor` should work for Colors from different versions of the library
 - `Color.components` now allows you to obtain unclipped components
 - `Color.luminance` compensates for the [error](https://www.w3.org/WAI/GL/wiki/index.php?title=Relative_luminance&oldid=11187) from the equation provided in WCAG 2
 - `Gradient.toColorSequence` was renamed to `Gradient.colorSequence`
