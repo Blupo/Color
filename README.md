@@ -20,6 +20,8 @@ Some of the library's features includes:
 - Color interpolation in different spaces
 - Creating gradients
 
+For a full introduction to the library, you can read the [documentation](https://blupo.github.io/Color). Some example code of the library's features is included below:
+
 ```lua
 -- Accessing the modules
 local ColorLib = require(...)
@@ -65,5 +67,3 @@ print(gradient:color(0.6, "HSB", "Increasing"):to("Hex")) --> "00993d"
 gradient:colors(50, "XYZ")
 gradient:colorSequence(nil, "XYZ")
 ```
-
-For a full introduction to the library, you can read the [documentation](https://blupo.github.io/Color).
