@@ -1,3 +1,9 @@
+## [0.2.1] - 2022-01-06
+
+### Changed
+- The `Gradient.new` constructor now creates a copy of the input table instead of using the input table itself
+- `Gradient.Keypoints` is now correctly frozen, where previously it was possible to modify the individual keypoints but not the keypoint list itself
+
 ## [0.2.0] - 2021-12-01
 ### Added
 - Added links in the documentation for further reading on various color types

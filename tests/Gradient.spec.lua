@@ -122,6 +122,10 @@ return function()
             expect(function()
                 gradient.Keypoints[-1] = true
             end).to.throw()
+
+            expect(function()
+                gradient.Keypoints[1].Time = nil
+            end).to.throw()
         end)
 
         it("should be invertible", function()

@@ -23,9 +23,6 @@ Gradient.new(keypoints: array<GradientKeypoint>): Gradient
 
 Standard Gradient constructor. The first keypoint must have a `Time` of 0, and the last keypoint must have a `Time` of 1. (Consequently, there must be at least 2 keypoints.) The keypoint list must be sorted by time.
 
-!!! warning
-    The keypoint list will be frozen once passed to the constructor. If you know that you will need to modify the list later, you should pass a copy instead.
-
 ---
 
 ### Gradient.fromColors

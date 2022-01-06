@@ -36,6 +36,21 @@ do
     CS_MAX_KEYPOINTS = n - 1
 end
 
+local copyKeypointTable = function(original: {GradientKeypoint}): {GradientKeypoint}
+    local copy: {GradientKeypoint} = {}
+
+    for i = 1, #original do
+        local keypoint = original[i]
+
+        copy[i] = table.freeze({
+            Time = keypoint.Time,
+            Color = keypoint.Color
+        })
+    end
+
+    return table.freeze(copy)
+end
+
 ---
 
 local Gradient = {}
@@ -88,7 +103,7 @@ Gradient.new = function(keypoints: {GradientKeypoint})
     end
 
     return table.freeze(setmetatable({
-        Keypoints = table.freeze(keypoints),
+        Keypoints = copyKeypointTable(keypoints),
     }, gradientMetatable))
 end
 
