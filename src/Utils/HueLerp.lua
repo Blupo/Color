@@ -43,7 +43,7 @@ return function(h1: number, h2: number, t: number, optionalAdjustment: string?):
         if (h1 < h2) then
             h1 = h1 + 360
         end
-    elseif (adjustment == "Raw") then
+    elseif ((adjustment == "Raw") or (adjustment == "Specified")) then
         h1, h2 = h1, h2
     else
         error("invalid hue adjustment")

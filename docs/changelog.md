@@ -1,3 +1,8 @@
+## [0.2.2] - 2022-04-06
+
+### Changed
+- Replaced the `Raw` hue adjustment option with `Specified` to match spec, however `Raw` will still work
+
 ## [0.2.1] - 2022-01-06
 
 ### Changed

@@ -192,7 +192,7 @@ Color.mix(startColor: Color, endColor: Color, ratio: number, mode: string? = "RG
 
 Interpolates the start and end Colors in various color spaces. `ratio` should be in the range [0, 1]. Supported spaces are: `RGB` (default), `CMYK`, `HSB` (or `HSV`), `HWB`, `HSL`, `Lab`, `Luv`, `LChab` (or `LCh`), `LChuv`, `xyY`, and `XYZ` (`XYZ` interpolation can be used for linear RGB interpolation).
 
-For color spaces with a hue component (e.g. HSB/L or LCh), there are different ways to interpolate the hue, and you can specify how it should be done by passing `hueAdjustment`: `Shorter` (default), `Longer`, `Increasing`, `Decreasing`, or `Raw`. These adjustments correspond to those specified in [CSS Color Module Level 4](https://www.w3.org/TR/css-color-4/#hue-interpolation).
+For color spaces with a hue component (e.g. HSB/L or LCh), there are different ways to interpolate the hue, and you can specify how it should be done by passing `hueAdjustment`: `Shorter` (default), `Longer`, `Increasing`, `Decreasing`, or `Specified`. These adjustments correspond to those specified in [CSS Color Module Level 4](https://www.w3.org/TR/css-color-4/#hue-interpolation).
 
 Here are images of what the various interpolations look like, using red and aqua as example colors (with the default hue adjustment):
 

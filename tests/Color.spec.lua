@@ -611,7 +611,8 @@ return function()
 
             expect(red:mix(blue, 0.5, "HSB", "Shorter"):to("Hex")).never.to.equal(red:mix(blue, 0.5, "HSB", "Longer"))
             expect(red:mix(blue, 0.5, "HSB", "Increasing"):to("Hex")).never.to.equal(red:mix(blue, 0.5, "HSB", "Decreasing"))
-            expect(red:mix(blue, 0.5, "HSB", "Raw")).to.be.ok()
+            expect(red:mix(blue, 0.5, "HSB", "Specified")).to.be.ok()
+            expect(red:mix(blue, 0.5, "HSB", "Specified")).to.equal(red:mix(blue, 0.5, "HSB", "Raw"))
 
             expect(red:mix(blue, 0.5, "HSV")).to.equal(red:mix(blue, 0.5, "HSB"))
             expect(red:mix(blue, 0.5, "LCh")).to.equal(red:mix(blue, 0.5, "LChab"))
