@@ -1,0 +1,1478 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="canonical" href="https://blupo.github.io/Color/api/color/">
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.2.1, mkdocs-material-7.1.9">
+    
+    
+      
+        <title>Color - Color</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ca7ac06f.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.f1a3b89f.min.css">
+        
+          
+          
+          <meta name="theme-color" content="#ffffff">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+    
+      
+
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="white" data-md-color-accent="blue">
+  
+    
+    <script>function __prefix(e){return new URL("../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#constructors" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Color" class="md-header__button md-logo" aria-label="Color" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Color
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Color
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        
+<a href="https://github.com/Blupo/Color/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Blupo/Color
+  </div>
+</a>
+      </div>
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Color" class="md-nav__button md-logo" aria-label="Color" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    Color
+  </label>
+  
+    <div class="md-nav__source">
+      
+<a href="https://github.com/Blupo/Color/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Blupo/Color
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" checked>
+      
+      <label class="md-nav__link" for="__nav_2">
+        API
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+      <nav class="md-nav" aria-label="API" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          API
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Color
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Color
+      </a>
+      
+        
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#constructors" class="md-nav__link">
+    Constructors
+  </a>
+  
+    <nav class="md-nav" aria-label="Constructors">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#colornew" class="md-nav__link">
+    Color.new
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#colorrandom" class="md-nav__link">
+    Color.random
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#colorgray" class="md-nav__link">
+    Color.gray
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#colornamed" class="md-nav__link">
+    Color.named
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#colorfrom" class="md-nav__link">
+    Color.from
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#properties" class="md-nav__link">
+    Properties
+  </a>
+  
+    <nav class="md-nav" aria-label="Properties">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#colorr" class="md-nav__link">
+    Color.R
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#colorg" class="md-nav__link">
+    Color.G
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#colorb" class="md-nav__link">
+    Color.B
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#functions" class="md-nav__link">
+    Functions
+  </a>
+  
+    <nav class="md-nav" aria-label="Functions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#colorisacolor" class="md-nav__link">
+    Color.isAColor
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#colorisclipped" class="md-nav__link">
+    Color.isClipped
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#colorunclippedeq" class="md-nav__link">
+    Color.unclippedEq
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#colorcomponents" class="md-nav__link">
+    Color.components
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#colorto" class="md-nav__link">
+    Color.to
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#colorinvert" class="md-nav__link">
+    Color.invert
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#colormix" class="md-nav__link">
+    Color.mix
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#colorblend" class="md-nav__link">
+    Color.blend
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#colordeltae" class="md-nav__link">
+    Color.deltaE
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#colorluminance" class="md-nav__link">
+    Color.luminance
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#colorcontrast" class="md-nav__link">
+    Color.contrast
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#colorbestcontrastingcolor" class="md-nav__link">
+    Color.bestContrastingColor
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#colorbrighten" class="md-nav__link">
+    Color.brighten
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#colordarken" class="md-nav__link">
+    Color.darken
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#colorsaturate" class="md-nav__link">
+    Color.saturate
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#colordesaturate" class="md-nav__link">
+    Color.desaturate
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#colorharmonies" class="md-nav__link">
+    Color.harmonies
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#math-operations" class="md-nav__link">
+    Math Operations
+  </a>
+  
+    <nav class="md-nav" aria-label="Math Operations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#color-color" class="md-nav__link">
+    Color == Color
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#color-types" class="md-nav__link">
+    Color Types
+  </a>
+  
+    <nav class="md-nav" aria-label="Color Types">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#brickcolor" class="md-nav__link">
+    BrickColor
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#color3" class="md-nav__link">
+    Color3
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hex" class="md-nav__link">
+    Hex
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#number" class="md-nav__link">
+    Number
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rgb" class="md-nav__link">
+    RGB
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hsb" class="md-nav__link">
+    HSB
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hsv" class="md-nav__link">
+    HSV
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hwb" class="md-nav__link">
+    HWB
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hsl" class="md-nav__link">
+    HSL
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cmyk" class="md-nav__link">
+    CMYK
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#temperature" class="md-nav__link">
+    Temperature
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#xyz" class="md-nav__link">
+    XYZ
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#xyy" class="md-nav__link">
+    xyY
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lab" class="md-nav__link">
+    Lab
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lchab" class="md-nav__link">
+    LChab
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lch" class="md-nav__link">
+    LCh
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#luv" class="md-nav__link">
+    Luv
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lchuv" class="md-nav__link">
+    LChuv
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../gradient/" class="md-nav__link">
+        Gradient
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../changelog/" class="md-nav__link">
+        Changelog
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#constructors" class="md-nav__link">
+    Constructors
+  </a>
+  
+    <nav class="md-nav" aria-label="Constructors">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#colornew" class="md-nav__link">
+    Color.new
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#colorrandom" class="md-nav__link">
+    Color.random
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#colorgray" class="md-nav__link">
+    Color.gray
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#colornamed" class="md-nav__link">
+    Color.named
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#colorfrom" class="md-nav__link">
+    Color.from
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#properties" class="md-nav__link">
+    Properties
+  </a>
+  
+    <nav class="md-nav" aria-label="Properties">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#colorr" class="md-nav__link">
+    Color.R
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#colorg" class="md-nav__link">
+    Color.G
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#colorb" class="md-nav__link">
+    Color.B
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#functions" class="md-nav__link">
+    Functions
+  </a>
+  
+    <nav class="md-nav" aria-label="Functions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#colorisacolor" class="md-nav__link">
+    Color.isAColor
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#colorisclipped" class="md-nav__link">
+    Color.isClipped
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#colorunclippedeq" class="md-nav__link">
+    Color.unclippedEq
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#colorcomponents" class="md-nav__link">
+    Color.components
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#colorto" class="md-nav__link">
+    Color.to
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#colorinvert" class="md-nav__link">
+    Color.invert
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#colormix" class="md-nav__link">
+    Color.mix
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#colorblend" class="md-nav__link">
+    Color.blend
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#colordeltae" class="md-nav__link">
+    Color.deltaE
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#colorluminance" class="md-nav__link">
+    Color.luminance
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#colorcontrast" class="md-nav__link">
+    Color.contrast
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#colorbestcontrastingcolor" class="md-nav__link">
+    Color.bestContrastingColor
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#colorbrighten" class="md-nav__link">
+    Color.brighten
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#colordarken" class="md-nav__link">
+    Color.darken
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#colorsaturate" class="md-nav__link">
+    Color.saturate
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#colordesaturate" class="md-nav__link">
+    Color.desaturate
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#colorharmonies" class="md-nav__link">
+    Color.harmonies
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#math-operations" class="md-nav__link">
+    Math Operations
+  </a>
+  
+    <nav class="md-nav" aria-label="Math Operations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#color-color" class="md-nav__link">
+    Color == Color
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#color-types" class="md-nav__link">
+    Color Types
+  </a>
+  
+    <nav class="md-nav" aria-label="Color Types">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#brickcolor" class="md-nav__link">
+    BrickColor
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#color3" class="md-nav__link">
+    Color3
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hex" class="md-nav__link">
+    Hex
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#number" class="md-nav__link">
+    Number
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rgb" class="md-nav__link">
+    RGB
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hsb" class="md-nav__link">
+    HSB
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hsv" class="md-nav__link">
+    HSV
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hwb" class="md-nav__link">
+    HWB
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hsl" class="md-nav__link">
+    HSL
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cmyk" class="md-nav__link">
+    CMYK
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#temperature" class="md-nav__link">
+    Temperature
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#xyz" class="md-nav__link">
+    XYZ
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#xyy" class="md-nav__link">
+    xyY
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lab" class="md-nav__link">
+    Lab
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lchab" class="md-nav__link">
+    LChab
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lch" class="md-nav__link">
+    LCh
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#luv" class="md-nav__link">
+    Luv
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lchuv" class="md-nav__link">
+    LChuv
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/Blupo/Color/edit/master/docs/api/color.md" title="Edit this page" class="md-content__button md-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"/></svg>
+                  </a>
+                
+                
+                  <h1>Color</h1>
+                
+                <h2 id="constructors">Constructors<a class="headerlink" href="#constructors" title="Permanent link">&para;</a></h2>
+<h3 id="colornew">Color.new<a class="headerlink" href="#colornew" title="Permanent link">&para;</a></h3>
+<p><img src="https://img.shields.io/badge/-static-blue" alt="Static function" /></p>
+<div class="highlight"><pre><span></span><code>Color.new(r: number, g: number, b: number): Color
+</code></pre></div>
+<p>Standard Color constructor. Arguments should be in the range [0, 1], similar to <a href="https://developer.roblox.com/en-us/api-reference/datatype/Color3#constructors">Color3.new</a>.</p>
+<hr />
+<h3 id="colorrandom">Color.random<a class="headerlink" href="#colorrandom" title="Permanent link">&para;</a></h3>
+<p><img src="https://img.shields.io/badge/-static-blue" alt="Static function" /></p>
+<div class="highlight"><pre><span></span><code>Color.random(): Color
+</code></pre></div>
+<p>Creates a Color with random RGB components.</p>
+<hr />
+<h3 id="colorgray">Color.gray<a class="headerlink" href="#colorgray" title="Permanent link">&para;</a></h3>
+<p><img src="https://img.shields.io/badge/-static-blue" alt="Static function" /></p>
+<div class="highlight"><pre><span></span><code>Color.gray(scale: number): Color
+</code></pre></div>
+<p>Creates an achromatic Color using the scale, which should be in the range [0, 1]. <code>0</code> corresponds to black, and <code>1</code> corresponds to white.</p>
+<hr />
+<h3 id="colornamed">Color.named<a class="headerlink" href="#colornamed" title="Permanent link">&para;</a></h3>
+<p><img src="https://img.shields.io/badge/-static-blue" alt="Static function" /></p>
+<div class="highlight"><pre><span></span><code>Color.named(name: string): Color
+</code></pre></div>
+<p>Creates a Color based on a <a href="https://www.w3.org/TR/2021/REC-css-color-3-20210805/#svg-color">named CSS color</a>. Names are case-insensitive.</p>
+<hr />
+<h3 id="colorfrom">Color.from<a class="headerlink" href="#colorfrom" title="Permanent link">&para;</a></h3>
+<p><img src="https://img.shields.io/badge/-static-blue" alt="Static function" /></p>
+<div class="highlight"><pre><span></span><code>Color.from(colorType: string, ...: any): Color
+</code></pre></div>
+<p>Creates a Color from various color types. See the <a href="#color-types">Color Types</a> section for the list of available conversions and what arguments they require.</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>You can also use an alternative constructor using <code>Color.from[ColorType]</code> (e.g. <code>Color.fromColor3(...)</code> instead of <code>Color.from("Color3", ...)</code>), <strong>except</strong> for the <a href="#xyy"><code>xyY</code></a> color type.</p>
+</div>
+<hr />
+<h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h2>
+<h3 id="colorr">Color.R<a class="headerlink" href="#colorr" title="Permanent link">&para;</a></h3>
+<p><img src="https://img.shields.io/badge/-read--only-blue" alt="Read-only property" /></p>
+<div class="highlight"><pre><span></span><code>Color.R: number
+</code></pre></div>
+<p>The <a href="#colorisclipped">clipped</a> red RGB channel of the color, in the range [0, 1].</p>
+<hr />
+<h3 id="colorg">Color.G<a class="headerlink" href="#colorg" title="Permanent link">&para;</a></h3>
+<p><img src="https://img.shields.io/badge/-read--only-blue" alt="Read-only property" /></p>
+<div class="highlight"><pre><span></span><code>Color.G: number
+</code></pre></div>
+<p>The <a href="#colorisclipped">clipped</a> green RGB channel of the color, in the range [0, 1].</p>
+<hr />
+<h3 id="colorb">Color.B<a class="headerlink" href="#colorb" title="Permanent link">&para;</a></h3>
+<p><img src="https://img.shields.io/badge/-read--only-blue" alt="Read-only property" /></p>
+<div class="highlight"><pre><span></span><code>Color.B: number
+</code></pre></div>
+<p>The <a href="#colorisclipped">clipped</a> blue RGB channel of the color, in the range [0, 1].</p>
+<hr />
+<h2 id="functions">Functions<a class="headerlink" href="#functions" title="Permanent link">&para;</a></h2>
+<h3 id="colorisacolor">Color.isAColor<a class="headerlink" href="#colorisacolor" title="Permanent link">&para;</a></h3>
+<p><img src="https://img.shields.io/badge/-static-blue" alt="Static function" /></p>
+<div class="highlight"><pre><span></span><code>Color.isAColor(color: any): boolean
+</code></pre></div>
+<p>Returns whether the provided value is a Color. Checks if the value is a table with the following properties:</p>
+<ul>
+<li>The table is frozen</li>
+<li>The table has keys <code>R</code>, <code>G</code>, <code>B</code>, <code>__r</code>, <code>__g</code>, <code>__b</code> with numeric values</li>
+<li>The table has a <code>to</code> function</li>
+</ul>
+<hr />
+<h3 id="colorisclipped">Color.isClipped<a class="headerlink" href="#colorisclipped" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>Color.isClipped(color: Color): boolean
+</code></pre></div>
+<p>Returns whether the Color's RGB components are clipped. Some conversions (e.g. XYZ to sRGB) may result in RGB components outside of the range [0, 1]. In this case, the components will be clipped to the range [0, 1].</p>
+<div class="highlight"><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span><span class="n">isClipped</span><span class="p">())</span> <span class="c1">--&gt; false</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span><span class="n">isClipped</span><span class="p">())</span> <span class="c1">--&gt; true</span>
+</code></pre></div>
+<hr />
+<h3 id="colorunclippedeq">Color.unclippedEq<a class="headerlink" href="#colorunclippedeq" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>Color.unclippedEq(refColor: Color, testColor: Color): boolean
+</code></pre></div>
+<p>Compares the <a href="#colorisclipped">unclipped</a> components of the Colors for equality.</p>
+<div class="highlight"><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">Color</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="c1">--&gt; true</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span><span class="n">unclippedEq</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span> <span class="c1">--&gt; false</span>
+</code></pre></div>
+<hr />
+<h3 id="colorcomponents">Color.components<a class="headerlink" href="#colorcomponents" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>Color.components(color: Color, unclipped: boolean? = false): (number, number, number)
+</code></pre></div>
+<p>Returns the RGB components of the Color, either <a href="#colorisclipped">clipped or unclipped</a>.</p>
+<p>You can also access the individual clipped components using <a href="#colorr">Color.R</a>, <a href="#colorg">Color.G</a>, and <a href="#colorb">Color.B</a>.</p>
+<hr />
+<h3 id="colorto">Color.to<a class="headerlink" href="#colorto" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>Color.to(color: Color, colorType: string): ...any
+</code></pre></div>
+<p>Converts a Color to different formats. See the <a href="#color-types">Color Types</a> section for the list of available conversions and what values they output.</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>You can also use an alternative converter using <code>Color.to[ColorType]</code>, e.g. <code>Color:toColor3()</code> instead of <code>Color:to("Color3")</code>.</p>
+</div>
+<hr />
+<h3 id="colorinvert">Color.invert<a class="headerlink" href="#colorinvert" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>Color.invert(color: Color): Color
+</code></pre></div>
+<p>Returns a Color with inverted RGB components.</p>
+<hr />
+<h3 id="colormix">Color.mix<a class="headerlink" href="#colormix" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>Color.mix(startColor: Color, endColor: Color, ratio: number, mode: string? = &quot;RGB&quot;, hueAdjustment: string? = &quot;Shorter&quot;): Color
+</code></pre></div>
+<p>Interpolates the start and end Colors in various color spaces. <code>ratio</code> should be in the range [0, 1]. Supported spaces are: <code>RGB</code> (default), <code>CMYK</code>, <code>HSB</code> (or <code>HSV</code>), <code>HWB</code>, <code>HSL</code>, <code>Lab</code>, <code>Luv</code>, <code>LChab</code> (or <code>LCh</code>), <code>LChuv</code>, <code>xyY</code>, and <code>XYZ</code> (<code>XYZ</code> interpolation can be used for linear RGB interpolation).</p>
+<p>For color spaces with a hue component (e.g. HSB/L or LCh), there are different ways to interpolate the hue, and you can specify how it should be done by passing <code>hueAdjustment</code>: <code>Shorter</code> (default), <code>Longer</code>, <code>Increasing</code>, <code>Decreasing</code>, or <code>Specified</code>. These adjustments correspond to those specified in <a href="https://www.w3.org/TR/css-color-4/#hue-interpolation">CSS Color Module Level 4</a>.</p>
+<p>Here are images of what the various interpolations look like, using red and aqua as example colors (with the default hue adjustment):</p>
+<p><img alt="RGB interpolaiton of red and aqua" src="../../images/rgb-interpolation.png" /></p>
+<p><img alt="CMYK interpolaiton of red and aqua" src="../../images/cmyk-interpolation.png" /></p>
+<p><img alt="HSB interpolaiton of red and aqua" src="../../images/hsb-interpolation.png" /></p>
+<p><img alt="HWB interpolaiton of red and aqua" src="../../images/hwb-interpolation.png" /></p>
+<p><img alt="HSL interpolaiton of red and aqua" src="../../images/hsl-interpolation.png" /></p>
+<p><img alt="Lab interpolaiton of red and aqua" src="../../images/lab-interpolation.png" /></p>
+<p><img alt="Luv interpolaiton of red and aqua" src="../../images/luv-interpolation.png" /></p>
+<p><img alt="LChab interpolaiton of red and aqua" src="../../images/lchab-interpolation.png" /></p>
+<p><img alt="LChuv interpolaiton of red and aqua" src="../../images/lchuv-interpolation.png" /></p>
+<p><img alt="xyY interpolaiton of red and aqua" src="../../images/xyy-interpolation.png" /></p>
+<p><img alt="XYZ interpolaiton of red and aqua" src="../../images/xyz-interpolation.png" /></p>
+<hr />
+<h3 id="colorblend">Color.blend<a class="headerlink" href="#colorblend" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>Color.blend(backgroundColor: Color, foregroundColor: Color, mode: string): Color
+</code></pre></div>
+<p>Blends the background and foreground Colors in various modes. The available blending modes are: <code>Normal</code>, <code>Multiply</code>, <code>Screen</code>, <code>Overlay</code>, <code>Darken</code>, <code>Lighten</code>, <code>ColorDodge</code>, <code>ColorBurn</code>, <code>HardLight</code>, <code>SoftLight</code>, <code>Difference</code>, and <code>Exclusion</code>. The blending modes correspond to those specified in <a href="https://www.w3.org/TR/2015/CR-compositing-1-20150113/#blendingseparable">Compositing and Blending Level 1</a>.</p>
+<hr />
+<h3 id="colordeltae">Color.deltaE<a class="headerlink" href="#colordeltae" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>Color.deltaE(refColor: Color, testColor: Color, kL: number? = 1, kC: number? = 1, kH: number? = 1): number
+</code></pre></div>
+<p>Calculates the <a href="https://en.wikipedia.org/wiki/Color_difference">color difference</a> of two Colors using <a href="https://en.wikipedia.org/wiki/Color_difference#CIEDE2000">CIEDE2000</a>, which can be used to compare the similarity (or difference) between colors. Smaller numbers correspond to greater similarity, while larger numbers correspond to less similarity.</p>
+<hr />
+<h3 id="colorluminance">Color.luminance<a class="headerlink" href="#colorluminance" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>Color.luminance(color: Color): number
+</code></pre></div>
+<p>Returns the <a href="https://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef">relative luminance</a> of the Color.</p>
+<hr />
+<h3 id="colorcontrast">Color.contrast<a class="headerlink" href="#colorcontrast" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>Color.contrast(refColor: Color, testColor: Color): number
+</code></pre></div>
+<p>Returns the <a href="https://www.w3.org/TR/2008/REC-WCAG20-20081211/#contrast-ratiodef">contrast ratio</a> between two Colors.</p>
+<hr />
+<h3 id="colorbestcontrastingcolor">Color.bestContrastingColor<a class="headerlink" href="#colorbestcontrastingcolor" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>Color.bestContrastingColor(refColor: Color, ...: Color): (Color, number)
+</code></pre></div>
+<p>Returns the Color with the highest contrast ratio to the reference color, along with the contrast ratio itself.</p>
+<hr />
+<h3 id="colorbrighten">Color.brighten<a class="headerlink" href="#colorbrighten" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>Color.brighten(color: Color, amount: number? = 1): Color
+</code></pre></div>
+<p>Brightens a Color by modifying its <a href="#lab">L*</a> component.</p>
+<hr />
+<h3 id="colordarken">Color.darken<a class="headerlink" href="#colordarken" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>Color.darken(color: Color, amount: number? = 1): Color
+</code></pre></div>
+<p>Equivalent to <code>Color.brighten(color, -amount)</code>.</p>
+<hr />
+<h3 id="colorsaturate">Color.saturate<a class="headerlink" href="#colorsaturate" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>Color.saturate(color: Color, amount: number? = 1): Color
+</code></pre></div>
+<p>Saturates a Color by modifying its <a href="#lchab">C*</a> component.</p>
+<hr />
+<h3 id="colordesaturate">Color.desaturate<a class="headerlink" href="#colordesaturate" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>Color.desaturate(color: Color, amount: number? = 1): Color
+</code></pre></div>
+<p>Equivalent to <code>Color.saturate(color, -amount)</code>.</p>
+<hr />
+<h3 id="colorharmonies">Color.harmonies<a class="headerlink" href="#colorharmonies" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code>Color.harmonies(color: Color, harmony: string, analogyAngle: number? = 60): array&lt;Color&gt;
+</code></pre></div>
+<p>Generates a list of Colors with a certain HSB <a href="https://en.wikipedia.org/wiki/Harmony_(color)">harmony</a> to the reference Color. The available harmonies are: <code>Analogous</code>, <code>Complementary</code>, <code>SplitComplementary</code>, <code>Triadic</code>, <code>Tetradic</code> (sometimes known as <em>rectangle</em>), and <code>Square</code>.</p>
+<p>You may also specify an angle for the <code>Analogous</code>, <code>SplitComplementary</code>, and <code>Tetradic</code> harmonies.</p>
+<hr />
+<h2 id="math-operations">Math Operations<a class="headerlink" href="#math-operations" title="Permanent link">&para;</a></h2>
+<h3 id="color-color">Color == Color<a class="headerlink" href="#color-color" title="Permanent link">&para;</a></h3>
+<p>Comparing Colors with <code>==</code> returns whether their <a href="#colorisclipped">clipped</a> RGB components are the same.</p>
+<div class="highlight"><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="n">Color</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> <span class="c1">--&gt; true</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="n">Color</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="c1">--&gt; false</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">Color</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">Color</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="c1">--&gt; true</span>
+</code></pre></div>
+<hr />
+<h2 id="color-types">Color Types<a class="headerlink" href="#color-types" title="Permanent link">&para;</a></h2>
+<h3 id="brickcolor">BrickColor<a class="headerlink" href="#brickcolor" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>color: BrickColor</code></li>
+</ul>
+<hr />
+<h3 id="color3">Color3<a class="headerlink" href="#color3" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>color: Color3</code></li>
+</ul>
+<hr />
+<h3 id="hex">Hex<a class="headerlink" href="#hex" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>hex: string</code></li>
+</ul>
+<p>The hex string can be in the format <code>ABC</code> or <code>AABBCC</code>, with or without a leading <code>#</code>. </p>
+<hr />
+<h3 id="number">Number<a class="headerlink" href="#number" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>color: number</code> [0, 16777215]</li>
+</ul>
+<hr />
+<h3 id="rgb">RGB<a class="headerlink" href="#rgb" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>r: number</code> [0, 255]</li>
+<li><code>g: number</code> [0, 255]</li>
+<li><code>b: number</code> [0, 255]</li>
+</ul>
+<hr />
+<h3 id="hsb">HSB<a class="headerlink" href="#hsb" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>h: number</code> [0, 360) or NaN</li>
+<li><code>s: number</code> [0, 1]</li>
+<li><code>b: number</code> [0, 1]</li>
+</ul>
+<p>For an explanation on HSB, you can read the <a href="https://en.wikipedia.org/wiki/HSL_and_HSV">Wikipedia article</a> on it.</p>
+<hr />
+<h3 id="hsv">HSV<a class="headerlink" href="#hsv" title="Permanent link">&para;</a></h3>
+<p>Alias for <a href="#hsb"><code>HSB</code></a></p>
+<hr />
+<h3 id="hwb">HWB<a class="headerlink" href="#hwb" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>h: number</code> [0, 360) or NaN</li>
+<li><code>w: number</code> [0, 1]</li>
+<li><code>b: number</code> [0, 1]</li>
+</ul>
+<p>For an explanation on HWB, you can read the <a href="https://en.wikipedia.org/wiki/HWB_color_model">Wikipedia article</a> on it.</p>
+<hr />
+<h3 id="hsl">HSL<a class="headerlink" href="#hsl" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>h: number</code> [0, 360) or NaN</li>
+<li><code>s: number</code> [0, 1]</li>
+<li><code>l: number</code> [0, 1]</li>
+</ul>
+<p>For an explanation on HSL, you can read the <a href="https://en.wikipedia.org/wiki/HSL_and_HSV">Wikipedia article</a> on it.</p>
+<hr />
+<h3 id="cmyk">CMYK<a class="headerlink" href="#cmyk" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>c: number</code> [0, 1]</li>
+<li><code>m: number</code> [0, 1]</li>
+<li><code>y: number</code> [0, 1]</li>
+<li><code>k: number</code> [0, 1]</li>
+</ul>
+<p>For an explanation on CMYK, you can read the <a href="https://en.wikipedia.org/wiki/CMYK_color_model">Wikipedia article</a> on it. The RGB-CMYK conversions are naive and do not take color profiles into account.</p>
+<hr />
+<h3 id="temperature">Temperature<a class="headerlink" href="#temperature" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>kelvin: number</code></li>
+</ul>
+<p>For best results, use temperatures in the range [1000, 40000]. The RGB-Temperature conversions are on based on Neil Bartlett's <a href="https://github.com/neilbartlett/color-temperature">color-temperature</a>.</p>
+<hr />
+<h3 id="xyz">XYZ<a class="headerlink" href="#xyz" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>x: number</code> [0, 1] (typical)</li>
+<li><code>y: number</code> [0, 1]</li>
+<li><code>z: number</code> [0, 1] (typical)</li>
+</ul>
+<p>For an explanation on XYZ, you can read the <a href="https://en.wikipedia.org/wiki/CIE_1931_color_space">Wikipedia article</a> on it. The RGB-XYZ conversions use <a href="https://en.wikipedia.org/wiki/Illuminant_D65">illuminant D65</a>.</p>
+<hr />
+<h3 id="xyy">xyY<a class="headerlink" href="#xyy" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>x: number</code> [0, 1]</li>
+<li><code>y: number</code> [0, 1]</li>
+<li><code>Y: number</code> [0, 1]</li>
+</ul>
+<p><a href="https://en.wikipedia.org/wiki/CIE_1931_color_space#CIE_xy_chromaticity_diagram_and_the_CIE_xyY_color_space">xyY</a> is a color space related to <a href="https://en.wikipedia.org/wiki/CIE_1931_color_space">XYZ</a>.</p>
+<hr />
+<h3 id="lab">Lab<a class="headerlink" href="#lab" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>l: number</code> [0, 1]</li>
+<li><code>a: number</code> [-1.28, 1.27] (typically)</li>
+<li><code>b: number</code> [-1.28, 1.27] (typically)</li>
+</ul>
+<p>For an explanation on CIELAB, you can read the <a href="https://en.wikipedia.org/wiki/CIELAB_color_space">Wikipedia article</a> on it.</p>
+<hr />
+<h3 id="lchab">LChab<a class="headerlink" href="#lchab" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>l: number</code> [0, 1]</li>
+<li><code>c: number</code> [0, 1.50] (typically)</li>
+<li><code>h: number</code> [0, 360)</li>
+</ul>
+<p>LCh(ab) is the cylindrical model of <a href="https://en.wikipedia.org/wiki/CIELAB_color_space#Cylindrical_model">CIELAB</a>.</p>
+<hr />
+<h3 id="lch">LCh<a class="headerlink" href="#lch" title="Permanent link">&para;</a></h3>
+<p>Alias for <a href="#lchab"><code>LChab</code></a></p>
+<hr />
+<h3 id="luv">Luv<a class="headerlink" href="#luv" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>l: number</code> [0, 1]</li>
+<li><code>u: number</code> [-1, 1] (typically)</li>
+<li><code>v: number</code> [-1, 1] (typically)</li>
+</ul>
+<p>For an explanation on CIELUV, you can read the <a href="https://en.wikipedia.org/wiki/CIELUV">Wikipedia article</a> on it.</p>
+<hr />
+<h3 id="lchuv">LChuv<a class="headerlink" href="#lchuv" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>l: number</code> [0, 1]</li>
+<li><code>c: number</code> [0, 1.50] (typically)</li>
+<li><code>h: number</code> [0, 360)</li>
+</ul>
+<p>LCh(uv) is the cylindrical model of <a href="https://en.wikipedia.org/wiki/CIELUV#Cylindrical_representation_(CIELCh)">CIELUV</a>.</p>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="../.." class="md-footer__link md-footer__link--prev" aria-label="Previous: Home" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Home
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../gradient/" class="md-footer__link md-footer__link--next" aria-label="Next: Gradient" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Gradient
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+        
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.477d984a.min.js", "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.82b56eb2.min.js"></script>
+      
+    
+  </body>
+</html>

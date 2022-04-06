@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+         <loc>https://blupo.github.io/Color/</loc>
+         <lastmod>2022-04-06</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://blupo.github.io/Color/changelog/</loc>
+         <lastmod>2022-04-06</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://blupo.github.io/Color/api/color/</loc>
+         <lastmod>2022-04-06</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://blupo.github.io/Color/api/gradient/</loc>
+         <lastmod>2022-04-06</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+</urlset>
