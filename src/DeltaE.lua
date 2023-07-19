@@ -1,11 +1,15 @@
 --!strict
 
-local Utils = script.Parent
-local round = require(Utils.Round)
+local root = script.Parent
+local Utils = require(root.Utils)
 
 ---
 
--- Equations: http://www2.ece.rochester.edu/~gsharma/ciede2000/ciede2000noteCRNA.pdf
+--[[
+    Equations
+        DOI: 10.1002/col.20070
+        Also available at http://www2.ece.rochester.edu/~gsharma/ciede2000/ciede2000noteCRNA.pdf
+]]
 
 return function(refColorLab: {number}, testColorLab: {number}, optionalKl: number?, optionalKc: number?, optionalKh: number?): number
     local kl: number = optionalKl or 1
@@ -31,10 +35,10 @@ return function(refColorLab: {number}, testColorLab: {number}, optionalKl: numbe
     local h2p: number = math.deg(math.atan2(b2, a2p)) % 360
 
     -- Remove rounding errors when calculating dhp and hbp
-    local dha: number = round(math.abs(h1p - h2p), -8)
-    local dhb: number = round(math.abs(h2p - h1p), -8)
-    local dhc: number = round(h2p - h1p, -8)
-    local dhd: number = round(h1p + h2p, -8)
+    local dha: number = Utils.Round(math.abs(h1p - h2p), -8)
+    local dhb: number = Utils.Round(math.abs(h2p - h1p), -8)
+    local dhc: number = Utils.Round(h2p - h1p, -8)
+    local dhd: number = Utils.Round(h1p + h2p, -8)
 
     local dLp: number = l2 - l1
     local dCp: number = c2p - c1p

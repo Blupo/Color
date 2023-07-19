@@ -1,3 +1,26 @@
+## [Unreleased]
+
+### Added
+- `Color.zero` returns a Color with all components being 0
+- `Color.one` returns a Color with all components being 1
+- `Color`s now support math operations:
+    - (These operations act on *unclipped* components)
+    - Color + Color
+    - Color - Color
+    - Color * number
+    - Color * Color (component multiplication)
+    - Color / number
+    - Color / Color (component division)
+
+### Changed
+- Code refactoring and module consolidation
+- Got rid of all the of type-checker warnings (for now)
+- Improved type-checks for the API
+- `Color.isAColor` is much stricter and only allows Colors generated from its own module
+- `Color.isAColor` now returns a type-checking message if the value was not a Color
+- `Color.bestContrastingColor` now requires 2 Colors to compare instead of 1
+- `Color.random` now uses a Random object instead of `math.random`
+
 ## [0.2.2] - 2022-04-06
 
 ### Changed

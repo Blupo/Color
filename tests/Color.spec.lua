@@ -1,3 +1,5 @@
+--!nocheck
+
 return function()
     local ColorLib = require(game:GetService("ReplicatedStorage"):FindFirstChild("Color"))
     local Color = ColorLib.Color
@@ -13,6 +15,8 @@ return function()
         expect(Color.isClipped).to.be.a("function")
 
         expect(Color.new).to.be.a("function")
+        expect(Color.zero).to.be.a("function")
+        expect(Color.one).to.be.a("function")
         expect(Color.random).to.be.a("function")
         expect(Color.gray).to.be.a("function")
         expect(Color.named).to.be.a("function")
@@ -81,29 +85,16 @@ return function()
     end)
 
     it("should be able to identify Colors", function()
-        local color = Color.new(0, 0, 0)
+        local color = Color.zero()
 
-        local noPassFakeColor = table.freeze({
+        local fakeColor = table.freeze({
             R = 0,
             G = 0,
             B = 0,
-        })
-
-        local passFakeColor = table.freeze({
-            R = 0,
-            G = 0,
-            B = 0,
-
-            __r = 0,
-            __g = 0,
-            __b = 0,
-
-            to = function() end,
         })
 
         expect(Color.isAColor(color)).to.equal(true)
-        expect(Color.isAColor(noPassFakeColor)).to.equal(false)
-        expect(Color.isAColor(passFakeColor)).to.equal(true)
+        expect(Color.isAColor(fakeColor)).to.equal(false)
     end)
 
     describe("constructors", function()
@@ -143,11 +134,11 @@ return function()
 
             expect(function()
                 Color.from("Hex", "aabbccdd")
-            end).to.throw("invalid hex length")
+            end).to.throw()
 
             expect(function()
                 Color.from("Hex", "#xyz")
-            end).to.throw("could not parse hex string")
+            end).to.throw()
         end)
 
         it("should support numeric values", function()
@@ -323,7 +314,7 @@ return function()
         it("should not support invalid color types", function()
             expect(function()
                 Color.from("InvalidColorType", 1, "A", "F")
-            end).to.throw("invalid color type")
+            end).to.throw()
         end)
     end)
 
@@ -350,6 +341,54 @@ return function()
             expect(color1 == color2).to.equal(true)
             expect(color1 == color3).to.equal(false)
             expect(color1 == color4).to.equal(true)
+        end)
+
+        it("should support math operations", function()
+            local color1 = Color.random()
+            local color2 = Color.random()
+            local scalar = 2.3
+
+            local color3 = color1 * scalar
+            local color3Components = { color3:components(true) }
+
+            local color4 = color1 / scalar
+            local color4Components = { color4:components(true) }
+
+            local color5 = color1 * color2
+            local color5Components = { color5:components(true) }
+
+            local color6 = color1 / color2
+            local color6Components = { color6:components(true) }
+
+            local color7 = color1 + color2
+            local color7Components = { color7:components(true) }
+
+            local color8 = color1 - color2
+            local color8Components = { color8:components(true) }
+
+            expect(color3Components[1]).to.equal(color1.R * scalar)
+            expect(color3Components[2]).to.equal(color1.G * scalar)
+            expect(color3Components[3]).to.equal(color1.B * scalar)
+
+            expect(color4Components[1]).to.equal(color1.R / scalar)
+            expect(color4Components[2]).to.equal(color1.G / scalar)
+            expect(color4Components[3]).to.equal(color1.B / scalar)
+
+            expect(color5Components[1]).to.equal(color1.R * color2.R)
+            expect(color5Components[2]).to.equal(color1.G * color2.G)
+            expect(color5Components[3]).to.equal(color1.B * color2.B)
+
+            expect(color6Components[1]).to.equal(color1.R / color2.R)
+            expect(color6Components[2]).to.equal(color1.G / color2.G)
+            expect(color6Components[3]).to.equal(color1.B / color2.B)
+
+            expect(color7Components[1]).to.equal(color1.R + color2.R)
+            expect(color7Components[2]).to.equal(color1.G + color2.G)
+            expect(color7Components[3]).to.equal(color1.B + color2.B)
+
+            expect(color8Components[1]).to.equal(color1.R - color2.R)
+            expect(color8Components[2]).to.equal(color1.G - color2.G)
+            expect(color8Components[3]).to.equal(color1.B - color2.B)
         end)
 
         it("should support operations", function()
@@ -388,7 +427,7 @@ return function()
 
             expect(function()
                 white:bestContrastingColor()
-            end).to.throw("no colors to compare")
+            end).to.throw()
         end)
 
         it("should support conversions", function()
@@ -462,7 +501,7 @@ return function()
 
             expect(function()
                 hotpink:to("InvalidColorType")
-            end).to.throw("invalid color type")
+            end).to.throw()
         end)
 
         it("should support blending", function()
@@ -485,7 +524,7 @@ return function()
 
             expect(function()
                 color1:blend(color2, "InvalidBlendType")
-            end).to.throw("invalid blend mode")
+            end).to.throw()
         end)
 
         it("should support L*a*b* operations", function()
@@ -619,11 +658,11 @@ return function()
 
             expect(function()
                 red:mix(blue, 0.5, "InvalidInterpolation")
-            end).to.throw("invalid interpolation InvalidInterpolation")
+            end).to.throw()
 
             expect(function()
                 red:mix(blue, 0.5, "HSB", "InvalidHueAdjustment")
-            end).to.throw("invalid hue adjustment")
+            end).to.throw()
         end)
     end)
 end

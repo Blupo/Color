@@ -1,17 +1,48 @@
 --!strict
-
 -- Equations: https://www.w3.org/TR/2015/CR-compositing-1-20150113/#blendingseparable
-local blendingFunctions: {[string]: (number, number) -> number} = {
+
+local root = script.Parent
+local Types = require(root.Types)
+
+---
+
+local multiply = function(a: number, b: number): number
+    return a * b
+end
+
+local screen = function(a: number, b: number): number
+    return 1 - ((1 - a) * (1 - b))
+end
+
+local hardLight = function(a: number, b: number): number
+    if (b <= 1/2) then
+        return multiply(a, 2 * b)
+    else
+        return screen(a, (2 * b) - 1)
+    end
+end
+
+local blendingFunctions: {[Types.BlendMode]: (number, number) -> number} = {
+    Darken = math.min,
+    Lighten = math.max,
+    Multiply = multiply,
+    Screen = screen,
+    HardLight = hardLight,
+
     Normal = function(_: number, b: number): number
         return b
     end,
 
-    Multiply = function(a: number, b: number): number
-        return a * b
+    Difference = function(a: number, b: number): number
+        return math.abs(a - b)
     end,
 
-    Screen = function(a: number, b: number): number
-        return 1 - ((1 - a) * (1 - b))
+    Overlay = function(a: number, b: number): number
+        return hardLight(b, a)
+    end,
+    
+    Exclusion = function(a: number, b: number): number
+        return a + b - (2 * a * b)
     end,
 
     ColorDodge = function(a: number, b: number): number
@@ -49,34 +80,11 @@ local blendingFunctions: {[string]: (number, number) -> number} = {
             return a + ((2 * b) - 1) * (c - a)
         end
     end,
-
-    Difference = function(a: number, b: number): number
-        return math.abs(a - b)
-    end,
-    
-    Exclusion = function(a: number, b: number): number
-        return a + b - (2 * a * b)
-    end,
-    
-    Darken = math.min,
-    Lighten = math.max,
 }
-
-blendingFunctions.HardLight = function(a: number, b: number): number
-    if (b <= 1/2) then
-        return blendingFunctions.Multiply(a, 2 * b)
-    else
-        return blendingFunctions.Screen(a, (2 * b) - 1)
-    end
-end
-
-blendingFunctions.Overlay = function(a: number, b: number): number
-    return blendingFunctions.HardLight(b, a)
-end
 
 ---
 
-return function(backgroundColorComponents: {number}, foregroundColorComponents: {number}, blendMode: string): (number, number, number)
+return function(backgroundColorComponents: {number}, foregroundColorComponents: {number}, blendMode: Types.BlendMode): (number, number, number)
     local blendingFunction: ((number, number) -> number)? = blendingFunctions[blendMode]
     assert(blendingFunction, "invalid blend mode")
 

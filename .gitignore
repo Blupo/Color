@@ -4,3 +4,6 @@
 
 # roblox.toml
 /roblox.toml
+
+# LSP
+/sourcemap.json

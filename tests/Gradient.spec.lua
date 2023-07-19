@@ -1,3 +1,5 @@
+--!nocheck
+
 return function()
     local ColorLib = require(game:GetService("ReplicatedStorage"):FindFirstChild("Color"))
 
