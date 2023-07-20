@@ -1,8 +1,11 @@
 ## [Unreleased]
 
 ### Added
-- `Color.zero` returns a Color with all components being 0
-- `Color.one` returns a Color with all components being 1
+- `Color.black` returns a Color with all components being 0
+- `Color.white` returns a Color with all components being 1
+- `Color.red` returns a Color with components (1, 0, 0)
+- `Color.green` returns a Color with components (0, 1, 0)
+- `Color.blue` returns a Color with components (0, 0, 1)
 - `Color`s now support math operations:
     - (These operations act on *unclipped* components)
     - Color + Color
@@ -11,15 +14,22 @@
     - Color * Color (component multiplication)
     - Color / number
     - Color / Color (component division)
+- `Gradient.isAGradient` checks if a value can be used as a Gradient
+- `Gradient.getMaxColorSequenceKeypoints` returns the maximum number of keypoints a ColorSequence can have
 
 ### Changed
 - Code refactoring and module consolidation
 - Got rid of all the of type-checker warnings (for now)
-- Improved type-checks for the API
-- `Color.isAColor` is much stricter and only allows Colors generated from its own module
-- `Color.isAColor` now returns a type-checking message if the value was not a Color
+- Improved argument validation on all API functions
+- Any API functions that accept Colors will now accept any table with the necessary color structure, even if they aren't actual Colors
+- `Color.isAColor` will now return `true` for tables with the necessary color structure, even if they aren't actual Colors
+- `Color.isAColor` now returns a type-checking message if the value cannot be used as a Color
 - `Color.bestContrastingColor` now requires 2 Colors to compare instead of 1
 - `Color.random` now uses a Random object instead of `math.random`
+- `Gradient.colorSequence` was renamed *back* to `Gradient.toColorSequence`
+
+### Deprecated
+- `Gradient.colorSequence` will be removed in a future release, use `Gradient.toColorSequence` instead
 
 ## [0.2.2] - 2022-04-06
 

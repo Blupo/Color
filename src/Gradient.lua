@@ -14,17 +14,21 @@ export type GradientKeypoint = {
     Color: Color,
 }
 
+export type RawGradient = {
+    Keypoints: {GradientKeypoint}
+}
+
 ---
 
 local CS_MAX_KEYPOINTS: number
 
-local isKeypoint = t.struct({
+local keypointCheck = t.struct({
     Time = t.numberBetween(0, 1),
     Color = Color.isAColor,
 })
 
 local keypointsCheck = function(value: {GradientKeypoint}): (boolean, string?)
-    local isArray, arrayError = t.array(isKeypoint)(value)
+    local isArray, arrayError = t.array(keypointCheck)(value)
 
     if (not isArray) then
         return false, arrayError
@@ -61,6 +65,10 @@ local keypointsCheck = function(value: {GradientKeypoint}): (boolean, string?)
 
     return true
 end
+
+local gradientCheck = t.struct({
+    Keypoints = keypointsCheck
+})
 
 local copyKeypointTable = function(original: {GradientKeypoint}): {GradientKeypoint}
     local copy: {GradientKeypoint} = {}
@@ -105,9 +113,9 @@ local Gradient = {}
 local gradientMetatable = table.freeze({
     __index = Gradient,
 
-    __eq = function(gradient1, gradient2): boolean
-        local gradient1Keypoints: {GradientKeypoint} = gradient1.Keypoints
-        local gradient2Keypoints: {GradientKeypoint} = gradient2.Keypoints
+    __eq = t.wrap(function(gradient1: RawGradient, gradient2: RawGradient): boolean
+        local gradient1Keypoints: {GradientKeypoint} = rawget(gradient1, "Keypoints")
+        local gradient2Keypoints: {GradientKeypoint} = rawget(gradient2, "Keypoints")
 
         for i = 1, #gradient1Keypoints do
             local gradient1Keypoint: GradientKeypoint = gradient1Keypoints[i]
@@ -119,10 +127,10 @@ local gradientMetatable = table.freeze({
         end
 
         return true
-    end,
+    end, t.tuple(gradientCheck, gradientCheck)),
 
-    __tostring = function(gradient): string
-        local keypoints: {GradientKeypoint} = gradient.Keypoints
+    __tostring = t.wrap(function(gradient: RawGradient): string
+        local keypoints: {GradientKeypoint} = rawget(gradient, "Keypoints")
         local keypointStrings: {string} = {}
 
         for i = 1, #keypoints do
@@ -133,24 +141,8 @@ local gradientMetatable = table.freeze({
         end
         
         return string.format("Gradient(%s)", table.concat(keypointStrings, ", "))
-    end
+    end, gradientCheck)
 })
-
-local gradientCheck = function(value: any): (boolean, string?)
-    local isTable, tableError = t.table(value)
-
-    if (not isTable) then
-        return false, tableError
-    end
-
-    local metatable = getmetatable(value)
-
-    if ((not metatable) or (metatable ~= gradientMetatable)) then
-        return false, "not a Gradient"
-    end
-
-    return true
-end
 
 --[[
     Creates a new Gradient from an array of GradientKeypoints
@@ -163,7 +155,8 @@ Gradient.new = function(keypoints: {GradientKeypoint})
     }, gradientMetatable))
 end
 
-export type Gradient = typeof(Gradient.new({}))
+export type MetaGradient = typeof(Gradient.new({}))
+export type Gradient = RawGradient | MetaGradient
 
 ---
 
@@ -175,9 +168,14 @@ Gradient.getMaxColorSequenceKeypoints = function(): number
 end
 
 --[[
+    Returns if a value can be used as a Gradient in the API
+]]
+Gradient.isAGradient = gradientCheck
+
+--[[
     Creates a new Gradient from a Color tuple
 ]]
-Gradient.fromColors = function(...: Color): Gradient
+Gradient.fromColors = function(...: Color): MetaGradient
     local colors: {Color} = {...}
     assert(t.array(Color.isAColor))
 
@@ -218,7 +216,7 @@ end
 --[[
     Creates a Gradient from a ColorSequence
 ]]
-Gradient.fromColorSequence = t.wrap(function(colorSequence: ColorSequence): Gradient
+Gradient.fromColorSequence = t.wrap(function(colorSequence: ColorSequence): MetaGradient
     local colors: {GradientKeypoint} = {}
     local keypoints: {ColorSequenceKeypoint} = colorSequence.Keypoints
 
@@ -239,7 +237,7 @@ end, t.ColorSequence)
 --[[
     Returns a Gradient with the keypoints reversed in time
 ]]
-Gradient.invert = t.wrap(function(gradient: Gradient): Gradient
+Gradient.invert = t.wrap(function(gradient: Gradient): MetaGradient
     local keypoints: {GradientKeypoint} = gradient.Keypoints
     local invertedKeypoints: {GradientKeypoint} = {}
 
@@ -304,7 +302,7 @@ Gradient.colors = t.wrap(function(gradient: Gradient, steps: number, optionalCol
     end
 
     return colors
-end, t.tuple(gradientCheck, t.integer, t.optional(Types.Runtime.ColorType), t.optional(Types.Runtime.HueAdjustment)))
+end, t.tuple(gradientCheck, t.intersection(t.integer, t.numberAtLeast(2)), t.optional(Types.Runtime.ColorType), t.optional(Types.Runtime.HueAdjustment)))
 
 --[[
     Returns a ColorSequence derived from a Gradient
@@ -314,7 +312,7 @@ end, t.tuple(gradientCheck, t.integer, t.optional(Types.Runtime.ColorType), t.op
     @param colorType? The color type to mix with
     @param hueAdjustment? The hue adjustment method when mixing with color types that have a hue component
 ]]
-Gradient.colorSequence = t.wrap(function(gradient: Gradient, optionalSteps: number?, optionalColorType: Types.ColorType?, optionalHueAdjustment: Types.HueAdjustment?): ColorSequence
+Gradient.toColorSequence = t.wrap(function(gradient: Gradient, optionalSteps: number?, optionalColorType: Types.ColorType?, optionalHueAdjustment: Types.HueAdjustment?): ColorSequence
     local colorType: Types.ColorType = optionalColorType or "RGB"
     local csKeypoints: {ColorSequenceKeypoint} = {}
 
@@ -336,7 +334,13 @@ Gradient.colorSequence = t.wrap(function(gradient: Gradient, optionalSteps: numb
     end
 
     return ColorSequence.new(csKeypoints)
-end, t.tuple(gradientCheck, t.optional(t.union(t.integer, t.numberBetween(2, CS_MAX_KEYPOINTS))), t.optional(Types.Runtime.ColorType), t.optional(Types.Runtime.HueAdjustment)))
+end, t.tuple(gradientCheck, t.optional(t.intersection(t.integer, t.numberBetween(2, CS_MAX_KEYPOINTS))), t.optional(Types.Runtime.ColorType), t.optional(Types.Runtime.HueAdjustment)))
+
+--[[
+    **DEPRECATED**\
+    Alias for `Gradient.toColorSequence`
+]]
+Gradient.colorSequence = Gradient.toColorSequence
 
 ---
 

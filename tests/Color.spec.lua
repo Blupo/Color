@@ -15,8 +15,11 @@ return function()
         expect(Color.isClipped).to.be.a("function")
 
         expect(Color.new).to.be.a("function")
-        expect(Color.zero).to.be.a("function")
-        expect(Color.one).to.be.a("function")
+        expect(Color.black).to.be.a("function")
+        expect(Color.white).to.be.a("function")
+        expect(Color.red).to.be.a("function")
+        expect(Color.green).to.be.a("function")
+        expect(Color.blue).to.be.a("function")
         expect(Color.random).to.be.a("function")
         expect(Color.gray).to.be.a("function")
         expect(Color.named).to.be.a("function")
@@ -85,7 +88,7 @@ return function()
     end)
 
     it("should be able to identify Colors", function()
-        local color = Color.zero()
+        local color = Color.black()
 
         local fakeColor = table.freeze({
             R = 0,
@@ -93,8 +96,19 @@ return function()
             B = 0,
         })
 
+        local colorStruct = table.freeze({
+            __r = 0,
+            __g = 0,
+            __b = 0,
+
+            R = 0,
+            G = 0,
+            B = 0
+        })
+
         expect(Color.isAColor(color)).to.equal(true)
         expect(Color.isAColor(fakeColor)).to.equal(false)
+        expect(Color.isAColor(colorStruct)).to.equal(true)
     end)
 
     describe("constructors", function()
@@ -169,7 +183,7 @@ return function()
             expect(Color.from("HSB", 300, 1, 1):to("Hex")).to.equal("ff00ff")
             expect(Color.from("HSB", 180, 1, 1):to("Hex")).to.equal("00ffff")
 
-            expect(Color.new(0.5, 0.5, 0.5):to("HSB")).never.to.equal(0/0)
+            expect((Color.new(0.5, 0.5, 0.5):to("HSB"))).never.to.equal(0/0)
             expect(Color.from("HSV", 180, 1, 1)).to.equal(Color.from("HSB", 180, 1, 1))
         end)
 
@@ -185,7 +199,7 @@ return function()
             expect(Color.from("HSL", 300, 1, 0.5):to("Hex")).to.equal("ff00ff")
             expect(Color.from("HSL", 180, 1, 0.5):to("Hex")).to.equal("00ffff")
 
-            expect(Color.new(0.5, 0.5, 0.5):to("HSL")).never.to.equal(0/0)
+            expect((Color.new(0.5, 0.5, 0.5):to("HSL"))).never.to.equal(0/0)
         end)
 
         it("should support HWB", function()
@@ -200,7 +214,7 @@ return function()
             expect(Color.from("HWB", 300, 0, 0):to("Hex")).to.equal("ff00ff")
             expect(Color.from("HWB", 180, 0, 0):to("Hex")).to.equal("00ffff")
 
-            expect(Color.new(0.5, 0.5, 0.5):to("HWB")).never.to.equal(0/0)
+            expect((Color.new(0.5, 0.5, 0.5):to("HWB"))).never.to.equal(0/0)
         end)
 
         it("should support CMYK", function()
@@ -320,7 +334,7 @@ return function()
 
     describe("Colors", function()
         it("should be immutable", function()
-            local color = Color.new(1, 1, 1)
+            local color = Color.white()
 
             expect(function()
                 color.R = nil
@@ -332,9 +346,9 @@ return function()
         end)
 
         it("should support equality", function()
-            local color1 = Color.new(1, 1, 1)
-            local color2 = Color.new(1, 1, 1)
-            local color3 = Color.new(0, 0, 0)
+            local color1 = Color.white()
+            local color2 = Color.white()
+            local color3 = Color.black()
             local color4 = Color.new(2, 2, 2)
 
             expect(color1 == color1).to.equal(true)
@@ -393,7 +407,7 @@ return function()
 
         it("should support operations", function()
             local color1 = Color.random()
-            local color2 = Color.new(1, 1, 1)
+            local color2 = Color.white()
             local color3 = Color.new(2, 2, 2)
             local color1Components = { color1:components() }
 
@@ -407,21 +421,21 @@ return function()
         end)
 
         it("should support luminance and contrast calculations", function()
-            local black = Color.new(0, 0, 0)
-            local white = Color.new(1, 1, 1)
-            local red = Color.new(1, 0, 0)
-            local blue = Color.new(0, 0, 1)
+            local black = Color.black()
+            local white = Color.white()
+            local red = Color.red()
+            local blue = Color.blue()
 
             expect(black:contrast(white)).to.equal(21)
             expect(white:contrast(black)).to.equal(21)
             expect(black:contrast(black)).to.equal(1)
             expect(white:contrast(white)).to.equal(1)
 
-            expect(black:contrast(red)).to.be.near(5.25, 10^-2)
-            expect(black:contrast(blue)).to.be.near(2.44, 10^-2)
-            expect(white:contrast(red)).to.be.near(4, 10^-2)
-            expect(white:contrast(blue)).to.be.near(8.6, 10^-2)
-            expect(red:contrast(blue)).to.be.near(2.14, 10^-2)
+            expect(black:contrast(red)).to.be.near(5.25, 1e-2)
+            expect(black:contrast(blue)).to.be.near(2.44, 1e-2)
+            expect(white:contrast(red)).to.be.near(4, 1e-2)
+            expect(white:contrast(blue)).to.be.near(8.6, 1e-2)
+            expect(red:contrast(blue)).to.be.near(2.14, 1e-2)
 
             expect(white:bestContrastingColor(black, red, blue)).to.equal(black)
 
@@ -462,37 +476,37 @@ return function()
             expect(bRGB).to.equal(180)
 
             expect(hHSB).to.equal(330)
-            expect(sHSB).to.be.near(0.58824, 10^-4)
+            expect(sHSB).to.be.near(0.58824, 1e-4)
             expect(bHSB).to.equal(1)
 
             expect(hHSL).to.equal(330)
             expect(sHSL).to.equal(1)
-            expect(lHSL).to.be.near(0.70588, 10^-4)
+            expect(lHSL).to.be.near(0.70588, 1e-4)
 
             expect(cCMYK).to.equal(0)
-            expect(mCMYK).to.be.near(0.58824, 10^-4)
-            expect(yCMYK).to.be.near(0.29412, 10^-4)
+            expect(mCMYK).to.be.near(0.58824, 1e-4)
+            expect(yCMYK).to.be.near(0.29412, 1e-4)
             expect(kCMYK).to.equal(0)
 
-            expect(xXYZ).to.be.near(0.54532, 10^-4)
-            expect(yXYZ).to.be.near(0.34664, 10^-4)
-            expect(zXYZ).to.be.near(0.46990, 10^-4)
+            expect(xXYZ).to.be.near(0.54532, 1e-4)
+            expect(yXYZ).to.be.near(0.34664, 1e-4)
+            expect(zXYZ).to.be.near(0.46990, 1e-4)
 
-            expect(lLab).to.be.near(0.65486, 10^-4)
-            expect(aLab).to.be.near(0.64238, 10^-4)
-            expect(bLab).to.be.near(-0.10646, 10^-4)
+            expect(lLab).to.be.near(0.65486, 1e-4)
+            expect(aLab).to.be.near(0.64238, 1e-4)
+            expect(bLab).to.be.near(-0.10646, 1e-4)
 
-            expect(lLuv).to.be.near(0.65486, 10^-4)
-            expect(uLuv).to.be.near(0.91125, 10^-4)
-            expect(vLuv).to.be.near(-0.27488, 10^-4)
+            expect(lLuv).to.be.near(0.65486, 1e-4)
+            expect(uLuv).to.be.near(0.91125, 1e-4)
+            expect(vLuv).to.be.near(-0.27488, 1e-4)
 
-            expect(lLChab).to.be.near(0.65486, 10^-4)
-            expect(cLChab).to.be.near(0.65115, 10^-4)
-            expect(hLChab).to.be.near(350.590, 10^-1)
+            expect(lLChab).to.be.near(0.65486, 1e-4)
+            expect(cLChab).to.be.near(0.65115, 1e-4)
+            expect(hLChab).to.be.near(350.590, 1e-1)
 
-            expect(lLChuv).to.be.near(0.65486, 10^-4)
-            expect(cLChuv).to.be.near(0.95180, 10^-4)
-            expect(hLChuv).to.be.near(343.214, 10^-1)
+            expect(lLChuv).to.be.near(0.65486, 1e-4)
+            expect(cLChuv).to.be.near(0.95180, 1e-4)
+            expect(hLChuv).to.be.near(343.214, 1e-1)
 
             expect(hHSL).to.equal(hHSB)
             expect(lLuv).to.equal(lLab)
@@ -502,6 +516,24 @@ return function()
             expect(function()
                 hotpink:to("InvalidColorType")
             end).to.throw()
+        end)
+
+        it("should reasonably withstand conversions", function()
+            for i = 1, 1000 do
+                local color1 = Color.random()
+                local firstComponents = { color1:components(true) }
+
+                local color2 = Color.fromXYZ(color1:toXYZ())
+                local color3 = Color.fromLab(color2:toLab())
+                local color4 = Color.fromLChab(color3:toLChab())
+                local color5 = Color.fromLab(color4:toLab())
+                local color6 = Color.fromXYZ(color5:toXYZ())
+
+                local finalComponents = { color6:components(true) }
+                expect(finalComponents[1]).to.be.near(firstComponents[1], 1e-12)
+                expect(finalComponents[2]).to.be.near(firstComponents[2], 1e-12)
+                expect(finalComponents[3]).to.be.near(firstComponents[3], 1e-12)
+            end
         end)
 
         it("should support blending", function()
@@ -549,7 +581,7 @@ return function()
         end)
 
         it("should support harmony generation", function()
-            local red = Color.new(1, 0, 0)
+            local red = Color.red()
 
             local complementary = red:harmonies("Complementary")
             local triadic = red:harmonies("Triadic")
@@ -629,14 +661,14 @@ return function()
                 local testColor1, testColor2 = test[1], test[2]
                 local expectedResult = test[3]
 
-                expect(testColor1:deltaE(testColor2)).to.be.near(expectedResult, 10^-4)
-                expect(testColor2:deltaE(testColor1)).to.be.near(expectedResult, 10^-4)
+                expect(testColor1:deltaE(testColor2)).to.be.near(expectedResult, 1e-4)
+                expect(testColor2:deltaE(testColor1)).to.be.near(expectedResult, 1e-4)
             end
         end)
 
         it("should support interpolation", function()
-            local red = Color.new(1, 0, 0)
-            local blue = Color.new(0, 0, 1)
+            local red = Color.red()
+            local blue = Color.blue()
 
             expect(red:mix(blue, 0.5, "RGB"):to("Hex")).to.equal("800080")
             expect(red:mix(blue, 0.5, "HSB"):to("Hex")).to.equal("ff00ff")

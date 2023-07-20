@@ -13,7 +13,7 @@ local Utils = require(root.Utils)
 
 ---
 
-type ColorStruct = {
+type RawColor = {
     __r: number,
     __g: number,
     __b: number,
@@ -31,7 +31,11 @@ assert(ColorTypes.Lab.toXYZ)
 assert(ColorTypes.LChab.fromLab)
 assert(ColorTypes.LChab.toLab)
 
-local disallowedColorInterpolations: {[Types.ColorType]: true} = {
+-- Used for Color.random
+local rng: Random = Random.new()
+
+-- Mixing with these color types doesn't make sense
+local disallowedColorTypeMixes: {[Types.ColorType]: true} = {
     BrickColor = true,
     Color3 = true,
     Hex = true,
@@ -39,6 +43,7 @@ local disallowedColorInterpolations: {[Types.ColorType]: true} = {
     Temperature = true,
 }
 
+-- When exporting (Color.to), these color types will be given clipped components to generate values
 local clippedColorTypes: {[Types.ColorType]: true} = {
     BrickColor = true,
     CMYK = true,
@@ -53,6 +58,7 @@ local clippedColorTypes: {[Types.ColorType]: true} = {
     Temperature = true,
 }
 
+-- These color types have a hue component that needs to be handled differently than other components when mixing Colors
 local hueComponentIndices: {[Types.ColorType]: number} = {
     HSB = 1,
     HSL = 1,
@@ -63,7 +69,7 @@ local hueComponentIndices: {[Types.ColorType]: number} = {
     LChuv = 3,
 }
 
-local ColorStruct = t.struct({
+local colorCheck = t.struct({
     __r = t.number,
     __g = t.number,
     __b = t.number,
@@ -80,35 +86,19 @@ local Color = {}
 local colorMetatable = {
     __index = Color,
 
-    __eq = function(color1: ColorStruct, color2: ColorStruct): boolean
+    __eq = function(color1: RawColor, color2: RawColor): boolean
         local r1: number, g1: number, b1: number = rawget(color1, "R"), rawget(color1, "G"), rawget(color1, "B")
         local r2: number, g2: number, b2: number = rawget(color2, "R"), rawget(color2, "G"), rawget(color2, "B")
     
         return (r1 == r2) and (g1 == g2) and (b1 == b2)
     end,
     
-    __tostring = function(color: ColorStruct): string
+    __tostring = function(color: RawColor): string
         local components: {number} = {rawget(color, "R"), rawget(color, "G"), rawget(color, "B")}
     
         return table.concat(components, ", ")
     end
 }
-
-local colorCheck = function(value: any): (boolean, string?)
-    local isTable, tableError = t.table(value)
-
-    if (not isTable) then
-        return false, tableError
-    end
-
-    local metatable = getmetatable(value)
-
-    if ((not metatable) or (metatable ~= colorMetatable)) then
-        return false, "not a Color"
-    end
-
-    return true
-end
 
 --[[
     Creates a new Color with normalised RGB components
@@ -131,23 +121,24 @@ Color.new = function(r: number, g: number, b: number)
     }, colorMetatable))
 end
 
-export type Color = typeof(Color.new(0, 0, 0))
+export type MetaColor = typeof(Color.new(0, 0, 0))
+export type Color = RawColor | MetaColor
 
-colorMetatable.__add = t.wrap(function(color1: ColorStruct, color2: ColorStruct): Color
+colorMetatable.__add = t.wrap(function(color1: RawColor, color2: RawColor): MetaColor
     local r1: number, g1: number, b1: number = rawget(color1, "__r"), rawget(color1, "__g"), rawget(color1, "__b")
     local r2: number, g2: number, b2: number = rawget(color2, "__r"), rawget(color2, "__g"), rawget(color2, "__b")
 
     return Color.new(r1 + r2, g1 + g2, b1 + b2)
-end, t.tuple(ColorStruct, ColorStruct))
+end, t.tuple(colorCheck, colorCheck))
 
-colorMetatable.__sub = t.wrap(function(color1: ColorStruct, color2: ColorStruct): Color
+colorMetatable.__sub = t.wrap(function(color1: RawColor, color2: RawColor): MetaColor
     local r1: number, g1: number, b1: number = rawget(color1, "__r"), rawget(color1, "__g"), rawget(color1, "__b")
     local r2: number, g2: number, b2: number = rawget(color2, "__r"), rawget(color2, "__g"), rawget(color2, "__b")
     
     return Color.new(r1 - r2, g1 - g2, b1 - b2)
-end, t.tuple(ColorStruct, ColorStruct))
+end, t.tuple(colorCheck, colorCheck))
 
-colorMetatable.__mul = t.wrap(function(color1: ColorStruct | number, color2: ColorStruct | number): Color
+colorMetatable.__mul = t.wrap(function(color1: RawColor | number, color2: RawColor | number): MetaColor
     if ((typeof(color1) == "number") and (typeof(color2) ~= "number")) then
         -- number, Color
         local r: number, g: number, b: number = rawget(color2, "__r"), rawget(color2, "__g"), rawget(color2, "__b")
@@ -167,9 +158,9 @@ colorMetatable.__mul = t.wrap(function(color1: ColorStruct | number, color2: Col
     end
 
     error("cannot multiply types")
-end, t.tuple(t.union(ColorStruct, t.number), t.union(ColorStruct, t.number)))
+end, t.tuple(t.union(colorCheck, t.number), t.union(colorCheck, t.number)))
 
-colorMetatable.__div = t.wrap(function(color1: ColorStruct | number, color2: ColorStruct | number): Color
+colorMetatable.__div = t.wrap(function(color1: RawColor | number, color2: RawColor | number): MetaColor
     if ((typeof(color1) == "number") and (typeof(color2) ~= "number")) then
         -- number, Color
         local r: number, g: number, b: number = rawget(color2, "__r"), rawget(color2, "__g"), rawget(color2, "__b")
@@ -189,32 +180,56 @@ colorMetatable.__div = t.wrap(function(color1: ColorStruct | number, color2: Col
     end
 
     error("cannot divide types")
-end, t.tuple(t.union(ColorStruct, t.number), t.union(ColorStruct, t.number)))
+end, t.tuple(t.union(colorCheck, t.number), t.union(colorCheck, t.number)))
 
 table.freeze(colorMetatable)
 
 ---
 
 --[[
+    Checks if a value can be used as a Color in the API
+]]
+Color.isAColor = colorCheck
+
+--[[
     Creates a Color with all components being 0
 ]]
-Color.zero = function(): Color
+Color.black = function(): MetaColor
     return Color.new(0, 0, 0)
 end
 
 --[[
     Creates a Color with all components being 1
 ]]
-Color.one = function(): Color
+Color.white = function(): MetaColor
     return Color.new(1, 1, 1)
+end
+
+--[[
+    Creates a Color with components (1, 0, 0)
+]]
+Color.red = function(): MetaColor
+    return Color.new(1, 0, 0)
+end
+
+--[[
+    Creates a Color with components (0, 1, 0)
+]]
+Color.green = function(): MetaColor
+    return Color.new(0, 1, 0)
+end
+
+--[[
+    Creates a Color with components (0, 0, 1)
+]]
+Color.blue = function(): MetaColor
+    return Color.new(0, 0, 1)
 end
 
 --[[
     Creates a Color with random components
 ]]
-Color.random = function(): Color
-    local rng = Random.new(os.time())
-
+Color.random = function(): MetaColor
     return Color.new(rng:NextNumber(), rng:NextNumber(), rng:NextNumber())
 end
 
@@ -223,7 +238,7 @@ end
 
     @param scale The amount of grey, with 0 being black and 1 being white
 ]]
-Color.gray = t.wrap(function(scale: number): Color
+Color.gray = t.wrap(function(scale: number): MetaColor
     return Color.new(scale, scale, scale)
 end, t.numberBetween(0, 1))
 
@@ -231,7 +246,7 @@ end, t.numberBetween(0, 1))
     Creates a Color from one of the color keywords
     specified in CSS Color Module Level 3
 ]]
-Color.named = t.wrap(function(name: string): Color
+Color.named = t.wrap(function(name: string): MetaColor
     local hex: string = WebColors[string.lower(name)]
     assert(hex, "invalid name")
 
@@ -241,7 +256,7 @@ end, t.string)
 --[[
     Creates a Color from one of several color types
 ]]
-Color.from = t.wrap(function(colorType: Types.ColorType, ...: any): Color
+Color.from = t.wrap(function(colorType: Types.ColorType, ...: any): MetaColor
     local colorInterface: Types.ColorInterface = ColorTypes[colorType]
     assert(colorInterface, "unknown color interface")
 
@@ -250,13 +265,6 @@ Color.from = t.wrap(function(colorType: Types.ColorType, ...: any): Color
 
     return Color.new(r, g, b)
 end, Types.Runtime.ColorType)
-
---[[
-    Checks if a value is a Color
-]]
-Color.isAColor = function(value: any): (boolean, string?)
-    return colorCheck(value)
-end
 
 --[[
     Checks if a Color's components are clipped
@@ -297,7 +305,7 @@ end, t.tuple(colorCheck, Types.Runtime.ColorType))
 --[[
     Returns a Color with inverted components
 ]]
-Color.invert = t.wrap(function(color: Color): Color
+Color.invert = t.wrap(function(color: Color): MetaColor
     return Color.new(1 - color.__r, 1 - color.__g, 1 - color.__b)
 end, colorCheck)
 
@@ -310,9 +318,9 @@ end, colorCheck)
     @param colorType? The color type to mix with
     @param hueAdjustment? The hue adjustment method when mixing with color types that have a hue component
 ]]
-Color.mix = t.wrap(function(startColor: Color, endColor: Color, ratio: number, optionalColorType: Types.ColorType?, optionalHueAdjustment: Types.HueAdjustment?): Color
+Color.mix = t.wrap(function(startColor: Color, endColor: Color, ratio: number, optionalColorType: Types.ColorType?, optionalHueAdjustment: Types.HueAdjustment?): MetaColor
     local colorType: Types.ColorType = optionalColorType or "RGB"
-    assert(ColorTypes[colorType] and (not disallowedColorInterpolations[colorType]), "invalid interpolation " .. colorType)
+    assert(ColorTypes[colorType] and (not disallowedColorTypeMixes[colorType]), "invalid interpolation " .. colorType)
 
     local startColorComponents: {number}
     local endColorComponents: {number}
@@ -344,7 +352,7 @@ end, t.tuple(colorCheck, colorCheck, t.numberBetween(0, 1), t.optional(Types.Run
     @param foregroundColor The color in the foreground
     @param blendMode The method of blending
 ]]
-Color.blend = t.wrap(function(backgroundColor: Color, foregroundColor: Color, blendMode: Types.BlendMode): Color
+Color.blend = t.wrap(function(backgroundColor: Color, foregroundColor: Color, blendMode: Types.BlendMode): MetaColor
     local backgroundColorComponents: {number} = { Color.components(backgroundColor) }
     local foregroundColorComponents: {number} = { Color.components(foregroundColor) }
 
@@ -382,7 +390,7 @@ Color.luminance = t.wrap(function(color: Color): number
         (0.0722 * Utils.GammaCorrection.toLinear(rgb[3]))
 end, colorCheck)
 
--- WCAG definition of contrast ratio
+-- WCAG 2 contrast ratio
 -- https://www.w3.org/TR/2008/REC-WCAG20-20081211/#contrast-ratiodef
 --[[
     Returns the contrast ratio between two Colors
@@ -428,7 +436,7 @@ end
     @param color
     @param amount? The amount to brighten, default 1 unit (1 unit = 18 L\*)
 ]]
-Color.brighten = t.wrap(function(color: Color, optionalAmount: number?): Color
+Color.brighten = t.wrap(function(color: Color, optionalAmount: number?): MetaColor
     local amount: number = optionalAmount or 1
 
     local l: number, a: number, b: number = ColorTypes.Lab.fromXYZ(Color.to(color, "XYZ"))
@@ -444,7 +452,7 @@ end, t.tuple(colorCheck, t.optional(t.number)))
     @param color
     @param amount? The amount to darken, default 1 unit (1 unit = 18 L\*)
 ]]
-Color.darken = t.wrap(function(color: Color, amount: number?): Color
+Color.darken = t.wrap(function(color: Color, amount: number?): MetaColor
     return Color.brighten(color, -(amount or 1))
 end, t.tuple(colorCheck, t.optional(t.number)))
 
@@ -454,7 +462,7 @@ end, t.tuple(colorCheck, t.optional(t.number)))
     @param color
     @param amount? The amount to saturate, default 1 unit (1 unit = 18 C\*)
 ]]
-Color.saturate = t.wrap(function(color: Color, optionalAmount: number?): Color
+Color.saturate = t.wrap(function(color: Color, optionalAmount: number?): MetaColor
     local amount: number = optionalAmount or 1
 
     local l: number, c: number, h: number = ColorTypes.LChab.fromLab(ColorTypes.Lab.fromXYZ(Color.to(color, "XYZ")))
@@ -471,7 +479,7 @@ end, t.tuple(colorCheck, t.optional(t.number)))
     @param color
     @param amount? The amount to saturate, default 1 unit (1 unit = 18 C\*)
 ]]
-Color.desaturate = t.wrap(function(color: Color, amount: number?): Color
+Color.desaturate = t.wrap(function(color: Color, amount: number?): MetaColor
     return Color.saturate(color, -(amount or 1))
 end, t.tuple(colorCheck, t.optional(t.number)))
 
@@ -483,10 +491,10 @@ end, t.tuple(colorCheck, t.optional(t.number)))
     @param analogyAngle? The angle in degrees to separate hues when using analogous harmonies
     @return An array of Colors, sorted by absolute hue distance from the original Color
 ]]
-Color.harmonies = t.wrap(function(color: Color, harmony: Types.Harmony, optionalAnalogyAngle: number?): {Color}
+Color.harmonies = t.wrap(function(color: Color, harmony: Types.Harmony, optionalAnalogyAngle: number?): {MetaColor}
     local h: number, s: number, b: number = Color.to(color, "HSB")
     local analogyAngle: number = optionalAnalogyAngle or math.deg(2 * math.pi / 12)
-    local harmonies: {Color} = {}
+    local harmonies: {MetaColor} = {}
 
     if (harmony == "Complementary") then
         table.insert(harmonies, Color.from("HSB", h + math.deg(math.pi), s, b))
@@ -523,10 +531,10 @@ end, t.tuple(colorCheck, Types.Runtime.Harmony, t.optional(t.numberPositive)))
 
 ---
 
-local fromAlternative = function(colorType: Types.ColorType): (...any) -> Color
+local fromAlternative = function(colorType: Types.ColorType): (...any) -> MetaColor
     assert(ColorTypes[colorType], "invalid color type")
 
-    return function(...: any): Color
+    return function(...: any): MetaColor
         return Color.from(colorType, ...)
     end
 end
@@ -542,7 +550,7 @@ end
 --[[
     Creates a Color from a BrickColor
 ]]
-Color.fromBrickColor = fromAlternative("BrickColor")::(brickColor: BrickColor) -> Color
+Color.fromBrickColor = fromAlternative("BrickColor")::(brickColor: BrickColor) -> MetaColor
 
 --[[
     Converts a Color to a BrickColor
@@ -552,7 +560,7 @@ Color.toBrickColor = toAlternative("BrickColor")::(color: Color) -> BrickColor
 --[[
     Creates a Color from CMYK components in [0, 1]
 ]]
-Color.fromCMYK = fromAlternative("CMYK")::(c: number, m: number, y: number, k: number) -> Color
+Color.fromCMYK = fromAlternative("CMYK")::(c: number, m: number, y: number, k: number) -> MetaColor
 
 --[[
     Converts a Color to CMYK components in [0, 1]
@@ -562,7 +570,7 @@ Color.toCMYK = toAlternative("CMYK")::(color: Color) -> (number, number, number,
 --[[
     Creates a Color from a Color3
 ]]
-Color.fromColor3 = fromAlternative("Color3")::(color3: Color3) -> Color
+Color.fromColor3 = fromAlternative("Color3")::(color3: Color3) -> MetaColor
 
 --[[
     Converts a Color to a Color3
@@ -574,7 +582,7 @@ Color.toColor3 = toAlternative("Color3")::(color: Color) -> Color3
     - The string may have a leading #
     - The string may be a short hex (e.g. #abc)
 ]]
-Color.fromHex = fromAlternative("Hex")::(hex: string) -> Color
+Color.fromHex = fromAlternative("Hex")::(hex: string) -> MetaColor
 
 --[[
     Converts a Color to a hex string
@@ -588,7 +596,7 @@ Color.toHex = toAlternative("Hex")::(color: Color) -> string
     @param s The saturation between 0 and 1
     @param b The brightness between 0 and 1
 ]]
-Color.fromHSB = fromAlternative("HSB")::(h: number, s: number, b: number) -> Color
+Color.fromHSB = fromAlternative("HSB")::(h: number, s: number, b: number) -> MetaColor
 
 --[[
     Converts a Color to HSB components
@@ -606,7 +614,7 @@ Color.toHSB = toAlternative("HSB")::(color: Color) -> (number, number, number)
     @param s The saturation between 0 and 1
     @param l The lightness between 0 and 1
 ]]
-Color.fromHSL = fromAlternative("HSL")::(h: number, s: number, l: number) -> Color
+Color.fromHSL = fromAlternative("HSL")::(h: number, s: number, l: number) -> MetaColor
 
 --[[
     Converts a Color to HSL components
@@ -624,7 +632,7 @@ Color.toHSL = toAlternative("HSL")::(color: Color) -> (number, number, number)
     @param w The whiteness between 0 and 1
     @param b The blackness between 0 and 1
 ]]
-Color.fromHWB = fromAlternative("HWB")::(h: number, w: number, b: number) -> Color
+Color.fromHWB = fromAlternative("HWB")::(h: number, w: number, b: number) -> MetaColor
 
 --[[
     Converts a Color to HWB components
@@ -642,7 +650,7 @@ Color.toHWB = toAlternative("HWB")::(color: Color) -> (number, number, number)
     @param a The green-magenta component typically between -1.28 and 1.27, with negative values toward green and positive values toward magenta
     @param b The blue-yellow component typically between -1.28 and 1.27, with negative values toward blue and positive values toward yellow
 ]]
-Color.fromLab = fromAlternative("Lab")::(l: number, a: number, b: number) -> Color
+Color.fromLab = fromAlternative("Lab")::(l: number, a: number, b: number) -> MetaColor
 
 --[[
     Converts a Color to L\*a\*b\* components
@@ -660,7 +668,7 @@ Color.toLab = toAlternative("Lab")::(color: Color) -> (number, number, number)
     @param c The chroma typically between 0 and 1.5
     @param h The hue in degrees
 ]]
-Color.fromLChab = fromAlternative("LChab")::(l: number, c: number, h: number) -> Color
+Color.fromLChab = fromAlternative("LChab")::(l: number, c: number, h: number) -> MetaColor
 
 --[[
     Converts a Color to cylindrical L\*a\*b\* components
@@ -678,7 +686,7 @@ Color.toLChab = toAlternative("LChab")::(color: Color) -> (number, number, numbe
     @param c The chroma typically between 0 and 1.5
     @param h The hue in degrees
 ]]
-Color.fromLChuv = fromAlternative("LChuv")::(l: number, c: number, h: number) -> Color
+Color.fromLChuv = fromAlternative("LChuv")::(l: number, c: number, h: number) -> MetaColor
 
 --[[
     Converts a Color to cylindrical L\*u\*v\* components
@@ -696,7 +704,7 @@ Color.toLChuv = toAlternative("LChuv")::(color: Color) -> (number, number, numbe
     @param u The green-magenta component typically between -1 and 1, with negative values toward green and positive values toward magenta
     @param v The blue-yellow component typically between -1 and 1, with negative values toward blue and positive values toward yellow
 ]]
-Color.fromLuv = fromAlternative("Luv")::(l: number, u: number, v: number) -> Color
+Color.fromLuv = fromAlternative("Luv")::(l: number, u: number, v: number) -> MetaColor
 
 --[[
     Converts a Color to L\*u\*v\* components
@@ -712,7 +720,7 @@ Color.toLuv = toAlternative("Luv")::(color: Color) -> (number, number, number)
 
     @param n The number between 0 and 256^3-1
 ]]
-Color.fromNumber = fromAlternative("Number")::(n: number) -> Color
+Color.fromNumber = fromAlternative("Number")::(n: number) -> MetaColor
 
 --[[
     Converts a Color to an integer
@@ -724,7 +732,7 @@ Color.toNumber = toAlternative("Number")::(color: Color) -> number
 --[[
     Creates a Color from RGB components in the range [0, 255]
 ]]
-Color.fromRGB = fromAlternative("RGB")::(r: number, g: number, b: number) -> Color
+Color.fromRGB = fromAlternative("RGB")::(r: number, g: number, b: number) -> MetaColor
 
 --[[
     Converts a Color to RGB components in the range [0, 255]
@@ -737,7 +745,7 @@ Color.toRGB = toAlternative("RGB")::(color: Color) -> (number, number, number)
 
     @param temperature The temperature in Kelvin
 ]]
-Color.fromTemperature = fromAlternative("Temperature")::(temperature: number) -> Color
+Color.fromTemperature = fromAlternative("Temperature")::(temperature: number) -> MetaColor
 
 --[[
     Converts a Color to a blackbody temperature
@@ -749,7 +757,7 @@ Color.toTemperature = toAlternative("Temperature")::(color: Color) -> number
 --[[
     Creates a Color from XYZ tristimulus values typically between 0 and 1
 ]]
-Color.fromXYZ = fromAlternative("XYZ")::(x: number, y: number, z: number) -> Color
+Color.fromXYZ = fromAlternative("XYZ")::(x: number, y: number, z: number) -> MetaColor
 
 --[[
     Converts a Color to XYZ tristimulus values typically between 0 and 1
@@ -759,7 +767,7 @@ Color.toXYZ = toAlternative("XYZ")::(color: Color) -> (number, number, number)
 --[[
     Alias for `Color.fromHSB`
 ]]
-Color.fromHSV = Color.fromHSB::(h: number, s: number, v: number) -> Color
+Color.fromHSV = Color.fromHSB::(h: number, s: number, v: number) -> MetaColor
 
 --[[
     Alias for `Color.toHSB`

@@ -16,11 +16,13 @@ return function()
         expect(Gradient.new).to.be.a("function")
         expect(Gradient.fromColors).to.be.a("function")
         expect(Gradient.fromColorSequence).to.be.a("function")
+        expect(Gradient.isAGradient).to.be.a("function")
+        expect(Gradient.getMaxColorSequenceKeypoints).to.be.a("function")
 
         expect(Gradient.invert).to.be.a("function")
         expect(Gradient.color).to.be.a("function")
         expect(Gradient.colors).to.be.a("function")
-        expect(Gradient.colorSequence).to.be.a("function")
+        expect(Gradient.toColorSequence).to.be.a("function")
     end)
 
     describe("constructors", function()
@@ -78,6 +80,7 @@ return function()
             local grey = Color.new(0.5, 0.5, 0.5)
             local white = Color.new(1, 1, 1)
 
+            expect(Gradient.fromColors).to.throw()
             expect(Gradient.fromColors(black)).to.be.ok()
             expect(Gradient.fromColors(black, white)).to.be.ok()
             expect(Gradient.fromColors(black, grey, white)).to.be.ok()
@@ -153,6 +156,14 @@ return function()
             end).to.throw()
 
             expect(function()
+                gradient:colors(1)
+            end).to.throw()
+
+            expect(function()
+                gradient:colors(2.5)
+            end).to.throw()
+
+            expect(function()
                 local numColors = 10
                 local colors = gradient:colors(numColors)
 
@@ -165,9 +176,9 @@ return function()
         it("should support generating ColorSequences", function()
             local gradient = Gradient.fromColors(Color.new(0, 0, 0), Color.new(1, 1, 1))
 
-            expect(gradient:colorSequence()).to.be.ok()
-            expect(gradient:colorSequence()).to.equal(ColorSequence.new(Color3.new(0, 0, 0), Color3.new(1, 1, 1)))
-            expect(gradient:colorSequence(nil, "XYZ")).never.to.equal(ColorSequence.new(Color3.new(0, 0, 0), Color3.new(1, 1, 1)))
+            expect(gradient:toColorSequence()).to.be.ok()
+            expect(gradient:toColorSequence()).to.equal(ColorSequence.new(Color3.new(0, 0, 0), Color3.new(1, 1, 1)))
+            expect(gradient:toColorSequence(nil, "XYZ")).never.to.equal(ColorSequence.new(Color3.new(0, 0, 0), Color3.new(1, 1, 1)))
         end)
     end)
 end
