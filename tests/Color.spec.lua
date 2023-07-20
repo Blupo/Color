@@ -548,9 +548,33 @@ return function()
         end)
 
         it("should support blending", function()
-            -- TODO: verify testing outputs
             local color1 = Color.from("Hex", "4cbbfc")
             local color2 = Color.from("Hex", "eeee22")
+
+            local black = Color.black()
+            local white = Color.white()
+
+            local red = Color.red()
+            local green = Color.green()
+            local blue = Color.blue()
+
+            local cyan = Color.cyan()
+            local magenta = Color.magenta()
+            local yellow = Color.yellow()
+
+            -- The diagram of cyan, magenta, and yellow circles
+            expect(cyan:blend(magenta, "Multiply")).to.equal(blue)
+            expect(cyan:blend(yellow, "Multiply")).to.equal(green)
+            expect(yellow:blend(magenta, "Multiply")).to.equal(red)
+            expect(cyan:blend(magenta, "Multiply"):blend(yellow, "Multiply")).to.equal(black)
+            expect(yellow:blend(magenta, "Multiply"):blend(cyan, "Multiply")).to.equal(black)
+
+            -- The diagram of red, green, and blue circles
+            expect(red:blend(green, "Screen")).to.equal(yellow)
+            expect(red:blend(blue, "Screen")).to.equal(magenta)
+            expect(green:blend(blue, "Screen")).to.equal(cyan)
+            expect(red:blend(green, "Screen"):blend(blue, "Screen")).to.equal(white)
+            expect(blue:blend(green, "Screen"):blend(red, "Screen")).to.equal(white)
 
             expect(color1:blend(color2, "Normal"):to("Hex")).to.equal("eeee22")
             expect(color1:blend(color2, "Multiply"):to("Hex")).to.equal("47af22")
@@ -564,6 +588,10 @@ return function()
             expect(color1:blend(color2, "SoftLight"):to("Hex")).to.equal("83d6fa")
             expect(color1:blend(color2, "Difference"):to("Hex")).to.equal("a233da")
             expect(color1:blend(color2, "Exclusion"):to("Hex")).to.equal("ac4cdb")
+            expect(color1:blend(color2, "Hue"):to("Hex")).to.equal("b4b404")
+            expect(color1:blend(color2, "Saturation"):to("Hex")).to.equal("49bcff")
+            expect(color1:blend(color2, "Color"):to("Hex")).to.equal("b5b500")
+            expect(color1:blend(color2, "Luminosity"):to("Hex")).to.equal("b3e3ff")
 
             expect(function()
                 color1:blend(color2, "InvalidBlendType")

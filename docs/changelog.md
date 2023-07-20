@@ -10,6 +10,7 @@
 - `Color.magenta` returns a Color with components (1, 0, 1)
 - `Color.yellow` returns a Color with components (1, 1, 0)
 - `Color.fuzzyEq` returns if Color components are within a certain distance
+- `Color.blend` now supports non-separable blending modes
 - `Color`s now support math operations:
     - (These operations act on *unclipped* components)
     - Color + Color

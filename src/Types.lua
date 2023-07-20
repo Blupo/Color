@@ -11,7 +11,10 @@ local Types = {
 
 --      [[ Luau Types ]]
 
-export type BlendMode = "Normal" | "Multiply" | "Screen" | "ColorDodge" | "ColorBurn" | "SoftLight" | "Difference" | "Exclusion" | "Darken" | "Lighten" | "HardLight" | "Overlay"
+export type SeparableBlendMode = "Normal" | "Multiply" | "Screen" | "ColorDodge" | "ColorBurn" | "SoftLight" | "Difference" | "Exclusion" | "Darken" | "Lighten" | "HardLight" | "Overlay"
+export type NonSeparableBlendMode = "Hue" | "Saturation" | "Color" | "Luminosity"
+export type BlendMode = SeparableBlendMode | NonSeparableBlendMode
+
 export type HueAdjustment = "Shorter" | "Longer" | "Increasing" | "Decreasing" | "Raw" | "Specified"
 export type ColorType = "BrickColor" | "CMYK" | "Color3" | "HSB" | "HSL" | "HSV" | "HWB" | "Hex" | "LCh" | "LChab" | "LChuv" | "Lab" | "Luv" | "Number" | "RGB" | "Temperature" | "xyY" | "XYZ"
 export type Harmony = "Complementary" | "Triadic" | "Square" | "Analogous" | "SplitComplementary" | "Tetradic"
@@ -40,7 +43,10 @@ export type ColorInterface = RGBInterface & XYZInterface & LabInterface & LuvInt
 
 --      [[ Runtime Types ]]
 
-Types.Runtime.BlendMode = t.literals("Normal", "Multiply", "Screen", "ColorDodge", "ColorBurn", "SoftLight", "Difference", "Exclusion", "Darken", "Lighten", "HardLight", "Overlay")
+Types.Runtime.SeparableBlendMode = t.literals("Normal", "Multiply", "Screen", "ColorDodge", "ColorBurn", "SoftLight", "Difference", "Exclusion", "Darken", "Lighten", "HardLight", "Overlay")
+Types.Runtime.NonSeparableBlendMode = t.literals("Hue", "Saturation", "Color", "Luminosity")
+Types.Runtime.BlendMode = t.union(Types.Runtime.SeparableBlendMode, Types.Runtime.NonSeparableBlendMode)
+
 Types.Runtime.HueAdjustment = t.literals("Shorter", "Longer", "Increasing", "Decreasing", "Raw", "Specified")
 Types.Runtime.ColorType = t.literals("BrickColor", "CMYK", "Color3", "HSB", "HSL", "HSV", "HWB", "Hex", "LCh", "LChab", "LChuv", "Lab", "Luv", "Number", "RGB", "Temperature", "xyY", "XYZ")
 Types.Runtime.Harmony = t.literals("Complementary", "Triadic", "Square", "Analogous", "SplitComplementary", "Tetradic")
