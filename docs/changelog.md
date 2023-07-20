@@ -6,6 +6,10 @@
 - `Color.red` returns a Color with components (1, 0, 0)
 - `Color.green` returns a Color with components (0, 1, 0)
 - `Color.blue` returns a Color with components (0, 0, 1)
+- `Color.cyan` returns a Color with components (0, 1, 1)
+- `Color.magenta` returns a Color with components (1, 0, 1)
+- `Color.yellow` returns a Color with components (1, 1, 0)
+- `Color.fuzzyEq` returns if Color components are within a certain distance
 - `Color`s now support math operations:
     - (These operations act on *unclipped* components)
     - Color + Color

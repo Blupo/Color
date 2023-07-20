@@ -20,13 +20,17 @@ return function()
         expect(Color.red).to.be.a("function")
         expect(Color.green).to.be.a("function")
         expect(Color.blue).to.be.a("function")
+        expect(Color.cyan).to.be.a("function")
+        expect(Color.magenta).to.be.a("function")
+        expect(Color.yellow).to.be.a("function")
         expect(Color.random).to.be.a("function")
         expect(Color.gray).to.be.a("function")
         expect(Color.named).to.be.a("function")
         expect(Color.from).to.be.a("function")
 
-        expect(Color.unclippedEq).to.be.a("function")
         expect(Color.components).to.be.a("function")
+        expect(Color.fuzzyEq).to.be.a("function")
+        expect(Color.unclippedEq).to.be.a("function")
         expect(Color.to).to.be.a("function")
 
         expect(Color.invert).to.be.a("function")
@@ -87,7 +91,7 @@ return function()
         expect(Color.toLCh).to.equal(Color.toLChab)
     end)
 
-    it("should be able to identify Colors", function()
+    it("should be able to identify usable Colors", function()
         local color = Color.black()
 
         local fakeColor = table.freeze({
@@ -407,13 +411,20 @@ return function()
 
         it("should support operations", function()
             local color1 = Color.random()
+            local color1Components = { color1:components(false) }
+
             local color2 = Color.white()
             local color3 = Color.new(2, 2, 2)
-            local color1Components = { color1:components() }
+
+            local color4 = Color.gray(0.5) + Color.new(1e-4, 1e-4, 1e-4)
+            local color5 = Color.gray(0.5)
 
             expect(color1:invert()).to.be.ok()
             expect(color2:unclippedEq(color3)).to.equal(false)
             expect(color3:isClipped()).to.equal(true)
+
+            expect(color4:fuzzyEq(color5, 1e-4)).to.equal(true)
+            expect(color4:fuzzyEq(color5, 1e-7)).never.to.equal(true)
 
             expect(color1Components[1]).to.equal(color1.R)
             expect(color1Components[2]).to.equal(color1.G)

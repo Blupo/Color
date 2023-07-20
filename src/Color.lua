@@ -138,21 +138,21 @@ colorMetatable.__sub = t.wrap(function(color1: RawColor, color2: RawColor): Meta
     return Color.new(r1 - r2, g1 - g2, b1 - b2)
 end, t.tuple(colorCheck, colorCheck))
 
-colorMetatable.__mul = t.wrap(function(color1: RawColor | number, color2: RawColor | number): MetaColor
-    if ((typeof(color1) == "number") and (typeof(color2) ~= "number")) then
+colorMetatable.__mul = t.wrap(function(a: RawColor | number, b: RawColor | number): MetaColor
+    if ((typeof(a) == "number") and (typeof(b) ~= "number")) then
         -- number, Color
-        local r: number, g: number, b: number = rawget(color2, "__r"), rawget(color2, "__g"), rawget(color2, "__b")
+        local r: number, g: number, bR: number = rawget(b, "__r"), rawget(b, "__g"), rawget(b, "__b")
         
-        return Color.new(r * color1, g * color1, b * color1)
-    elseif ((typeof(color1) ~= "number") and (typeof(color2) == "number")) then
+        return Color.new(r * a, g * a, bR * a)
+    elseif ((typeof(a) ~= "number") and (typeof(b) == "number")) then
         -- Color, number
-        local r: number, g: number, b: number = rawget(color1, "__r"), rawget(color1, "__g"), rawget(color1, "__b")
+        local r: number, g: number, bR: number = rawget(a, "__r"), rawget(a, "__g"), rawget(a, "__b")
         
-        return Color.new(r * color2, g * color2, b * color2)
-    elseif ((typeof(color1) ~= "number") and (typeof(color2) ~= "number")) then
+        return Color.new(r * b, g * b, bR * b)
+    elseif ((typeof(a) ~= "number") and (typeof(b) ~= "number")) then
         -- Color, Color
-        local r1: number, g1: number, b1: number = rawget(color1, "__r"), rawget(color1, "__g"), rawget(color1, "__b")
-        local r2: number, g2: number, b2: number = rawget(color2, "__r"), rawget(color2, "__g"), rawget(color2, "__b")
+        local r1: number, g1: number, b1: number = rawget(a, "__r"), rawget(a, "__g"), rawget(a, "__b")
+        local r2: number, g2: number, b2: number = rawget(b, "__r"), rawget(b, "__g"), rawget(b, "__b")
 
         return Color.new(r1 * r2, g1 * g2, b1 * b2)
     end
@@ -160,21 +160,21 @@ colorMetatable.__mul = t.wrap(function(color1: RawColor | number, color2: RawCol
     error("cannot multiply types")
 end, t.tuple(t.union(colorCheck, t.number), t.union(colorCheck, t.number)))
 
-colorMetatable.__div = t.wrap(function(color1: RawColor | number, color2: RawColor | number): MetaColor
-    if ((typeof(color1) == "number") and (typeof(color2) ~= "number")) then
+colorMetatable.__div = t.wrap(function(a: RawColor | number, b: RawColor | number): MetaColor
+    if ((typeof(a) == "number") and (typeof(b) ~= "number")) then
         -- number, Color
-        local r: number, g: number, b: number = rawget(color2, "__r"), rawget(color2, "__g"), rawget(color2, "__b")
+        local r: number, g: number, bR: number = rawget(b, "__r"), rawget(b, "__g"), rawget(b, "__b")
         
-        return Color.new(r / color1, g / color1, b / color1)
-    elseif ((typeof(color1) ~= "number") and (typeof(color2) == "number")) then
+        return Color.new(r / a, g / a, bR / a)
+    elseif ((typeof(a) ~= "number") and (typeof(b) == "number")) then
         -- Color, number
-        local r: number, g: number, b: number = rawget(color1, "__r"), rawget(color1, "__g"), rawget(color1, "__b")
+        local r: number, g: number, bR: number = rawget(a, "__r"), rawget(a, "__g"), rawget(a, "__b")
         
-        return Color.new(r / color2, g / color2, b / color2)
-    elseif ((typeof(color1) ~= "number") and (typeof(color2) ~= "number")) then
+        return Color.new(r / b, g / b, bR / b)
+    elseif ((typeof(a) ~= "number") and (typeof(b) ~= "number")) then
         -- Color, Color
-        local r1: number, g1: number, b1: number = rawget(color1, "__r"), rawget(color1, "__g"), rawget(color1, "__b")
-        local r2: number, g2: number, b2: number = rawget(color2, "__r"), rawget(color2, "__g"), rawget(color2, "__b")
+        local r1: number, g1: number, b1: number = rawget(a, "__r"), rawget(a, "__g"), rawget(a, "__b")
+        local r2: number, g2: number, b2: number = rawget(b, "__r"), rawget(b, "__g"), rawget(b, "__b")
 
         return Color.new(r1 / r2, g1 / g2, b1 / b2)
     end
@@ -227,6 +227,27 @@ Color.blue = function(): MetaColor
 end
 
 --[[
+    Creates a Color with components (0, 1, 1)
+]]
+Color.cyan = function(): MetaColor
+    return Color.new(0, 1, 1)
+end
+
+--[[
+    Creates a Color with components (1, 0, 1)
+]]
+Color.magenta = function(): MetaColor
+    return Color.new(1, 0, 1)
+end
+
+--[[
+    Creates a Color with components (1, 1, 0)
+]]
+Color.yellow = function(): MetaColor
+    return Color.new(1, 1, 0)
+end
+
+--[[
     Creates a Color with random components
 ]]
 Color.random = function(): MetaColor
@@ -267,21 +288,10 @@ Color.from = t.wrap(function(colorType: Types.ColorType, ...: any): MetaColor
 end, Types.Runtime.ColorType)
 
 --[[
-    Checks if a Color's components are clipped
-]]
-Color.isClipped = t.wrap(function(color: Color): boolean
-    return (color.__r ~= color.R) or (color.__g ~= color.G) or (color.__b ~= color.B)
-end, colorCheck)
-
---[[
-    Compares the *unclipped* components of two Colors
-]]
-Color.unclippedEq = t.wrap(function(refColor: Color, testColor: Color): boolean
-    return (refColor.__r == testColor.__r) and (refColor.__g == testColor.__g) and (refColor.__b == testColor.__b)
-end, t.tuple(colorCheck, colorCheck))
-
---[[
     Returns the components of a Color as a tuple
+
+    @param color
+    @param unclipped? Whether or not to return unclipped components
 ]]
 Color.components = t.wrap(function(color: Color, unclipped: boolean?): (number, number, number)
     if (unclipped) then
@@ -290,6 +300,45 @@ Color.components = t.wrap(function(color: Color, unclipped: boolean?): (number, 
         return color.R, color.G, color.B
     end
 end, t.tuple(colorCheck, t.optional(t.boolean)))
+
+--[[
+    Checks if a Color's components are clipped
+]]
+Color.isClipped = t.wrap(function(color: Color): boolean
+    local r1: number, g1: number, b1: number = Color.components(color)
+    local r2: number, g2: number, b2: number = Color.components(color, true)
+
+    return
+        (r1 ~= r2) or
+        (g1 ~= g2) or
+        (b1 ~= b2)
+end, colorCheck)
+
+--[[
+    Returns if the components of two Colors are within a certain distance of each other
+
+    @param refColor
+    @param testColor
+    @param unclipped? Whether to compare unclipped components
+    @param epsilon? Default 0.0000001 (1e-7)
+]]
+Color.fuzzyEq = t.wrap(function(refColor: Color, testColor: Color, optionalEpsilon: number?, unclipped: boolean?): boolean
+    local epsilon: number = optionalEpsilon or 1e-5
+    local r1: number, g1: number, b1: number = Color.components(refColor, unclipped)
+    local r2: number, g2: number, b2: number = Color.components(testColor, unclipped)
+
+    return
+        (math.abs(r2 - r1) <= epsilon) and
+        (math.abs(g2 - g1) <= epsilon) and
+        (math.abs(b2 - b1) <= epsilon)
+end, t.tuple(colorCheck, colorCheck, t.optional(t.numberAtLeast(0)), t.optional(t.boolean)))
+
+--[[
+    Returns if the unclipped components of two Colors are equal
+]]
+Color.unclippedEq = t.wrap(function(refColor: Color, testColor: Color): boolean
+    return Color.fuzzyEq(refColor, testColor, 0, true)
+end, t.tuple(colorCheck, colorCheck))
 
 --[[
     Converts the Color into a different color type
@@ -306,14 +355,14 @@ end, t.tuple(colorCheck, Types.Runtime.ColorType))
     Returns a Color with inverted components
 ]]
 Color.invert = t.wrap(function(color: Color): MetaColor
-    return Color.new(1 - color.__r, 1 - color.__g, 1 - color.__b)
+    return Color.white() - color
 end, colorCheck)
 
 --[[
     Returns a Color that is a mix between two other Colors
 
-    @param startColor The beginning color
-    @param endColor The ending color
+    @param startColor
+    @param endColor
     @param ratio How mixed the two colors are between 0 and 1, with 0 being the start color, 1 being the end color, and 0.5 being an equal mix
     @param colorType? The color type to mix with
     @param hueAdjustment? The hue adjustment method when mixing with color types that have a hue component
