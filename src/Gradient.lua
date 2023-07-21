@@ -13,10 +13,6 @@ export type GradientKeypoint = {
     Color: Color,
 }
 
-export type RawGradient = {
-    Keypoints: {GradientKeypoint}
-}
-
 ---
 
 local CS_MAX_KEYPOINTS: number
@@ -122,40 +118,7 @@ end
 ---
 
 local Gradient = {}
-
-local gradientMetatable = table.freeze({
-    __index = Gradient,
-
-    __eq = function(gradient1: RawGradient, gradient2: RawGradient): boolean
-        local gradient1Keypoints: {GradientKeypoint} = gradient1.Keypoints
-        local gradient2Keypoints: {GradientKeypoint} = gradient2.Keypoints
-
-        for i = 1, #gradient1Keypoints do
-            local gradient1Keypoint: GradientKeypoint = gradient1Keypoints[i]
-            local gradient2Keypoint: GradientKeypoint = gradient2Keypoints[i]
-
-            if ((gradient1Keypoint.Time ~= gradient2Keypoint.Time) or (not Color.unclippedEq(gradient1Keypoint.Color, gradient2Keypoint.Color))) then
-                return false
-            end
-        end
-
-        return true
-    end,
-
-    __tostring = function(gradient: RawGradient): string
-        local keypoints: {GradientKeypoint} = rawget(gradient, "Keypoints")
-        local keypointStrings: {string} = {}
-
-        for i = 1, #keypoints do
-            local keypoint: GradientKeypoint = keypoints[i]
-            local r: number, g: number, b: number = Color.components(keypoint.Color)
-
-            table.insert(keypointStrings, string.format("%f = [%f, %f, %f]", keypoint.Time, r, g, b))
-        end
-        
-        return string.format("Gradient(%s)", table.concat(keypointStrings, ", "))
-    end,
-})
+local gradientMetatable = { __index = Gradient }
 
 --[[
     Creates a new Gradient from an array of GradientKeypoints
@@ -168,8 +131,37 @@ Gradient.new = function(keypoints: {GradientKeypoint})
     }, gradientMetatable))
 end
 
-export type MetaGradient = typeof(Gradient.new({}))
-export type Gradient = RawGradient | MetaGradient
+export type Gradient = typeof(Gradient.new({}))
+
+gradientMetatable.__eq = function(gradient1: Gradient, gradient2: Gradient): boolean
+    local gradient1Keypoints: {GradientKeypoint} = gradient1.Keypoints
+    local gradient2Keypoints: {GradientKeypoint} = gradient2.Keypoints
+
+    for i = 1, #gradient1Keypoints do
+        local gradient1Keypoint: GradientKeypoint = gradient1Keypoints[i]
+        local gradient2Keypoint: GradientKeypoint = gradient2Keypoints[i]
+
+        if ((gradient1Keypoint.Time ~= gradient2Keypoint.Time) or (gradient1Keypoint.Color ~= gradient2Keypoint.Color)) then
+            return false
+        end
+    end
+
+    return true
+end
+
+gradientMetatable.__tostring = function(gradient: Gradient): string
+    local keypoints: {GradientKeypoint} = gradient.Keypoints
+    local keypointStrings: {string} = {}
+
+    for i = 1, #keypoints do
+        local keypoint: GradientKeypoint = keypoints[i]
+        local r: number, g: number, b: number = Color.components(keypoint.Color)
+
+        table.insert(keypointStrings, string.format("%f = [%f, %f, %f]", keypoint.Time, r, g, b))
+    end
+    
+    return string.format("Gradient(%s)", table.concat(keypointStrings, ", "))
+end
 
 ---
 
@@ -188,7 +180,7 @@ Gradient.isAGradient = gradientCheck
 --[[
     Creates a new Gradient from a Color tuple
 ]]
-Gradient.fromColors = function(...: Color): MetaGradient
+Gradient.fromColors = function(...: Color): Gradient
     local colors: {Color} = {...}
     local numColors: number = #colors
     assert(numColors >= 1, "no colors provided")
@@ -231,7 +223,7 @@ end
 --[[
     Creates a Gradient from a ColorSequence
 ]]
-Gradient.fromColorSequence = function(colorSequence: ColorSequence): MetaGradient
+Gradient.fromColorSequence = function(colorSequence: ColorSequence): Gradient
     local colors: {GradientKeypoint} = {}
     local keypoints: {ColorSequenceKeypoint} = colorSequence.Keypoints
 
@@ -252,7 +244,7 @@ end
 --[[
     Returns a Gradient with the keypoints reversed in time
 ]]
-Gradient.invert = function(gradient: Gradient): MetaGradient
+Gradient.invert = function(gradient: Gradient): Gradient
     local keypoints: {GradientKeypoint} = gradient.Keypoints
     local invertedKeypoints: {GradientKeypoint} = {}
 

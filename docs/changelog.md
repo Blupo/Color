@@ -10,9 +10,10 @@
 - `Color.magenta` returns a Color with components (1, 0, 1)
 - `Color.yellow` returns a Color with components (1, 1, 0)
 - `Color.fuzzyEq` returns if Color components are within a certain distance
-- `Color.blend` now supports non-separable blending modes
+- `Color.clampedEq` returns if the clamped Color components of two Colors are equal
+- `Color.blend` now supports non-separable blending modes (Hue, Saturation, Color, and Luminosity)
 - `Color`s now support math operations:
-    - (These operations act on *unclipped* components)
+    - (These operations act on unclamped components)
     - Color + Color
     - Color - Color
     - Color * number
@@ -26,15 +27,22 @@
 - Code refactoring and module consolidation
 - Got rid of all the of type-checker warnings (for now)
 - Removed most argument validation in favour of performance
-- Any API functions that accept Colors will now accept any table with the necessary color structure, even if they aren't actual Colors
+- Most API functions now have type annotations
+- Converting a Color to a string now outputs unclamped components
+- `Color == Color` now compares unclamped components
 - `Color.isAColor` will now return `true` for tables with the necessary color structure, even if they aren't actual Colors
 - `Color.isAColor` now returns a type-checking message if the value cannot be used as a Color
+- `Color.gray` now takes an *optional* scale, the default is 0.5
 - `Color.bestContrastingColor` now requires 2 Colors to compare instead of 1
 - `Color.random` now uses a Random object instead of `math.random`
 - `Gradient.colorSequence` was renamed *back* to `Gradient.toColorSequence`
 
 ### Deprecated
+- `Color.isUnclipped` will be removed in a future release, use `Color.isUnclamped` instead
 - `Gradient.colorSequence` will be removed in a future release, use `Gradient.toColorSequence` instead
+
+### Removed
+- `Color.unclippedEq`, since `Color == Color` compares unclamped components
 
 ## [0.2.2] - 2022-04-06
 

@@ -12,7 +12,7 @@ return function()
 
     it("should have a public API", function()
         expect(Color.isAColor).to.be.a("function")
-        expect(Color.isClipped).to.be.a("function")
+        expect(Color.isUnclamped).to.be.a("function")
 
         expect(Color.new).to.be.a("function")
         expect(Color.black).to.be.a("function")
@@ -30,7 +30,7 @@ return function()
 
         expect(Color.components).to.be.a("function")
         expect(Color.fuzzyEq).to.be.a("function")
-        expect(Color.unclippedEq).to.be.a("function")
+        expect(Color.clampedEq).to.be.a("function")
         expect(Color.to).to.be.a("function")
 
         expect(Color.invert).to.be.a("function")
@@ -100,19 +100,8 @@ return function()
             B = 0,
         })
 
-        local colorStruct = table.freeze({
-            __r = 0,
-            __g = 0,
-            __b = 0,
-
-            R = 0,
-            G = 0,
-            B = 0
-        })
-
         expect(Color.isAColor(color)).to.equal(true)
-        expect(Color.isAColor(fakeColor)).to.equal(false)
-        expect(Color.isAColor(colorStruct)).to.equal(true)
+        expect(Color.isAColor(fakeColor)).to.equal(true)
     end)
 
     describe("constructors", function()
@@ -346,14 +335,14 @@ return function()
 
         it("should support equality", function()
             local color1 = Color.white()
-            local color2 = Color.white()
+            local color2 = Color.new(1, 1, 1)
             local color3 = Color.black()
             local color4 = Color.new(2, 2, 2)
 
             expect(color1 == color1).to.equal(true)
             expect(color1 == color2).to.equal(true)
             expect(color1 == color3).to.equal(false)
-            expect(color1 == color4).to.equal(true)
+            expect(color1 == color4).to.equal(false)
         end)
 
         it("should support math operations", function()
@@ -362,22 +351,22 @@ return function()
             local scalar = 2.3
 
             local color3 = color1 * scalar
-            local color3Components = { color3:components(true) }
+            local color3Components = { color3:components() }
 
             local color4 = color1 / scalar
-            local color4Components = { color4:components(true) }
+            local color4Components = { color4:components() }
 
             local color5 = color1 * color2
-            local color5Components = { color5:components(true) }
+            local color5Components = { color5:components() }
 
             local color6 = color1 / color2
-            local color6Components = { color6:components(true) }
+            local color6Components = { color6:components() }
 
             local color7 = color1 + color2
-            local color7Components = { color7:components(true) }
+            local color7Components = { color7:components() }
 
             local color8 = color1 - color2
-            local color8Components = { color8:components(true) }
+            local color8Components = { color8:components() }
 
             expect(color3Components[1]).to.equal(color1.R * scalar)
             expect(color3Components[2]).to.equal(color1.G * scalar)
@@ -406,7 +395,7 @@ return function()
 
         it("should support operations", function()
             local color1 = Color.random()
-            local color1Components = { color1:components(false) }
+            local color1Components = { color1:components(true) }
 
             local color2 = Color.white()
             local color3 = Color.new(2, 2, 2)
@@ -415,8 +404,8 @@ return function()
             local color5 = Color.gray(0.5)
 
             expect(color1:invert()).to.be.ok()
-            expect(color2:unclippedEq(color3)).to.equal(false)
-            expect(color3:isClipped()).to.equal(true)
+            expect(color2:clampedEq(color3)).to.equal(true)
+            expect(color3:isUnclamped()).to.equal(true)
 
             expect(color4:fuzzyEq(color5, 1e-4)).to.equal(true)
             expect(color4:fuzzyEq(color5, 1e-7)).never.to.equal(true)
@@ -527,7 +516,7 @@ return function()
         it("should reasonably withstand conversions", function()
             for i = 1, 1000 do
                 local color1 = Color.random()
-                local firstComponents = { color1:components(true) }
+                local firstComponents = { color1:components() }
 
                 local color2 = Color.fromXYZ(color1:toXYZ())
                 local color3 = Color.fromLab(color2:toLab())
@@ -535,7 +524,7 @@ return function()
                 local color5 = Color.fromLab(color4:toLab())
                 local color6 = Color.fromXYZ(color5:toXYZ())
 
-                local finalComponents = { color6:components(true) }
+                local finalComponents = { color6:components() }
                 expect(finalComponents[1]).to.be.near(firstComponents[1], 1e-12)
                 expect(finalComponents[2]).to.be.near(firstComponents[2], 1e-12)
                 expect(finalComponents[3]).to.be.near(firstComponents[3], 1e-12)

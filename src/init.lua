@@ -11,12 +11,10 @@ export type Harmony = Types.Harmony
 export type MixableColorType = Types.MixableColorType
 export type ColorType = Types.ColorType
 
-export type Color = Color.MetaColor
-export type ColorParam = Color.Color
+export type Color = Color.Color
 
 export type GradientKeypoint = Gradient.GradientKeypoint
-export type Gradient = Gradient.MetaGradient
-export type GradientParam = Gradient.Gradient
+export type Gradient = Gradient.Gradient
 
 ---
 
