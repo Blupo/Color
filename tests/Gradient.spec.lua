@@ -160,10 +160,6 @@ return function()
             end).to.throw()
 
             expect(function()
-                gradient:colors(2.5)
-            end).to.throw()
-
-            expect(function()
                 local numColors = 10
                 local colors = gradient:colors(numColors)
 

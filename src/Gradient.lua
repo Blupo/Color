@@ -3,7 +3,6 @@
 local root = script.Parent
 local Color = require(root.Color)
 local Types = require(root.Types)
-local t = require(root.t)
 
 ---
 
@@ -22,23 +21,33 @@ export type RawGradient = {
 
 local CS_MAX_KEYPOINTS: number
 
-local keypointCheck = t.struct({
-    Time = t.numberBetween(0, 1),
-    Color = Color.isAColor,
-})
-
 local keypointsCheck = function(value: {GradientKeypoint}): (boolean, string?)
-    local isArray, arrayError = t.array(keypointCheck)(value)
-
-    if (not isArray) then
-        return false, arrayError
+    if (typeof(value) ~= "table") then
+        return false, "not a table"
     end
 
     local arraySize: number = #value
 
     -- make sure there are at least 2 keypoints
     if (arraySize < 2) then
-        return false, "Gradient must have at least 2 keypoints"
+        return false, "must have at least 2 keypoints"
+    end
+
+    -- make sure the keypoints are actually keypoints
+    for i = 1, arraySize do
+        local keypoint: GradientKeypoint = value[i]
+
+        if (not Color.isAColor(keypoint.Color)) then
+            return false, "keypoint #" .. i .. " does not have a valid color"
+        end
+
+        if (typeof(keypoint.Time) ~= "number") then
+            return false, "keypoint #" .. i .. " does not have a valid time"
+        end
+
+        if ((keypoint.Time < 0) or (keypoint.Time > 1)) then
+            return false, "keypoint #" .. i .. " has a time outside of [0, 1]"
+        end
     end
 
     -- make sure the first keypoint has time 0
@@ -52,8 +61,8 @@ local keypointsCheck = function(value: {GradientKeypoint}): (boolean, string?)
     end
 
     -- make sure the array is sorted by time
-    if (#value > 2) then
-        for i = 1, (#value - 1) do
+    if (arraySize > 2) then
+        for i = 1, (arraySize - 1) do
             local thisKeypoint: GradientKeypoint = value[i]
             local nextKeypoint: GradientKeypoint = value[i + 1]
 
@@ -66,9 +75,13 @@ local keypointsCheck = function(value: {GradientKeypoint}): (boolean, string?)
     return true
 end
 
-local gradientCheck = t.struct({
-    Keypoints = keypointsCheck
-})
+local gradientCheck = function(value: any): (boolean, string?)
+    if (typeof(value) ~= "table") then
+        return false, "not a table"
+    end
+
+    return keypointsCheck(value)
+end
 
 local copyKeypointTable = function(original: {GradientKeypoint}): {GradientKeypoint}
     local copy: {GradientKeypoint} = {}
@@ -113,9 +126,9 @@ local Gradient = {}
 local gradientMetatable = table.freeze({
     __index = Gradient,
 
-    __eq = t.wrap(function(gradient1: RawGradient, gradient2: RawGradient): boolean
-        local gradient1Keypoints: {GradientKeypoint} = rawget(gradient1, "Keypoints")
-        local gradient2Keypoints: {GradientKeypoint} = rawget(gradient2, "Keypoints")
+    __eq = function(gradient1: RawGradient, gradient2: RawGradient): boolean
+        local gradient1Keypoints: {GradientKeypoint} = gradient1.Keypoints
+        local gradient2Keypoints: {GradientKeypoint} = gradient2.Keypoints
 
         for i = 1, #gradient1Keypoints do
             local gradient1Keypoint: GradientKeypoint = gradient1Keypoints[i]
@@ -127,9 +140,9 @@ local gradientMetatable = table.freeze({
         end
 
         return true
-    end, t.tuple(gradientCheck, gradientCheck)),
+    end,
 
-    __tostring = t.wrap(function(gradient: RawGradient): string
+    __tostring = function(gradient: RawGradient): string
         local keypoints: {GradientKeypoint} = rawget(gradient, "Keypoints")
         local keypointStrings: {string} = {}
 
@@ -141,7 +154,7 @@ local gradientMetatable = table.freeze({
         end
         
         return string.format("Gradient(%s)", table.concat(keypointStrings, ", "))
-    end, gradientCheck)
+    end,
 })
 
 --[[
@@ -177,10 +190,12 @@ Gradient.isAGradient = gradientCheck
 ]]
 Gradient.fromColors = function(...: Color): MetaGradient
     local colors: {Color} = {...}
-    assert(t.array(Color.isAColor))
-
     local numColors: number = #colors
-    assert(numColors >= 1, "no Colors are provided")
+    assert(numColors >= 1, "no colors provided")
+
+    for i = 1, numColors do
+        assert(Color.isAColor(colors[i]), "argument #" .. i .. " is not a color")
+    end
 
     if (numColors == 1) then
         local color: Color = colors[1]
@@ -216,7 +231,7 @@ end
 --[[
     Creates a Gradient from a ColorSequence
 ]]
-Gradient.fromColorSequence = t.wrap(function(colorSequence: ColorSequence): MetaGradient
+Gradient.fromColorSequence = function(colorSequence: ColorSequence): MetaGradient
     local colors: {GradientKeypoint} = {}
     local keypoints: {ColorSequenceKeypoint} = colorSequence.Keypoints
 
@@ -230,14 +245,14 @@ Gradient.fromColorSequence = t.wrap(function(colorSequence: ColorSequence): Meta
     end
 
     return Gradient.new(colors)
-end, t.ColorSequence)
+end
 
 ---
 
 --[[
     Returns a Gradient with the keypoints reversed in time
 ]]
-Gradient.invert = t.wrap(function(gradient: Gradient): MetaGradient
+Gradient.invert = function(gradient: Gradient): MetaGradient
     local keypoints: {GradientKeypoint} = gradient.Keypoints
     local invertedKeypoints: {GradientKeypoint} = {}
 
@@ -251,7 +266,7 @@ Gradient.invert = t.wrap(function(gradient: Gradient): MetaGradient
     end
 
     return Gradient.new(invertedKeypoints)
-end, gradientCheck)
+end
 
 -- https://create.roblox.com/docs/reference/engine/datatypes/ColorSequence
 --[[
@@ -262,7 +277,7 @@ end, gradientCheck)
     @param colorType? The color type to mix with
     @param hueAdjustment? The hue adjustment method when mixing with color types that have a hue component
 ]]
-Gradient.color = t.wrap(function(gradient: Gradient, time: number, optionalColorType: Types.ColorType?, optionalHueAdjustment: Types.HueAdjustment?): Color
+Gradient.color = function(gradient: Gradient, time: number, optionalColorType: Types.MixableColorType?, optionalHueAdjustment: Types.HueAdjustment?): Color
     local keypoints: {GradientKeypoint} = gradient.Keypoints
 
     if (time == 0) then
@@ -284,7 +299,7 @@ Gradient.color = t.wrap(function(gradient: Gradient, time: number, optionalColor
 
     -- how did we get here?
     error("unable to evaluate Gradient")
-end, t.tuple(gradientCheck, t.numberBetween(0, 1), t.optional(Types.Runtime.ColorType), t.optional(Types.Runtime.HueAdjustment)))
+end
 
 --[[
     Returns a list of Colors with keypoints that are an equal distance of time apart  
@@ -294,7 +309,9 @@ end, t.tuple(gradientCheck, t.numberBetween(0, 1), t.optional(Types.Runtime.Colo
     @param colorType? The color type to mix with
     @param hueAdjustment? The hue adjustment method when mixing with color types that have a hue component
 ]]
-Gradient.colors = t.wrap(function(gradient: Gradient, steps: number, optionalColorType: Types.ColorType?, optionalHueAdjustment: Types.HueAdjustment?): {Color}
+Gradient.colors = function(gradient: Gradient, steps: number, optionalColorType: Types.MixableColorType?, optionalHueAdjustment: Types.HueAdjustment?): {Color}
+    assert(steps >= 2, "must generate at least 2 colors")
+
     local colors: {Color} = {}
 
     for i = 1, steps do
@@ -302,7 +319,7 @@ Gradient.colors = t.wrap(function(gradient: Gradient, steps: number, optionalCol
     end
 
     return colors
-end, t.tuple(gradientCheck, t.intersection(t.integer, t.numberAtLeast(2)), t.optional(Types.Runtime.ColorType), t.optional(Types.Runtime.HueAdjustment)))
+end
 
 --[[
     Returns a ColorSequence derived from a Gradient
@@ -312,8 +329,12 @@ end, t.tuple(gradientCheck, t.intersection(t.integer, t.numberAtLeast(2)), t.opt
     @param colorType? The color type to mix with
     @param hueAdjustment? The hue adjustment method when mixing with color types that have a hue component
 ]]
-Gradient.toColorSequence = t.wrap(function(gradient: Gradient, optionalSteps: number?, optionalColorType: Types.ColorType?, optionalHueAdjustment: Types.HueAdjustment?): ColorSequence
-    local colorType: Types.ColorType = optionalColorType or "RGB"
+Gradient.toColorSequence = function(gradient: Gradient, optionalSteps: number?, optionalColorType: Types.MixableColorType?, optionalHueAdjustment: Types.HueAdjustment?): ColorSequence
+    if (optionalSteps) then
+        assert((optionalSteps >= 2) and (optionalSteps <= CS_MAX_KEYPOINTS), "number of keypoints must be between 2 and " .. CS_MAX_KEYPOINTS)
+    end
+    
+    local colorType: Types.MixableColorType = optionalColorType or "RGB"
     local csKeypoints: {ColorSequenceKeypoint} = {}
 
     if (colorType == "RGB") then
@@ -334,7 +355,7 @@ Gradient.toColorSequence = t.wrap(function(gradient: Gradient, optionalSteps: nu
     end
 
     return ColorSequence.new(csKeypoints)
-end, t.tuple(gradientCheck, t.optional(t.intersection(t.integer, t.numberBetween(2, CS_MAX_KEYPOINTS))), t.optional(Types.Runtime.ColorType), t.optional(Types.Runtime.HueAdjustment)))
+end
 
 --[[
     **DEPRECATED**\

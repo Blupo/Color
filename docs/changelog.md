@@ -25,7 +25,7 @@
 ### Changed
 - Code refactoring and module consolidation
 - Got rid of all the of type-checker warnings (for now)
-- Improved argument validation on all API functions
+- Removed most argument validation in favour of performance
 - Any API functions that accept Colors will now accept any table with the necessary color structure, even if they aren't actual Colors
 - `Color.isAColor` will now return `true` for tables with the necessary color structure, even if they aren't actual Colors
 - `Color.isAColor` now returns a type-checking message if the value cannot be used as a Color

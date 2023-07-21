@@ -8,11 +8,7 @@
             "$className": "ReplicatedStorage",
 
             "Color": {
-                "$path": "src",
-
-                "t": {
-                    "$path": "includes/t"
-                }
+                "$path": "src"
             }
         },
 

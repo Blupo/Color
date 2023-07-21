@@ -127,15 +127,14 @@ return function()
         end)
 
         it("should support Color3", function()
-            expect(Color.from("Color3", Color3.new(math.random(), math.random(), math.random()))).to.be.ok()
+            local color3 = Color3.new(math.random(), math.random(), math.random())
+            local r, g, b = color3.R, color3.G, color3.B
 
-            expect(function()
-                Color.from("Color3", {
-                    R = 1,
-                    G = 1,
-                    B = 1
-                })
-            end).to.throw()
+            local color = Color.from("Color3", color3)
+
+            expect(color.R).to.equal(r)
+            expect(color.G).to.equal(g)
+            expect(color.B).to.equal(b)
         end)
 
         it("should support BrickColor", function()
@@ -168,10 +167,6 @@ return function()
 
             expect(function()
                 Color.from("Number", 256^3)
-            end).to.throw()
-
-            expect(function()
-                Color.from("Number", 0.5)
             end).to.throw()
         end)
 

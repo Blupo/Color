@@ -2,10 +2,6 @@
     "name": "Color",
 
     "tree": {
-        "$path": "src",
-
-        "t": {
-            "$path": "includes/t"
-        }
+        "$path": "src"
     }
   }

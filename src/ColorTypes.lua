@@ -1,7 +1,6 @@
 --!strict
 
 local root = script.Parent
-local t = require(root.t)
 local Types = require(root.Types)
 
 local Utils = require(root.Utils)
@@ -29,11 +28,11 @@ ColorTypes.BrickColor = {
         return BrickColor.new(Color3.new(r, g, b))
     end,
 
-    toRGB = t.wrap(function(brickColor: BrickColor): (number, number, number)
+    toRGB = function(brickColor: BrickColor): (number, number, number)
         local color = brickColor.Color
 
         return color.R, color.G, color.B
-    end, t.BrickColor)::(BrickColor) -> (number, number, number),
+    end,
 }
 
 ColorTypes.CMYK = {
@@ -50,12 +49,12 @@ ColorTypes.CMYK = {
         return c, m, y, k
     end,
 
-    toRGB = t.wrap(function(c: number, m: number, y: number, k: number): (number, number, number)
+    toRGB = function(c: number, m: number, y: number, k: number): (number, number, number)
         return
             (1 - c) * (1 - k),
             (1 - m) * (1 - k),
             (1 - y) * (1 - k)
-    end, t.tuple(t.numberBetween(0, 1), t.numberBetween(0, 1), t.numberBetween(0, 1), t.numberBetween(0, 1)))::(number, number, number, number) -> (number, number, number),
+    end,
 }
 
 ColorTypes.Color3 = {
@@ -63,9 +62,9 @@ ColorTypes.Color3 = {
         return Color3.new(r, g, b)
     end,
 
-    toRGB = t.wrap(function(color: Color3): (number, number, number)
+    toRGB = function(color: Color3): (number, number, number)
         return color.R, color.G, color.B
-    end, t.Color3)::(Color3) -> (number, number, number)
+    end,
 }
 
 --[[
@@ -82,7 +81,7 @@ ColorTypes.Hex = {
         return string.format("%02x%02x%02x", r, g, b)
     end,
 
-    toRGB = t.wrap(function(hex: string): (number, number, number)
+    toRGB = function(hex: string): (number, number, number)
         local hexContent: string? = string.match(hex, "#?(.+)")
         assert(hexContent, "hex string is empty")
 
@@ -100,7 +99,7 @@ ColorTypes.Hex = {
         assert(number, "could not parse hex string")
 
         return ColorTypes.Number.toRGB(number)
-    end, t.string)::(string) -> (number, number, number)
+    end,
 }
 
 -- Conversions from https://doi.org/10.1145/965139.807361
@@ -126,7 +125,7 @@ ColorTypes.HSB = {
         return h * 60, s, br
     end,
 
-    toRGB = t.wrap(function(h: number, s: number, b: number): (number, number, number)
+    toRGB = function(h: number, s: number, b: number): (number, number, number)
         if (s == 0) then
             return b, b, b
         else
@@ -156,7 +155,7 @@ ColorTypes.HSB = {
                 return 0, 0, 0
             end
         end
-    end, t.tuple(t.union(t.number, t.nan), t.numberBetween(0, 1), t.numberBetween(0, 1)))::(number, number, number) -> (number, number, number)
+    end,
 }
 
 -- Conversions from https://en.wikipedia.org/wiki/HSL_and_HSV#Interconversion
@@ -176,7 +175,7 @@ ColorTypes.HSL = {
         return h, sL, l
     end,
 
-    toRGB = t.wrap(function(h: number, s: number, l: number): (number, number, number)
+    toRGB = function(h: number, s: number, l: number): (number, number, number)
         local b: number = l + (s * math.min(l, 1 - l))
         local sV: number
     
@@ -187,7 +186,7 @@ ColorTypes.HSL = {
         end
     
         return ColorTypes.HSB.toRGB(h % 360, sV, b)
-    end, t.tuple(t.union(t.number, t.nan), t.numberBetween(0, 1), t.numberBetween(0, 1)))::(number, number, number) -> (number, number, number),
+    end,
 }
 
 ColorTypes.HWB = {
@@ -197,7 +196,7 @@ ColorTypes.HWB = {
         return h, (1 - s) * br, (1 - br)
     end,
 
-    toRGB = t.wrap(function(h: number, w: number, b: number): (number, number, number)
+    toRGB = function(h: number, w: number, b: number): (number, number, number)
         local sum: number = w + b
     
         if (sum > 1) then
@@ -208,7 +207,7 @@ ColorTypes.HWB = {
         local s: number = (b ~= 1) and (1 - (w / br)) or 0
     
         return ColorTypes.HSB.toRGB(h % 360, s, br)
-    end, t.tuple(t.union(t.number, t.nan), t.numberBetween(0, 1), t.numberBetween(0, 1)))::(number, number, number) -> (number, number, number)
+    end,
 }
 
 ColorTypes.Number = {
@@ -218,14 +217,16 @@ ColorTypes.Number = {
         return (r * (256^2)) + (g * 256) + b
     end,
     
-    toRGB = t.wrap(function(n: number): (number, number, number)
+    toRGB = function(n: number): (number, number, number)
+        assert((n >= 0) and (n <= (256^3 - 1)), "number must be between 0 and 16777215")
+
         local r: number, g: number, b: number = bit32.rshift(n, 16), bit32.band(bit32.rshift(n, 8), 255), bit32.band(n, 255)
     
         return
             r / 255,
             g / 255,
             b / 255
-    end, t.intersection(t.integer, t.numberBetween(0, 256^3 - 1)))::(number) -> (number, number, number)
+    end,
 }
 
 ColorTypes.RGB = {
@@ -236,12 +237,12 @@ ColorTypes.RGB = {
             Round(b * 255)
     end,
     
-    toRGB = t.wrap(function(r: number, g: number, b: number): (number, number, number)
+    toRGB = function(r: number, g: number, b: number): (number, number, number)
         return
             r / 255,
             g / 255,
             b / 255
-    end, t.tuple(t.numberAtLeast(0), t.numberAtLeast(0), t.numberAtLeast(0)))::(number, number, number) -> (number, number, number)
+    end,
 }
 
 --[[
@@ -279,7 +280,7 @@ do
         return a + (b * x) + (c * math.log(x))
     end
 
-    local toRGB = t.wrap(function(kelvin: number): (number, number, number)
+    local toRGB = function(kelvin: number): (number, number, number)
         local temperature: number = kelvin / 100
     
         local r255: number
@@ -313,7 +314,7 @@ do
             Round(r255) / 255,
             Round(g255) / 255,
             Round(b255) / 255
-    end, t.numberAtLeast(0))::(number) -> (number, number, number)
+    end
 
     local fromRGB = function(r: number, _: number, b: number): number
         local minTemperature: number = 1000
@@ -381,7 +382,7 @@ do
                 (sRGB_XYZ_MATRIX[3][1] * r) + (sRGB_XYZ_MATRIX[3][2] * g) + (sRGB_XYZ_MATRIX[3][3] * b)
         end,
 
-        toRGB = t.wrap(function(x: number, y: number, z: number): (number, number, number)
+        toRGB = function(x: number, y: number, z: number): (number, number, number)
             local r: number = (XYZ_sRGB_MATRIX[1][1] * x) + (XYZ_sRGB_MATRIX[1][2] * y) + (XYZ_sRGB_MATRIX[1][3] * z)
             local g: number = (XYZ_sRGB_MATRIX[2][1] * x) + (XYZ_sRGB_MATRIX[2][2] * y) + (XYZ_sRGB_MATRIX[2][3] * z)
             local b: number = (XYZ_sRGB_MATRIX[3][1] * x) + (XYZ_sRGB_MATRIX[3][2] * y) + (XYZ_sRGB_MATRIX[3][3] * z)
@@ -390,7 +391,7 @@ do
                 Utils.GammaCorrection.toStandard(r),
                 Utils.GammaCorrection.toStandard(g),
                 Utils.GammaCorrection.toStandard(b)
-        end, t.tuple(t.numberAtLeast(0), t.numberAtLeast(0), t.numberAtLeast(0)))::(number, number, number) -> (number, number, number)
+        end,
     }
 end
 
@@ -429,9 +430,9 @@ do
         return fromXYZ(ColorTypes.XYZ.fromRGB(r, g, b))
     end
     
-    local toRGB = t.wrap(function(x: number, y: number, Y: number): (number, number, number)
+    local toRGB = function(x: number, y: number, Y: number): (number, number, number)
         return ColorTypes.XYZ.toRGB(toXYZ(x, y, Y))
-    end, t.tuple(t.numberBetween(0, 1), t.numberBetween(0, 1), t.numberBetween(0, 1)))::(number, number, number) -> (number, number, number)
+    end
 
     ColorTypes.xyY = {
         fromRGB = fromRGB,
@@ -490,9 +491,9 @@ do
         return fromXYZ(ColorTypes.XYZ.fromRGB(r, g, b))
     end
 
-    local toRGB = t.wrap(function(l: number, a: number, b: number): (number, number, number)
+    local toRGB = function(l: number, a: number, b: number): (number, number, number)
         return ColorTypes.XYZ.toRGB(toXYZ(l, a, b))
-    end, t.tuple(t.numberBetween(0, 1), t.number, t.number))::(number, number, number) -> (number, number, number)
+    end
 
     ColorTypes.Lab = {
         fromRGB = fromRGB,
@@ -535,9 +536,9 @@ do
         return fromLab(ColorTypes.Lab.fromXYZ(ColorTypes.XYZ.fromRGB(r, g, b)))
     end
     
-    local toRGB = t.wrap(function(l: number, c: number, h: number): (number, number, number)
+    local toRGB = function(l: number, c: number, h: number): (number, number, number)
         return ColorTypes.XYZ.toRGB(ColorTypes.Lab.toXYZ(toLab(l, c, h)))
-    end, t.tuple(t.numberBetween(0, 1), t.number, t.union(t.number, t.nan)))::(number, number, number) -> (number, number, number)
+    end
 
     ColorTypes.LChab = {
         fromRGB = fromRGB,
@@ -603,9 +604,9 @@ do
         return fromXYZ(ColorTypes.XYZ.fromRGB(r, g, b))
     end
     
-    local toRGB = t.wrap(function(l: number, u: number, v: number): (number, number, number)
+    local toRGB = function(l: number, u: number, v: number): (number, number, number)
         return ColorTypes.XYZ.toRGB(toXYZ(l, u, v))
-    end, t.tuple(t.numberBetween(0, 1), t.number, t.number))::(number, number, number) -> (number, number, number)
+    end
 
     ColorTypes.Luv = {
         fromRGB = fromRGB,
@@ -648,9 +649,9 @@ do
         return fromLuv(ColorTypes.Luv.fromXYZ(ColorTypes.XYZ.fromRGB(r, g, b)))
     end
     
-    local toRGB = t.wrap(function(l: number, c: number, h: number): (number, number, number)
+    local toRGB = function(l: number, c: number, h: number): (number, number, number)
         return ColorTypes.XYZ.toRGB(ColorTypes.Luv.toXYZ(toLuv(l, c, h)))
-    end, t.tuple(t.numberBetween(0, 1), t.number, t.union(t.number, t.nan)))::(number, number, number) -> (number, number, number)
+    end
 
     ColorTypes.LChuv = {
         fromRGB = fromRGB,

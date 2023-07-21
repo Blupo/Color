@@ -3,7 +3,6 @@
 local root = script.Parent
 
 local ColorTypes = require(root.ColorTypes)
-local t = require(root.t)
 local Types = require(root.Types)
 local WebColors = require(root.WebColors)
 
@@ -13,7 +12,7 @@ local Utils = require(root.Utils)
 
 ---
 
-type RawColor = {
+export type RawColor = {
     __r: number,
     __g: number,
     __b: number,
@@ -34,16 +33,7 @@ assert(ColorTypes.LChab.toLab)
 -- Used for Color.random
 local rng: Random = Random.new()
 
--- Mixing with these color types doesn't make sense
-local disallowedColorTypeMixes: {[Types.ColorType]: true} = {
-    BrickColor = true,
-    Color3 = true,
-    Hex = true,
-    Number = true,
-    Temperature = true,
-}
-
--- When exporting (Color.to), these color types will be given clipped components to generate values
+-- These color types expect RGB components in the range [0, 1]
 local clippedColorTypes: {[Types.ColorType]: true} = {
     BrickColor = true,
     CMYK = true,
@@ -58,7 +48,7 @@ local clippedColorTypes: {[Types.ColorType]: true} = {
     Temperature = true,
 }
 
--- These color types have a hue component that needs to be handled differently than other components when mixing Colors
+-- These color types have a hue component that needs to be handled differently when mixing
 local hueComponentIndices: {[Types.ColorType]: number} = {
     HSB = 1,
     HSL = 1,
@@ -69,16 +59,6 @@ local hueComponentIndices: {[Types.ColorType]: number} = {
     LChuv = 3,
 }
 
-local colorCheck = t.struct({
-    __r = t.number,
-    __g = t.number,
-    __b = t.number,
-
-    R = t.numberBetween(0, 1),
-    G = t.numberBetween(0, 1),
-    B = t.numberBetween(0, 1)
-})
-
 ---
 
 local Color = {}
@@ -87,15 +67,15 @@ local colorMetatable = {
     __index = Color,
 
     __eq = function(color1: RawColor, color2: RawColor): boolean
-        local r1: number, g1: number, b1: number = rawget(color1, "R"), rawget(color1, "G"), rawget(color1, "B")
-        local r2: number, g2: number, b2: number = rawget(color2, "R"), rawget(color2, "G"), rawget(color2, "B")
-    
+        local r1: number, g1: number, b1: number = color1.R, color1.G, color1.B
+        local r2: number, g2: number, b2: number = color2.R, color2.G, color2.B
+
         return (r1 == r2) and (g1 == g2) and (b1 == b2)
     end,
     
     __tostring = function(color: RawColor): string
-        local components: {number} = {rawget(color, "R"), rawget(color, "G"), rawget(color, "B")}
-    
+        local components: {number} = {color.R, color.G, color.B}
+
         return table.concat(components, ", ")
     end
 }
@@ -104,8 +84,6 @@ local colorMetatable = {
     Creates a new Color with normalised RGB components
 ]]
 Color.new = function(r: number, g: number, b: number)
-    assert(t.tuple(t.number, t.number, t.number)(r, g, b))
-
     local clippedR: number = math.clamp(r, 0, 1)
     local clippedG: number = math.clamp(g, 0, 1)
     local clippedB: number = math.clamp(b, 0, 1)
@@ -124,63 +102,63 @@ end
 export type MetaColor = typeof(Color.new(0, 0, 0))
 export type Color = RawColor | MetaColor
 
-colorMetatable.__add = t.wrap(function(color1: RawColor, color2: RawColor): MetaColor
-    local r1: number, g1: number, b1: number = rawget(color1, "__r"), rawget(color1, "__g"), rawget(color1, "__b")
-    local r2: number, g2: number, b2: number = rawget(color2, "__r"), rawget(color2, "__g"), rawget(color2, "__b")
+colorMetatable.__add = function(color1: Color, color2: Color): MetaColor
+    local r1: number, g1: number, b1: number = color1.__r, color1.__g, color1.__b
+    local r2: number, g2: number, b2: number = color2.__r, color2.__g, color2.__b
 
     return Color.new(r1 + r2, g1 + g2, b1 + b2)
-end, t.tuple(colorCheck, colorCheck))
+end
 
-colorMetatable.__sub = t.wrap(function(color1: RawColor, color2: RawColor): MetaColor
-    local r1: number, g1: number, b1: number = rawget(color1, "__r"), rawget(color1, "__g"), rawget(color1, "__b")
-    local r2: number, g2: number, b2: number = rawget(color2, "__r"), rawget(color2, "__g"), rawget(color2, "__b")
-    
+colorMetatable.__sub = function(color1: Color, color2: Color): MetaColor
+    local r1: number, g1: number, b1: number = color1.__r, color1.__g, color1.__b
+    local r2: number, g2: number, b2: number = color2.__r, color2.__g, color2.__b
+
     return Color.new(r1 - r2, g1 - g2, b1 - b2)
-end, t.tuple(colorCheck, colorCheck))
+end
 
-colorMetatable.__mul = t.wrap(function(a: RawColor | number, b: RawColor | number): MetaColor
+colorMetatable.__mul = function(a: Color | number, b: Color | number): MetaColor
     if ((typeof(a) == "number") and (typeof(b) ~= "number")) then
         -- number, Color
-        local r: number, g: number, bR: number = rawget(b, "__r"), rawget(b, "__g"), rawget(b, "__b")
-        
+        local r: number, g: number, bR: number = b.__r, b.__g, b.__b
+
         return Color.new(r * a, g * a, bR * a)
     elseif ((typeof(a) ~= "number") and (typeof(b) == "number")) then
         -- Color, number
-        local r: number, g: number, bR: number = rawget(a, "__r"), rawget(a, "__g"), rawget(a, "__b")
-        
+        local r: number, g: number, bR: number = a.__r, a.__g, a.__b
+
         return Color.new(r * b, g * b, bR * b)
     elseif ((typeof(a) ~= "number") and (typeof(b) ~= "number")) then
         -- Color, Color
-        local r1: number, g1: number, b1: number = rawget(a, "__r"), rawget(a, "__g"), rawget(a, "__b")
-        local r2: number, g2: number, b2: number = rawget(b, "__r"), rawget(b, "__g"), rawget(b, "__b")
+        local r1: number, g1: number, b1: number = a.__r, a.__g, a.__b
+        local r2: number, g2: number, b2: number = b.__r, b.__g, b.__b
 
         return Color.new(r1 * r2, g1 * g2, b1 * b2)
     end
 
     error("cannot multiply types")
-end, t.tuple(t.union(colorCheck, t.number), t.union(colorCheck, t.number)))
+end
 
-colorMetatable.__div = t.wrap(function(a: RawColor | number, b: RawColor | number): MetaColor
+colorMetatable.__div = function(a: Color | number, b: Color | number): MetaColor
     if ((typeof(a) == "number") and (typeof(b) ~= "number")) then
         -- number, Color
-        local r: number, g: number, bR: number = rawget(b, "__r"), rawget(b, "__g"), rawget(b, "__b")
-        
+        local r: number, g: number, bR: number = b.__r, b.__g, b.__b
+
         return Color.new(r / a, g / a, bR / a)
     elseif ((typeof(a) ~= "number") and (typeof(b) == "number")) then
         -- Color, number
-        local r: number, g: number, bR: number = rawget(a, "__r"), rawget(a, "__g"), rawget(a, "__b")
-        
+        local r: number, g: number, bR: number = a.__r, a.__g, a.__b
+
         return Color.new(r / b, g / b, bR / b)
     elseif ((typeof(a) ~= "number") and (typeof(b) ~= "number")) then
         -- Color, Color
-        local r1: number, g1: number, b1: number = rawget(a, "__r"), rawget(a, "__g"), rawget(a, "__b")
-        local r2: number, g2: number, b2: number = rawget(b, "__r"), rawget(b, "__g"), rawget(b, "__b")
+        local r1: number, g1: number, b1: number = a.__r, a.__g, a.__b
+        local r2: number, g2: number, b2: number = b.__r, b.__g, b.__b
 
         return Color.new(r1 / r2, g1 / g2, b1 / b2)
     end
 
     error("cannot divide types")
-end, t.tuple(t.union(colorCheck, t.number), t.union(colorCheck, t.number)))
+end
 
 table.freeze(colorMetatable)
 
@@ -189,7 +167,19 @@ table.freeze(colorMetatable)
 --[[
     Checks if a value can be used as a Color in the API
 ]]
-Color.isAColor = colorCheck
+Color.isAColor = function(value: any): (boolean, string?)
+    if (typeof(value) ~= "table") then
+        return false, "not a table"
+    end
+
+    return
+        (typeof(value.__r) == "number") and
+        (typeof(value.__g) == "number") and
+        (typeof(value.__b) == "number") and
+        (typeof(value.R) == "number") and
+        (typeof(value.G) == "number") and
+        (typeof(value.B) == "number")
+end
 
 --[[
     Creates a Color with all components being 0
@@ -259,33 +249,33 @@ end
 
     @param scale The amount of grey, with 0 being black and 1 being white
 ]]
-Color.gray = t.wrap(function(scale: number): MetaColor
+Color.gray = function(scale: number): MetaColor
     return Color.new(scale, scale, scale)
-end, t.numberBetween(0, 1))
+end
 
 --[[
     Creates a Color from one of the color keywords
     specified in CSS Color Module Level 3
 ]]
-Color.named = t.wrap(function(name: string): MetaColor
+Color.named = function(name: string): MetaColor
     local hex: string = WebColors[string.lower(name)]
     assert(hex, "invalid name")
 
     return Color.new(ColorTypes.Hex.toRGB(hex))
-end, t.string)
+end
 
 --[[
     Creates a Color from one of several color types
 ]]
-Color.from = t.wrap(function(colorType: Types.ColorType, ...: any): MetaColor
-    local colorInterface: Types.ColorInterface = ColorTypes[colorType]
+Color.from = function(colorType: Types.ColorType, ...: any): MetaColor
+    local colorInterface: Types.ColorInterface? = ColorTypes[colorType]
     assert(colorInterface, "unknown color interface")
 
     local r: number, g: number, b: number = colorInterface.toRGB(...)
     assert(r and g and b, "invalid components")
 
     return Color.new(r, g, b)
-end, Types.Runtime.ColorType)
+end
 
 --[[
     Returns the components of a Color as a tuple
@@ -293,18 +283,18 @@ end, Types.Runtime.ColorType)
     @param color
     @param unclipped? Whether or not to return unclipped components
 ]]
-Color.components = t.wrap(function(color: Color, unclipped: boolean?): (number, number, number)
+Color.components = function(color: Color, unclipped: boolean?): (number, number, number)
     if (unclipped) then
         return color.__r, color.__g, color.__b
     else
         return color.R, color.G, color.B
     end
-end, t.tuple(colorCheck, t.optional(t.boolean)))
+end
 
 --[[
     Checks if a Color's components are clipped
 ]]
-Color.isClipped = t.wrap(function(color: Color): boolean
+Color.isClipped = function(color: Color): boolean
     local r1: number, g1: number, b1: number = Color.components(color)
     local r2: number, g2: number, b2: number = Color.components(color, true)
 
@@ -312,7 +302,7 @@ Color.isClipped = t.wrap(function(color: Color): boolean
         (r1 ~= r2) or
         (g1 ~= g2) or
         (b1 ~= b2)
-end, colorCheck)
+end
 
 --[[
     Returns if the components of two Colors are within a certain distance of each other
@@ -322,7 +312,7 @@ end, colorCheck)
     @param unclipped? Whether to compare unclipped components
     @param epsilon? Default 0.0000001 (1e-7)
 ]]
-Color.fuzzyEq = t.wrap(function(refColor: Color, testColor: Color, optionalEpsilon: number?, unclipped: boolean?): boolean
+Color.fuzzyEq = function(refColor: Color, testColor: Color, optionalEpsilon: number?, unclipped: boolean?): boolean
     local epsilon: number = optionalEpsilon or 1e-5
     local r1: number, g1: number, b1: number = Color.components(refColor, unclipped)
     local r2: number, g2: number, b2: number = Color.components(testColor, unclipped)
@@ -331,32 +321,32 @@ Color.fuzzyEq = t.wrap(function(refColor: Color, testColor: Color, optionalEpsil
         (math.abs(r2 - r1) <= epsilon) and
         (math.abs(g2 - g1) <= epsilon) and
         (math.abs(b2 - b1) <= epsilon)
-end, t.tuple(colorCheck, colorCheck, t.optional(t.numberAtLeast(0)), t.optional(t.boolean)))
+end
 
 --[[
     Returns if the unclipped components of two Colors are equal
 ]]
-Color.unclippedEq = t.wrap(function(refColor: Color, testColor: Color): boolean
+Color.unclippedEq = function(refColor: Color, testColor: Color): boolean
     return Color.fuzzyEq(refColor, testColor, 0, true)
-end, t.tuple(colorCheck, colorCheck))
+end
 
 --[[
     Converts the Color into a different color type
 ]]
-Color.to = t.wrap(function(color: Color, colorType: Types.ColorType): ...any
+Color.to = function(color: Color, colorType: Types.ColorType): ...any
     local colorInterface: Types.ColorInterface? = ColorTypes[colorType]
     assert(colorInterface, "unknown color interface")
 
     local clipComponents: boolean? = clippedColorTypes[colorType]
     return colorInterface.fromRGB(Color.components(color, not clipComponents))
-end, t.tuple(colorCheck, Types.Runtime.ColorType))
+end
 
 --[[
     Returns a Color with inverted components
 ]]
-Color.invert = t.wrap(function(color: Color): MetaColor
-    return Color.white() - color
-end, colorCheck)
+Color.invert = function(color: Color): MetaColor
+    return Color.new(1 - color.__r, 1 - color.__g, 1 - color.__b)
+end
 
 --[[
     Returns a Color that is a mix between two other Colors
@@ -367,9 +357,9 @@ end, colorCheck)
     @param colorType? The color type to mix with
     @param hueAdjustment? The hue adjustment method when mixing with color types that have a hue component
 ]]
-Color.mix = t.wrap(function(startColor: Color, endColor: Color, ratio: number, optionalColorType: Types.ColorType?, optionalHueAdjustment: Types.HueAdjustment?): MetaColor
-    local colorType: Types.ColorType = optionalColorType or "RGB"
-    assert(ColorTypes[colorType] and (not disallowedColorTypeMixes[colorType]), "invalid interpolation " .. colorType)
+Color.mix = function(startColor: Color, endColor: Color, ratio: number, optionalColorType: Types.MixableColorType?, optionalHueAdjustment: Types.HueAdjustment?): MetaColor
+    local colorType: Types.MixableColorType = optionalColorType or "RGB"
+    assert(ColorTypes[colorType], "invalid interpolation " .. colorType)
 
     local startColorComponents: {number}
     local endColorComponents: {number}
@@ -392,7 +382,7 @@ Color.mix = t.wrap(function(startColor: Color, endColor: Color, ratio: number, o
     return if (colorType == "RGB") then
         Color.new(table.unpack(mixedColorComponents))
     else Color.from(colorType, table.unpack(mixedColorComponents))
-end, t.tuple(colorCheck, colorCheck, t.numberBetween(0, 1), t.optional(Types.Runtime.ColorType), t.optional(Types.Runtime.HueAdjustment)))
+end
 
 --[[
     Returns a Color that is a composite blend between of two Colors
@@ -401,12 +391,12 @@ end, t.tuple(colorCheck, colorCheck, t.numberBetween(0, 1), t.optional(Types.Run
     @param foregroundColor The color in the foreground
     @param blendMode The method of blending
 ]]
-Color.blend = t.wrap(function(backgroundColor: Color, foregroundColor: Color, blendMode: Types.BlendMode): MetaColor
+Color.blend = function(backgroundColor: Color, foregroundColor: Color, blendMode: Types.BlendMode): MetaColor
     local backgroundColorComponents: {number} = { Color.components(backgroundColor) }
     local foregroundColorComponents: {number} = { Color.components(foregroundColor) }
 
     return Color.new(Blend(backgroundColorComponents, foregroundColorComponents, blendMode))
-end, t.tuple(colorCheck, colorCheck, t.optional(Types.Runtime.BlendMode)))
+end
 
 --[[
     Returns the DeltaE of two Colors
@@ -417,12 +407,12 @@ end, t.tuple(colorCheck, colorCheck, t.optional(Types.Runtime.BlendMode)))
     @param kC Weight factor, default 1
     @param kH Weight factor, default 1
 ]]
-Color.deltaE = t.wrap(function(refColor: Color, testColor: Color, kL: number?, kC: number?, kH: number?): number
+Color.deltaE = function(refColor: Color, testColor: Color, kL: number?, kC: number?, kH: number?): number
     local refColorComponents: {number} = { Color.to(refColor, "Lab") }
     local testColorComponents: {number} = { Color.to(testColor, "Lab") }
 
     return DeltaE(refColorComponents, testColorComponents, kL, kC, kH)
-end, t.tuple(colorCheck, colorCheck, t.optional(t.numberPositive), t.optional(t.numberPositive), t.optional(t.numberPositive)))
+end
 
 -- WCAG definition of relative luminance
 -- https://www.w3.org/TR/2008/REC-WCAG20-20081211/#relativeluminancedef
@@ -430,14 +420,14 @@ end, t.tuple(colorCheck, colorCheck, t.optional(t.numberPositive), t.optional(t.
 --[[
     Returns the relative luminance of a Color between 0 and 1
 ]]
-Color.luminance = t.wrap(function(color: Color): number
+Color.luminance = function(color: Color): number
     local rgb: {number} = { Color.components(color) }
 
     return
         (0.2126 * Utils.GammaCorrection.toLinear(rgb[1])) +
         (0.7152 * Utils.GammaCorrection.toLinear(rgb[2])) +
         (0.0722 * Utils.GammaCorrection.toLinear(rgb[3]))
-end, colorCheck)
+end
 
 -- WCAG 2 contrast ratio
 -- https://www.w3.org/TR/2008/REC-WCAG20-20081211/#contrast-ratiodef
@@ -446,14 +436,14 @@ end, colorCheck)
 
     @return The constrast ratio, between 1 and 21
 ]]
-Color.contrast = t.wrap(function(refColor: Color, testColor: Color): number
+Color.contrast = function(refColor: Color, testColor: Color): number
     local refColorLuminance: number = Color.luminance(refColor)
     local testColorLuminance: number = Color.luminance(testColor)
 
     return if (refColorLuminance > testColorLuminance) then
         ((refColorLuminance + 0.05) / (testColorLuminance + 0.05))
     else ((testColorLuminance + 0.05) / (refColorLuminance + 0.05))
-end, t.tuple(colorCheck, colorCheck))
+end
 
 --[[
     Returns the Color with the highest constrast ratio with the reference Color
@@ -465,7 +455,6 @@ end, t.tuple(colorCheck, colorCheck))
 ]]
 Color.bestContrastingColor = function(refColor: Color, ...: Color): (Color, number)
     local options: {Color} = {...}
-    assert(t.array(colorCheck)(options))
     assert(#options >= 2, "no colors to compare")
 
     table.sort(options, function(option1, option2)
@@ -485,14 +474,14 @@ end
     @param color
     @param amount? The amount to brighten, default 1 unit (1 unit = 18 L\*)
 ]]
-Color.brighten = t.wrap(function(color: Color, optionalAmount: number?): MetaColor
+Color.brighten = function(color: Color, optionalAmount: number?): MetaColor
     local amount: number = optionalAmount or 1
 
     local l: number, a: number, b: number = ColorTypes.Lab.fromXYZ(Color.to(color, "XYZ"))
     l = l + (amount * 0.18)
 
     return Color.from("XYZ", ColorTypes.Lab.toXYZ(l, a, b))
-end, t.tuple(colorCheck, t.optional(t.number)))
+end
 
 --[[
     Returns a darkened Color using L*a*b*\
@@ -501,9 +490,9 @@ end, t.tuple(colorCheck, t.optional(t.number)))
     @param color
     @param amount? The amount to darken, default 1 unit (1 unit = 18 L\*)
 ]]
-Color.darken = t.wrap(function(color: Color, amount: number?): MetaColor
+Color.darken = function(color: Color, amount: number?): MetaColor
     return Color.brighten(color, -(amount or 1))
-end, t.tuple(colorCheck, t.optional(t.number)))
+end
 
 --[[
     Returns a more-saturated Color using L\*C\*h
@@ -511,7 +500,7 @@ end, t.tuple(colorCheck, t.optional(t.number)))
     @param color
     @param amount? The amount to saturate, default 1 unit (1 unit = 18 C\*)
 ]]
-Color.saturate = t.wrap(function(color: Color, optionalAmount: number?): MetaColor
+Color.saturate = function(color: Color, optionalAmount: number?): MetaColor
     local amount: number = optionalAmount or 1
 
     local l: number, c: number, h: number = ColorTypes.LChab.fromLab(ColorTypes.Lab.fromXYZ(Color.to(color, "XYZ")))
@@ -519,7 +508,7 @@ Color.saturate = t.wrap(function(color: Color, optionalAmount: number?): MetaCol
     c = (c < 0) and 0 or c
 
     return Color.from("XYZ", ColorTypes.Lab.toXYZ(ColorTypes.LChab.toLab(l, c, h)))
-end, t.tuple(colorCheck, t.optional(t.number)))
+end
 
 --[[
     Returns a desaturated Color using L\*C\*h\
@@ -528,9 +517,9 @@ end, t.tuple(colorCheck, t.optional(t.number)))
     @param color
     @param amount? The amount to saturate, default 1 unit (1 unit = 18 C\*)
 ]]
-Color.desaturate = t.wrap(function(color: Color, amount: number?): MetaColor
+Color.desaturate = function(color: Color, amount: number?): MetaColor
     return Color.saturate(color, -(amount or 1))
-end, t.tuple(colorCheck, t.optional(t.number)))
+end
 
 --[[
     Returns a list of Colors that are harmonies of another
@@ -540,7 +529,7 @@ end, t.tuple(colorCheck, t.optional(t.number)))
     @param analogyAngle? The angle in degrees to separate hues when using analogous harmonies
     @return An array of Colors, sorted by absolute hue distance from the original Color
 ]]
-Color.harmonies = t.wrap(function(color: Color, harmony: Types.Harmony, optionalAnalogyAngle: number?): {MetaColor}
+Color.harmonies = function(color: Color, harmony: Types.Harmony, optionalAnalogyAngle: number?): {MetaColor}
     local h: number, s: number, b: number = Color.to(color, "HSB")
     local analogyAngle: number = optionalAnalogyAngle or math.deg(2 * math.pi / 12)
     local harmonies: {MetaColor} = {}
@@ -573,10 +562,12 @@ Color.harmonies = t.wrap(function(color: Color, harmony: Types.Harmony, optional
         table.insert(harmonies, Color.from("HSB", h + analogyAngle, s, b))
         table.insert(harmonies, Color.from("HSB", complementaryAngle, s, b))
         table.insert(harmonies, Color.from("HSB", complementaryAngle + analogyAngle, s, b))
+    else
+        error("invalid harmony")
     end
 
     return harmonies
-end, t.tuple(colorCheck, Types.Runtime.Harmony, t.optional(t.numberPositive)))
+end
 
 ---
 
@@ -591,9 +582,9 @@ end
 local toAlternative = function(colorType: Types.ColorType): (color: Color) -> ...any
     assert(ColorTypes[colorType], "invalid color type")
 
-    return t.wrap(function(color: Color): ...any
+    return function(color: Color): ...any
         return Color.to(color, colorType)
-    end, colorCheck)
+    end
 end
 
 --[[

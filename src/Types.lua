@@ -1,22 +1,16 @@
 --!strict
 
-local root = script.Parent
-local t = require(root.t)
-
----
-
-local Types = {
-    Runtime = {}::{[string]: (any) -> (boolean, string?)},
-}
-
---      [[ Luau Types ]]
+local Types = {}
 
 export type SeparableBlendMode = "Normal" | "Multiply" | "Screen" | "ColorDodge" | "ColorBurn" | "SoftLight" | "Difference" | "Exclusion" | "Darken" | "Lighten" | "HardLight" | "Overlay"
 export type NonSeparableBlendMode = "Hue" | "Saturation" | "Color" | "Luminosity"
 export type BlendMode = SeparableBlendMode | NonSeparableBlendMode
 
+export type MixableColorType = "CMYK" | "HSB" | "HSL" | "HSV" | "HWB" | "LCh" | "LChab" | "LChuv" | "Lab" | "Luv" | "RGB" | "xyY" | "XYZ"
+export type NonMixableColorType = "BrickColor" | "Color3" | "Hex" | "Number"| "Temperature"
+export type ColorType = MixableColorType | NonMixableColorType
+
 export type HueAdjustment = "Shorter" | "Longer" | "Increasing" | "Decreasing" | "Raw" | "Specified"
-export type ColorType = "BrickColor" | "CMYK" | "Color3" | "HSB" | "HSL" | "HSV" | "HWB" | "Hex" | "LCh" | "LChab" | "LChuv" | "Lab" | "Luv" | "Number" | "RGB" | "Temperature" | "xyY" | "XYZ"
 export type Harmony = "Complementary" | "Triadic" | "Square" | "Analogous" | "SplitComplementary" | "Tetradic"
 
 export type RGBInterface = {
@@ -40,15 +34,5 @@ export type LuvInterfacce = {
 }
 
 export type ColorInterface = RGBInterface & XYZInterface & LabInterface & LuvInterfacce
-
---      [[ Runtime Types ]]
-
-Types.Runtime.SeparableBlendMode = t.literals("Normal", "Multiply", "Screen", "ColorDodge", "ColorBurn", "SoftLight", "Difference", "Exclusion", "Darken", "Lighten", "HardLight", "Overlay")
-Types.Runtime.NonSeparableBlendMode = t.literals("Hue", "Saturation", "Color", "Luminosity")
-Types.Runtime.BlendMode = t.union(Types.Runtime.SeparableBlendMode, Types.Runtime.NonSeparableBlendMode)
-
-Types.Runtime.HueAdjustment = t.literals("Shorter", "Longer", "Increasing", "Decreasing", "Raw", "Specified")
-Types.Runtime.ColorType = t.literals("BrickColor", "CMYK", "Color3", "HSB", "HSL", "HSV", "HWB", "Hex", "LCh", "LChab", "LChuv", "Lab", "Luv", "Number", "RGB", "Temperature", "xyY", "XYZ")
-Types.Runtime.Harmony = t.literals("Complementary", "Triadic", "Square", "Analogous", "SplitComplementary", "Tetradic")
 
 return Types
