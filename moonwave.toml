@@ -1,0 +1,19 @@
+gitSourceBranch = "develop"
+classOrder = ["Color", "Gradient"]
+apiCategories = ["Constructor", "Import", "Export"]
+
+[home]
+enabled = true
+includeReadme = true
+
+[[home.features]]
+title = "Colors"
+description = "A feature-rich library for making and working with Colors. You can import/export Colors from/to different sources, like Color3s, HSB, or CIELAB. Operations include color interpolation, blending, and calculating color difference."
+
+[[home.features]]
+title = "Gradients"
+description = "Put Colors together into Gradients. Generate intermediate Colors, or export them to ColorSequences for use in the engine."
+
+[[home.features]]
+title = "Full typing"
+description = "The library exposes all the types necessary for properly annotating code that uses it. In addition, all library functions have proper type annotations."

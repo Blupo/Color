@@ -117,12 +117,33 @@ end
 
 ---
 
+--[=[
+    @class Gradient
+]=]
+--[=[
+    @prop Keypoints {GradientKeypoint}
+    @within Gradient
+    @readonly
+]=]
+--[=[
+    @interface GradientKeypoint
+    @within Gradient
+    @field Time number -- Between 0 and 1
+    @field Color Color
+]=]
+
 local Gradient = {}
 local gradientMetatable = { __index = Gradient }
 
---[[
+--[=[
     Creates a new Gradient from an array of GradientKeypoints
-]]
+
+    @function new
+    @within Gradient
+    @param keypoints {GradientKeypoint}
+    @return Gradient
+    @tag Constructor
+]=]
 Gradient.new = function(keypoints: {GradientKeypoint})
     assert(keypointsCheck(keypoints))
 
@@ -165,21 +186,37 @@ end
 
 ---
 
---[[
+--[=[
     Returns the maximum number of keypoints a ColorSequence can have
-]]
+
+    @function getMaxColorSequenceKeypoints
+    @within Gradient
+    @return number
+]=]
 Gradient.getMaxColorSequenceKeypoints = function(): number
     return CS_MAX_KEYPOINTS
 end
 
---[[
-    Returns if a value can be used as a Gradient in the API
-]]
+--[=[
+    Returns if a value can be used as a Gradient
+
+    @function isAGradient
+    @within Gradient
+    @param value any
+    @return boolean
+    @return string?
+]=]
 Gradient.isAGradient = gradientCheck
 
---[[
+--[=[
     Creates a new Gradient from a Color tuple
-]]
+
+    @function fromColors
+    @within Gradient
+    @param ... Color
+    @return Gradient
+    @tag Constructor
+]=]
 Gradient.fromColors = function(...: Color): Gradient
     local colors: {Color} = {...}
     local numColors: number = #colors
@@ -220,9 +257,15 @@ Gradient.fromColors = function(...: Color): Gradient
     end
 end
 
---[[
+--[=[
     Creates a Gradient from a ColorSequence
-]]
+
+    @function fromColorSequence
+    @within Gradient
+    @param colorSequence ColorSequence
+    @return Gradient
+    @tag Constructor
+]=]
 Gradient.fromColorSequence = function(colorSequence: ColorSequence): Gradient
     local colors: {GradientKeypoint} = {}
     local keypoints: {ColorSequenceKeypoint} = colorSequence.Keypoints
@@ -241,9 +284,14 @@ end
 
 ---
 
---[[
+--[=[
     Returns a Gradient with the keypoints reversed in time
-]]
+
+    @function invert
+    @within Gradient
+    @param gradient Gradient
+    @return Gradient
+]=]
 Gradient.invert = function(gradient: Gradient): Gradient
     local keypoints: {GradientKeypoint} = gradient.Keypoints
     local invertedKeypoints: {GradientKeypoint} = {}
@@ -261,14 +309,17 @@ Gradient.invert = function(gradient: Gradient): Gradient
 end
 
 -- https://create.roblox.com/docs/reference/engine/datatypes/ColorSequence
---[[
+--[=[
     Evaluates a Gradient at a specific time and returns the corresponding Color
 
-    @param gradient
-    @param time 
-    @param colorType? The color type to mix with
-    @param hueAdjustment? The hue adjustment method when mixing with color types that have a hue component
-]]
+    @function color
+    @within Gradient
+    @param gradient Gradient
+    @param time number
+    @param colorType MixableColorType? -- The color type to mix with
+    @param hueAdjustment HueAdjustment? -- The hue adjustment method when mixing with color types that have a hue component
+    @return Color
+]=]
 Gradient.color = function(gradient: Gradient, time: number, optionalColorType: Types.MixableColorType?, optionalHueAdjustment: Types.HueAdjustment?): Color
     local keypoints: {GradientKeypoint} = gradient.Keypoints
 
@@ -293,14 +344,17 @@ Gradient.color = function(gradient: Gradient, time: number, optionalColorType: T
     error("unable to evaluate Gradient")
 end
 
---[[
+--[=[
     Returns a list of Colors with keypoints that are an equal distance of time apart  
 
-    @param gradient
-    @param steps The number of Colors to generate, at least 2
-    @param colorType? The color type to mix with
-    @param hueAdjustment? The hue adjustment method when mixing with color types that have a hue component
-]]
+    @function colors
+    @within Gradient
+    @param gradient Gradient
+    @param steps number -- The number of Colors to generate, at least 2
+    @param colorType MixableColorType? -- The color type to mix with
+    @param hueAdjustment HueAdjustment? -- The hue adjustment method when mixing with color types that have a hue component
+    @return {Color}
+]=]
 Gradient.colors = function(gradient: Gradient, steps: number, optionalColorType: Types.MixableColorType?, optionalHueAdjustment: Types.HueAdjustment?): {Color}
     assert(steps >= 2, "must generate at least 2 colors")
 
@@ -313,14 +367,17 @@ Gradient.colors = function(gradient: Gradient, steps: number, optionalColorType:
     return colors
 end
 
---[[
+--[=[
     Returns a ColorSequence derived from a Gradient
 
-    @param gradient
-    @param steps The number of keypoints to generate, between 2 and the maximum possible number of ColorSequence keypoints
-    @param colorType? The color type to mix with
-    @param hueAdjustment? The hue adjustment method when mixing with color types that have a hue component
-]]
+    @function toColorSequence
+    @within Gradient
+    @param gradient Gradient
+    @param steps number -- The number of keypoints to generate, between 2 and the maximum possible number of ColorSequence keypoints
+    @param colorType MixableColorType? -- The color type to mix with
+    @param hueAdjustment HueAdjustment? -- The hue adjustment method when mixing with color types that have a hue component
+    @return ColorSequence
+]=]
 Gradient.toColorSequence = function(gradient: Gradient, optionalSteps: number?, optionalColorType: Types.MixableColorType?, optionalHueAdjustment: Types.HueAdjustment?): ColorSequence
     if (optionalSteps) then
         assert((optionalSteps >= 2) and (optionalSteps <= CS_MAX_KEYPOINTS), "number of keypoints must be between 2 and " .. CS_MAX_KEYPOINTS)
@@ -349,10 +406,18 @@ Gradient.toColorSequence = function(gradient: Gradient, optionalSteps: number?, 
     return ColorSequence.new(csKeypoints)
 end
 
---[[
-    **DEPRECATED**\
-    Alias for `Gradient.toColorSequence`
-]]
+--[=[
+    Alias for [`Gradient.toColorSequence`](#toColorSequence)
+
+    @function colorSequence
+    @within Gradient
+    @param gradient Gradient
+    @param steps number
+    @param colorType MixableColorType?
+    @param hueAdjustment HueAdjustment?
+    @return ColorSequence
+    @deprecated 0.3.0
+]=]
 Gradient.colorSequence = Gradient.toColorSequence
 
 ---

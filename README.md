@@ -3,31 +3,26 @@
 <a href="https://roblox.com/library/7933448750"><img src="https://img.shields.io/badge/roblox-model-green.svg" alt="Install" /></a>
 <a href="https://blupo.github.io/Color"><img src="https://img.shields.io/badge/docs-website-green.svg" alt="Documentation" /></a>
 
-Color is a Roblox Luau library for color management and manipulation, inspired by [chroma.js](https://vis4.net/chromajs/).
-
-## Installing
-
-The module is available in the library [here](https://roblox.com/library/7933448750) if you want to install it using the Toolbox. You can also grab a [release](https://github.com/Blupo/Color/releases) from GitHub and install it manually.
-
-If you know how to use [Rojo](https://rojo.space), you can build the latest code from the development branch to get the newest features. Keep in mind that this is **development code**, and things can break or change quickly.
+Color is a Roblox Luau library for color management and manipulation, inspired by libraries like [chroma.js](https://www.vis4.net/chromajs/) and [Color.js](https://colorjs.io/).
 
 ## Features
 
 Some of the library's features includes:
 
-- Reading colors from many different formats
-- Converting colors to many different formats
+- Importing colors from various formats
+- Exporting colors to various formats
 - Color interpolation in different spaces
 - Creating gradients
 
-For a full introduction to the library, you can read the [documentation](https://blupo.github.io/Color). Some example code of the library's features is included below:
+<!--moonwave-hide-before-this-line-->
+For a full introduction to the library, you can read the [documentation](https://blupo.github.io/Color/docs/intro). Some example code of the library's features is included below:
 
 ```lua
 -- Accessing the modules
-local ColorLib = require(...)
+local ColorAPI = require(...)
 
-local Color = ColorLib.Color
-local Gradient = ColorLib.Gradient
+local Color = ColorAPI.Color
+local Gradient = ColorAPI.Gradient
 
 -- Constructors
 local pink = Color.fromHex("#ff69b4")

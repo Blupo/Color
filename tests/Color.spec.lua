@@ -514,7 +514,7 @@ return function()
         end)
 
         it("should reasonably withstand conversions", function()
-            for i = 1, 1000 do
+            for _ = 1, 1000 do
                 local color1 = Color.random()
                 local firstComponents = { color1:components() }
 

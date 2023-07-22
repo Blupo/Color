@@ -510,8 +510,8 @@ end
         L*C*h(ab) -> L*a*b*: http://www.brucelindbloom.com/Eqn_LCH_to_Lab.html
 ]]
 do
-    assert(ColorTypes.Lab.fromXYZ)
-    assert(ColorTypes.Lab.toXYZ)
+    assert(ColorTypes.Lab.fromXYZ, "XYZ to CIELAB conversion missing")
+    assert(ColorTypes.Lab.toXYZ, "CIELAB to XYZ conversion missing")
     
     local fromLab = function(l: number, a: number, b: number): (number, number, number)
         a, b = a * 100, b * 100
@@ -623,8 +623,8 @@ end
         L*C*h(uv) -> L*u*v*: http://www.brucelindbloom.com/Eqn_LCH_to_Luv.html
 ]]
 do
-    assert(ColorTypes.Luv.fromXYZ)
-    assert(ColorTypes.Luv.toXYZ)
+    assert(ColorTypes.Luv.fromXYZ, "XYZ to CIELUV conversion missing")
+    assert(ColorTypes.Luv.toXYZ, "CIELUV to XYZ conversion missing")
     
     local fromLuv = function(l: number, u: number, v: number): (number, number, number)
         u, v = u * 100, v * 100

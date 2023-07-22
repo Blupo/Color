@@ -2,8 +2,8 @@
 *.rbxm*
 *.rbxl*
 
-# roblox.toml
+# Selene
 /roblox.toml
 
-# LSP
+# Luau LSP
 /sourcemap.json

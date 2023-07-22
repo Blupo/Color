@@ -124,8 +124,8 @@ local setSaturation = function(r: number, g: number, b: number, s: number): (num
     local components: {number} = {r, g, b}
     local map: {number} = {1, 2, 3}
 
-    table.sort(map, function(a: number, b: number): boolean
-        return components[a] > components[b]
+    table.sort(map, function(i1: number, i2: number): boolean
+        return components[i1] > components[i2]
     end)
 
     local maxIndex, midIndex, minIndex = table.unpack(map)

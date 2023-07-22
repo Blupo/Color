@@ -2,3 +2,4 @@ std = "roblox+testez"
 
 [rules]
 parenthese_conditions = "allow"
+must_use = "allow"
