@@ -23,10 +23,10 @@ type Harmony = ColorAPI.Harmony
 type MixableColorType = ColorAPI.MixableColorType
 type ColorType = ColorAPI.ColorType
 
-type Color = Color.Color
+type Color = ColorAPI.Color
 ```
 
-More information about these types is available in the [API reference](/api/Color).
+More information about these types is available in the API reference.
 
 ## Constructing Colors
 
@@ -61,11 +61,13 @@ local hotpink = Color.named("hotpink")
 local coral = Color.named("coral")
 ```
 
-The current list of accepted names for [`Color.named`](/api/Color#named) is available in [CSS Color Module Level 3](https://www.w3.org/TR/2021/REC-css-color-3-20210805/#svg-color).
+:::note
+The current list of accepted names for [`Color.named`](/api/Color#named) comes from [CSS Color Module Level 3](https://www.w3.org/TR/2021/REC-css-color-3-20210805/#svg-color).
+:::
 
 ## Importing Colors
 
-Colors can also be constructed from various other types of colors, such as [`BrickColor`](https://create.roblox.com/docs/reference/engine/datatypes/Color3)s, [`Color3`](https://create.roblox.com/docs/reference/engine/datatypes/BrickColor)s, hex codes, HSL values, and much more. There are two ways to import Colors: the generic [`Color.from`](/api/Color#from), or the various import aliases.
+Colors can also be constructed from various other types of colors, such as [BrickColor](https://create.roblox.com/docs/reference/engine/datatypes/BrickColor)s, [Color3](https://create.roblox.com/docs/reference/engine/datatypes/Color3)s, hex codes, HSL values, and much more. There are two ways to import Colors: the generic [`Color.from`](/api/Color#from), or the various import aliases (e.g. `Color.fromHex`, `Color.fromBrickColor`, etc.).
 
 ```lua
 local colorFromHex = Color.from("Hex", "#bcb6be")
@@ -77,7 +79,11 @@ local hsbColor = Color.fromHSB(241, 1, 1)
 local xyzColor = Color.fromXYZ(0.9504, 1, 1.0888)
 ```
 
-Most of the time, there will be an alias for the color type you want to import. At the time of writing, the only color type that doesn't have an import (or export) alias is `xyY`, and can only be accessed using `Color.from("xyY", ...)`. The full list of import aliases can be found in the [API reference](/api/Color), as well as the [complete list of color types](/api/Color#ColorType) you can import/export from.
+:::info
+Currently, the only color type that doesn't have an import (or export) alias is `xyY`, and can only be accessed using `Color.from("xyY", ...)`.
+:::
+
+The full list of import aliases can be found in the [API reference](/api/Color), as well as the [complete list of color types](/api/Color#ColorType) you can import/export from.
 
 ## Exporting Colors
 
@@ -98,14 +104,13 @@ The full list of export aliases can be found in the [API reference](/api/Color).
 
 ## Color Operations
 
-Colors are similar to [`Vector3`](https://create.roblox.com/docs/reference/engine/datatypes/Vector3)s in that they have some math operations.
+Colors are similar to vectors in that they have some math operations. Specifically, the following operations are supported:
 
-Specifically, the following operations are supported:
 - Color == Color
 - Color + Color
 - Color - Color
-- Color * Color, which multiplies each component separately
-- Color * number
+- Color \* Color, which multiplies each component separately
+- Color \* number
 - Color / Color, which divides each component separately
 - Color / number
 
@@ -129,7 +134,7 @@ You might be thinking of using these operations to make a Color darker or bright
 
 You may have noticed that some of the operations demonstrated aboved resulting in Colors with components outside of the typical [0, 1] range. This may seem like an error, however there are legitimate reasons for the components to be out of range. Colors (as in the Color object from this library) are a representation of sRGB, which is the current standard color space for the web and Roblox. sRGB, however, doesn't encompass all colors that are perceptible to humans, which may be represented by components outside the range [0, 1].
 
-If you're worried about how this will affect exporting, don't be. Exporting to most color types will clamp the components to [0, 1] before conversion, specifically any export that expects sRGB. This includes [`BrickColor`](https://create.roblox.com/docs/reference/engine/datatypes/BrickColor)s and [`Color3`](https://create.roblox.com/docs/reference/engine/datatypes/Color3)s, as well as hex codes, HSB, HSL, and a few others. You can also manually check if a Color's components are unclamped using [`Color.isUnclamped`](/api/Color#isUnclamped).
+If you're worried about how this will affect exporting, don't be. Exporting to most color types will clamp the components to [0, 1] before conversion, specifically any export that expects sRGB. This includes [BrickColor](https://create.roblox.com/docs/reference/engine/datatypes/BrickColor)s and [Color3](https://create.roblox.com/docs/reference/engine/datatypes/Color3)s, as well as hex codes, HSB, HSL, and a few others. You can also manually check if a Color's components are unclamped using [`Color.isUnclamped`](/api/Color#isUnclamped).
 
 ## Color Functions
 
@@ -145,24 +150,25 @@ Also called color interpolation, mixing refers to transitioning one color to ano
 local red = Color.red()
 local aqua = Color.named("aqua")
 
-red:mix(aqua, ...)
+red:mix(aqua, 0.5) -- equal mix of red and aqua
+red:mix(aqua, 0.75) -- closer to aqua
+red:mix(aqua, 0.25) -- closer to red
 ```
 
-[`Color3`](https://create.roblox.com/docs/reference/engine/datatypes/Color3)s and Colors by default interpolate using RGB. Here's what that sequence looks like with red and aqua:
+[Color3](https://create.roblox.com/docs/reference/engine/datatypes/Color3)s and Colors by default interpolate using RGB. Here's what that sequence looks like with red and aqua:
 
 ![RGB interpolaiton of red and aqua](/rgb-interpolation.png)
 
-You may notice the brightness of the colors drops towards the middle. To fix this, we need to change the space in which we interpolate. [`Color.mix`](/api/Color#mix) allows you to interpolate Colors in several different spaces, and the complete list is available [in the API](/api/Color#MixableColorType).
+You may notice that the sequence goes through gray in the middle. If you want to know why that is (and why other RGB interpolations might not look the way you expect), you can read [this article on Programming Design Systems](https://programmingdesignsystems.com/color/perceptually-uniform-color-spaces/). To fix this, we need to change the space we interpolate in. [`Color.mix`](/api/Color#mix) allows you to interpolate Colors in several different spaces, and the complete list is available [in the API](/api/Enums#MixableColorType).
 
-If you want to preserve uniformity, you should use `Lab` or `Luv` (or their cylindrical representations, `LChab` and `LChuv`). Some uses for this include heatmaps, where the brightness of colors is important, and accessible design, since people with color vision deficiency (commonly known as color blindness) will perceive colors differently. Here's what those interpolations look like:
+If you want to preserve uniformity, you should use `Lab` or `Luv` (or their cylindrical representations, `LChab` and `LChuv`). Here's what they look like:
 
-![Lab interpolaiton of red and aqua](/lab-interpolation.png)
-
-![Luv interpolaiton of red and aqua](/luv-interpolation.png)
-
-![LCh(ab) interpolaiton of red and aqua](/lchab-interpolation.png)
-
-![LCh(uv) interpolaiton of red and aqua](/lchuv-interpolation.png)
+| Code | Sequence |
+|-|-|
+| `red:mix(aqua, ..., "Lab")` | ![Lab interpolaiton of red and aqua](/lab-interpolation.png) |
+| `red:mix(aqua, ..., "Luv")` | ![Luv interpolaiton of red and aqua](/luv-interpolation.png) |
+| `red:mix(aqua, ..., "LChab")` | ![LCh(ab) interpolaiton of red and aqua](/lchab-interpolation.png) |
+| `red:mix(aqua, ..., "LChuv")` | ![LCh(uv) interpolaiton of red and aqua](/lchuv-interpolation.png) |
 
 ### Contrast
 
@@ -187,7 +193,7 @@ red:bestContrastingColor(white, blue) --> white, 3.99
 
 Color difference refers to the distance between two colors. ΔE* (also known as Delta E), are a family of algorithms that calculate color difference. The most accurate (and newest) of these is CIEDE2000, which is what the library uses, via [`Color.deltaE`](/api/Color#deltaE).
 
-The number returned by the function indicates the difference between the two Colors. Larger numbers indicate less similar Colors, while smaller numbers indicate more similarity. A ΔE* of 2.3 is a [just-noticable difference](https://en.wikipedia.org/wiki/Just-noticeable_difference), and values less than that indicate the two Colors are very difficult (or impossible) to tell apart. This function is also commutative, so `a:deltaE(b)` is the same as `b:deltaE(a)`.
+The number returned by the function indicates the difference between the two Colors. Larger numbers indicate less similar Colors, while smaller numbers indicate more similarity. A ΔE* of 2.3 is a [just-noticable difference](https://en.wikipedia.org/wiki/Just-noticeable_difference), and values less than that indicate the two Colors are very difficult (or impossible) to tell apart. This function is also commutative, i.e. `a:deltaE(b)` is the same as `b:deltaE(a)`.
 
 ```lua
 local red = Color.red()

@@ -345,7 +345,7 @@ Gradient.color = function(gradient: Gradient, time: number, optionalColorType: T
 end
 
 --[=[
-    Returns a list of Colors with keypoints that are an equal distance of time apart  
+    Returns a list of Colors with keypoints that are equidistant in time
 
     @function colors
     @within Gradient
@@ -373,7 +373,7 @@ end
     @function toColorSequence
     @within Gradient
     @param gradient Gradient
-    @param steps number -- The number of keypoints to generate, between 2 and the maximum possible number of ColorSequence keypoints
+    @param steps number? -- The number of keypoints to generate, between 2 and the maximum possible number of ColorSequence keypoints, default is the maximum
     @param colorType MixableColorType? -- The color type to mix with
     @param hueAdjustment HueAdjustment? -- The hue adjustment method when mixing with color types that have a hue component
     @return ColorSequence
