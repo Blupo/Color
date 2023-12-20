@@ -6,7 +6,7 @@ sidebar_position: 4
 
 This page is an explanation on the various color types, the arguments used for the various import aliases, as well as the values returned from exporting. For the `ColorType` enum, check [the API reference](/api/Enums#ColorType).
 
-Unless otherwise stated, the arguments to a particular color type's import alias and the values returned by its export alias are the same.
+Unless otherwise stated, the arguments to a particular color type's import alias and the values returned by its export alias are the same. All applicable conversions use [Illuminant D65](https://en.wikipedia.org/wiki/Illuminant_D65).
 
 ## RGB
 
@@ -162,6 +162,19 @@ Read about this color type on [Wikipedia](https://en.wikipedia.org/wiki/CIELUV)
 - Export alias: `Color.toNumber`
 - Import arguments/export values:
     - The RGB integer, between 0 and 16777215
+
+## Oklab
+
+Read more about this color type on its [website](https://bottosson.github.io/posts/oklab/)
+
+- Import alias: `Color.fromOklab`
+- Export alias: `Color.toOklab`
+- Import arguments/export values:
+    - The lightness, between 0 and 1
+    - The amount of green or red, typically between -1.28 and 1.27
+        - More negative values represent green, more positive values represent red
+    - The amount of blue or yellow, typically between -1.28 and 1.27
+        - More negative values represent blue, more positive values represent yellow
 
 ## Temperature
 

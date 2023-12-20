@@ -1166,6 +1166,32 @@ Color.fromHSLuv = fromAlternative("HSLuv")::(h: number, s: number, l: number) ->
 ]=]
 Color.toHSLuv = toAlternative("HSLuv")::(color: Color) -> (number, number, number)
 
+--[=[
+    Imports a Color from Oklab components; check the [argument list](/docs/color-types#oklab)
+
+    @function fromOklab
+    @within Color
+    @param l number
+    @param a number
+    @param b number
+    @return Color
+    @tag Import
+]=]
+Color.fromOklab = fromAlternative("Oklab")::(l: number, a: number, b: number) -> Color
+
+--[=[
+    Exports a Color to Oklab components; check the [return values](/docs/color-types#oklab)
+
+    @function toOklab
+    @within Color
+    @param color Color
+    @return number
+    @return number
+    @return number
+    @tag Export
+]=]
+Color.toOklab = toAlternative("Oklab")::(color: Color) -> (number, number, number)
+
 -- Aliases
 
 --[=[

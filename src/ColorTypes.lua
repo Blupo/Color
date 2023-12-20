@@ -1,8 +1,6 @@
 --!strict
 
 local root = script.Parent
-local Types = require(root.Types)
-
 local Utils = require(root.Utils)
 local Round = Utils.Round
 
@@ -18,6 +16,14 @@ local D65 = {
 -- XYZ constants
 local ep = 216/24389
 local ka = 24389/27
+
+-- multiply a 3x3 and 3x1 matrix and return the contents of the resultant 3x1 matrix
+local matrixMul = function(m: {{number}}, a: number, b: number, c: number): (number, number, number)
+    return
+        (m[1][1] * a) + (m[1][2] * b) + (m[1][3] * c),
+        (m[2][1] * a) + (m[2][2] * b) + (m[2][3] * c),
+        (m[3][1] * a) + (m[3][2] * b) + (m[3][3] * c)
+end
 
 ---
 
@@ -376,17 +382,12 @@ do
         fromRGB = function(r: number, g: number, b: number): (number, number, number)
             r, g, b = Utils.GammaCorrection.toLinear(r), Utils.GammaCorrection.toLinear(g), Utils.GammaCorrection.toLinear(b)
         
-            return
-                (sRGB_XYZ_MATRIX[1][1] * r) + (sRGB_XYZ_MATRIX[1][2] * g) + (sRGB_XYZ_MATRIX[1][3] * b),
-                (sRGB_XYZ_MATRIX[2][1] * r) + (sRGB_XYZ_MATRIX[2][2] * g) + (sRGB_XYZ_MATRIX[2][3] * b),
-                (sRGB_XYZ_MATRIX[3][1] * r) + (sRGB_XYZ_MATRIX[3][2] * g) + (sRGB_XYZ_MATRIX[3][3] * b)
+            return matrixMul(sRGB_XYZ_MATRIX, r, g, b)
         end,
 
         toRGB = function(x: number, y: number, z: number): (number, number, number)
-            local r: number = (XYZ_sRGB_MATRIX[1][1] * x) + (XYZ_sRGB_MATRIX[1][2] * y) + (XYZ_sRGB_MATRIX[1][3] * z)
-            local g: number = (XYZ_sRGB_MATRIX[2][1] * x) + (XYZ_sRGB_MATRIX[2][2] * y) + (XYZ_sRGB_MATRIX[2][3] * z)
-            local b: number = (XYZ_sRGB_MATRIX[3][1] * x) + (XYZ_sRGB_MATRIX[3][2] * y) + (XYZ_sRGB_MATRIX[3][3] * z)
-        
+            local r: number, g: number, b: number = matrixMul(XYZ_sRGB_MATRIX, x, y, z)
+
             return
                 Utils.GammaCorrection.toStandard(r),
                 Utils.GammaCorrection.toStandard(g),
@@ -772,6 +773,60 @@ do
     ColorTypes.HSLuv = {
         fromRGB = hsLuvFromRGB,
         toRGB = hsLuvToRGB,
+    }
+end
+
+-- Conversions from https://bottosson.github.io/posts/oklab/
+do
+    local m1: {{number}} = {
+        {0.8189330101, 0.3618667424, -0.1288597137},
+        {0.0329845436, 0.9293118715, 0.0361456387},
+        {0.0482003018, 0.2643662691, 0.6338517070},
+    }
+
+    local m2: {{number}} = {
+        {0.2104542553, 0.7936177850, -0.0040720468},
+        {1.9779984951, -2.4285922050, 0.4505937099},
+        {0.0259040371, 0.7827717662, -0.8086757660},
+    }
+
+    local m1Inverse: {{number}} = {
+        {1.2270138511, -0.5577999807, 0.2812561490},
+        {-0.0405801784, 1.1122568696, -0.0716766787},
+        {-0.0763812845, -0.4214819784, 1.5861632204},
+    }
+
+    local m2Inverse: {{number}} = {
+        {0.9999999985, 0.3963377922, 0.2158037581},
+        {1.0000000089, -0.1055613423, -0.0638541748},
+        {1.0000000547, -0.0894841821, -1.2914855379},
+    }
+
+    local fromXYZ = function(x: number, y: number, z: number): (number, number, number)
+        local l: number, m: number, s: number = matrixMul(m1, x, y, z)
+        l, m, s = l^(1/3), m^(1/3), s^(1/3)
+
+        return matrixMul(m2, l, m, s)
+    end
+
+    local toXYZ = function(l: number, a: number, b: number): (number, number, number)
+        local ol: number, m: number, s: number = matrixMul(m2Inverse, l, a, b)
+        ol, m, s = ol^3, m^3, s^3
+
+        return matrixMul(m1Inverse, ol, m, s)
+    end
+
+    local fromRGB = function(r: number, g: number, b: number): (number, number, number)
+        return fromXYZ(ColorTypes.XYZ.fromRGB(r, g, b))
+    end
+
+    local toRGB = function(l: number, a: number, b: number): (number, number, number)
+        return ColorTypes.XYZ.toRGB(toXYZ(l, a, b))
+    end
+
+    ColorTypes.Oklab = {
+        fromRGB = fromRGB,
+        toRGB = toRGB,
     }
 end
 

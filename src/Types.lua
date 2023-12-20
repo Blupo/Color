@@ -47,6 +47,7 @@ export type BlendMode = SeparableBlendMode | NonSeparableBlendMode
     @field LChuv "LChuv"
     @field Lab "Lab"
     @field Luv "Luv"
+    @field Oklab "Oklab"
     @field RGB "RGB"
     @field xyY "xyY"
     @field XYZ "XYZ"
@@ -71,12 +72,13 @@ export type BlendMode = SeparableBlendMode | NonSeparableBlendMode
     @field Lab "Lab"
     @field Luv "Luv"
     @field Number "Number"
+    @field Oklab "Oklab"
     @field RGB "RGB"
     @field Temperature "Temperature"
     @field xyY "xyY"
     @field XYZ "XYZ"
 ]=]
-export type MixableColorType = "CMYK" | "HPLuv" | "HSB" | "HSL" | "HSLuv" | "HSV" | "HWB" | "LCh" | "LChab" | "LChuv" | "Lab" | "Luv" | "RGB" | "xyY" | "XYZ"
+export type MixableColorType = "CMYK" | "HPLuv" | "HSB" | "HSL" | "HSLuv" | "HSV" | "HWB" | "LCh" | "LChab" | "LChuv" | "Lab" | "Luv" | "Oklab" | "RGB" | "xyY" | "XYZ"
 export type NonMixableColorType = "BrickColor" | "Color3" | "Hex" | "Number" | "Temperature"
 export type ColorType = MixableColorType | NonMixableColorType
 

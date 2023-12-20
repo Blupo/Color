@@ -225,6 +225,33 @@ return function()
         end)
 
         it("should support XYZ", function()
+            --[[
+            local tests = {
+                { rgb = {1, 1, 1}, xyz = {0.9504, 1, 1.0888} },
+                { rgb = {0, 0, 0}, xyz = {0, 0, 0} },
+                { rgb = {1, 0, 0}, xyz = {0.41246, 0.21267, 0.01933} }
+            }
+
+            for i = 1, #tests do
+                local test = tests[i]
+                local rgb = test.rgb
+                local xyz = test.xyz
+
+                local rgbToXYZ = Color.new(table.unpack(rgb))
+                local xyzToRGB = Color.fromXYZ(table.unpack(xyz))
+
+                local x, y, z = rgbToXYZ:toXYZ()
+                local r, g, b = xyzToRGB:components()
+
+                expect(r).to.be.near(rgb[1], 1e-8)
+                expect(g).to.be.near(rgb[2], 1e-8)
+                expect(b).to.be.near(rgb[3], 1e-8)
+                expect(x).to.be.near(xyz[1], 1e-8)
+                expect(y).to.be.near(xyz[2], 1e-8)
+                expect(z).to.be.near(xyz[3], 1e-8)
+            end
+            ]]
+
             expect(Color.from("XYZ", 0, 0, 0):to("Hex")).to.equal("000000")
             expect(Color.from("XYZ", 0.9504, 1, 1.0888):to("Hex")).to.equal("ffffff")
 
@@ -330,6 +357,30 @@ return function()
                 expect(hplG).to.be.near(g, 1e-2)
                 expect(hslB).to.be.near(b, 1e-2)
                 expect(hplB).to.be.near(b, 1e-2)
+            end
+        end)
+
+        it("should support Oklab", function()
+            -- Test data from https://bottosson.github.io/posts/oklab/
+
+            local tests = {
+                { xyz = {0.950, 1.000, 1.089}, lab = {1.000, 0.000, 0.000} },
+                { xyz = {1.000, 0.000, 0.000}, lab = {0.450, 1.236, -0.019} },
+                { xyz = {0.000, 1.000, 0.000}, lab = {0.922, -0.671, 0.263} },
+            --  { xyz = {0.000, 0.000, 1.000}, lab = {0.153, -1.415, -0.449} }
+            }
+
+            for i = 1, #tests do
+                local test = tests[i]
+                local xyz = test.xyz
+                local lab = test.lab
+
+                local color = Color.fromOklab(table.unpack(lab))
+                local x, y, z = color:to("XYZ")
+
+                expect(x).to.be.near(xyz[1], 1e-3)
+                expect(y).to.be.near(xyz[2], 1e-3)
+                expect(z).to.be.near(xyz[3], 1e-3)
             end
         end)
 
