@@ -1115,6 +1115,60 @@ Color.fromXYZ = fromAlternative("XYZ")::(x: number, y: number, z: number) -> Col
 Color.toXYZ = toAlternative("XYZ")::(color: Color) -> (number, number, number)
 
 --[=[
+    Imports a Color from normalised HPLuv components; check the [argument list](/docs/color-types#hpluv)
+
+    @function fromHPLuv
+    @within Color
+    @param h number
+    @param p number
+    @param l number
+    @return Color
+    @tag Import
+]=]
+Color.fromHPLuv = fromAlternative("HPLuv")::(h: number, p: number, l: number) -> Color
+
+--[=[
+    Exports a Color to normalised HPLuv components; check the [return values](/docs/color-types#hpluv)
+
+    @function toHPLuv
+    @within Color
+    @param color Color
+    @return number
+    @return number
+    @return number
+    @tag Export
+]=]
+Color.toHPLuv = toAlternative("HPLuv")::(color: Color) -> (number, number, number)
+
+--[=[
+    Imports a Color from normalised HSLuv components; check the [argument list](/docs/color-types#hsluv)
+
+    @function fromHSLuv
+    @within Color
+    @param h number
+    @param s number
+    @param l number
+    @return Color
+    @tag Import
+]=]
+Color.fromHSLuv = fromAlternative("HSLuv")::(h: number, s: number, l: number) -> Color
+
+--[=[
+    Exports a Color to normalised HSLuv components; check the [return values](/docs/color-types#hsluv)
+
+    @function toHSLuv
+    @within Color
+    @param color Color
+    @return number
+    @return number
+    @return number
+    @tag Export
+]=]
+Color.toHSLuv = toAlternative("HSLuv")::(color: Color) -> (number, number, number)
+
+-- Aliases
+
+--[=[
     Alias for [`Color.fromHSB`](#fromHSB)
 
     @function fromHSV
@@ -1165,5 +1219,7 @@ Color.fromLCh = Color.fromLChab
     @tag Export
 ]=]
 Color.toLCh = Color.toLChab
+
+---
 
 return table.freeze(Color)

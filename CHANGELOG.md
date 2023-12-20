@@ -22,6 +22,7 @@
     - Color / Color (component division)
 - `Gradient.isAGradient` checks if a value can be used as a Gradient
 - `Gradient.getMaxColorSequenceKeypoints` returns the maximum number of keypoints a ColorSequence can have
+- Added the [HSLuv and HPLuv](https://www.hsluv.org/) color spaces
 
 ### Changed
 - Code refactoring and module consolidation

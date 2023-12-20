@@ -41,6 +41,18 @@ Unless otherwise stated, the arguments to a particular color type's import alias
 - Import arguments/export values:
     - A [Color3](https://create.roblox.com/docs/reference/engine/datatypes/Color3)
 
+## HPLuv
+
+A variation of [HSLuv](#hsluv) that maintains chroma, as the cost of only allowing pastel colors
+
+- Import alias: `Color.fromHPLuv`
+- Export alias: `Color.toHPLuv`
+- Import arguments/export values:
+    - The hue in degrees
+        - May export a hue of NaN
+    - The saturation, typically between 0 and 100
+    - The lightness, between 0 and 1
+
 ## HSB (and HSV)
 
 Read about this color type on [Wikipedia](https://en.wikipedia.org/wiki/HSL_and_HSV)
@@ -59,6 +71,18 @@ Read about this color type on [Wikipedia](https://en.wikipedia.org/wiki/HSL_and_
 
 - Import alias: `Color.fromHSL`
 - Export alias: `Color.toHSL`
+- Import arguments/export values:
+    - The hue in degrees
+        - May export a hue of NaN
+    - The saturation, between 0 and 1
+    - The lightness, between 0 and 1
+
+## HSLuv
+
+Read about this color type on [its website](https://www.hsluv.org/)
+
+- Import alias: `Color.fromHSLuv`
+- Export alias: `Color.toHSLuv`
 - Import arguments/export values:
     - The hue in degrees
         - May export a hue of NaN

@@ -313,6 +313,26 @@ return function()
             end).to.throw()
         end)
 
+        it("should support HSLuv/HPLuv", function()
+            local testData = require(script.Parent:FindFirstChild("HSLuvTestData"))
+
+            for _, test in pairs(testData) do
+                local r, g, b = test.rgb[1], test.rgb[2], test.rgb[3]
+                local h, s, l = test.husl[1], test.husl[2] / 100, test.husl[3] / 100
+                local p = test.huslp[2] / 100
+
+                local hslR, hslG, hslB = Color.fromHSLuv(h, s, l):components()
+                local hplR, hplG, hplB = Color.fromHPLuv(h, p, l):components()
+
+                expect(hslR).to.be.near(r, 1e-2)
+                expect(hplR).to.be.near(r, 1e-2)
+                expect(hslG).to.be.near(g, 1e-2)
+                expect(hplG).to.be.near(g, 1e-2)
+                expect(hslB).to.be.near(b, 1e-2)
+                expect(hplB).to.be.near(b, 1e-2)
+            end
+        end)
+
         it("should not support invalid color types", function()
             expect(function()
                 Color.from("InvalidColorType", 1, "A", "F")

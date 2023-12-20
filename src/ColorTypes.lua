@@ -21,17 +21,21 @@ local ka = 24389/27
 
 ---
 
-local ColorTypes: {[string]: Types.ColorInterface} = {}
+local ColorTypes = {}
 
-ColorTypes.BrickColor = {
-    fromRGB = function(r: number, g: number, b: number): BrickColor
-        return BrickColor.new(Color3.new(r, g, b))
+ColorTypes.RGB = {
+    fromRGB = function(r: number, g: number, b: number): (number, number, number)
+        return
+            Round(r * 255),
+            Round(g * 255),
+            Round(b * 255)
     end,
-
-    toRGB = function(brickColor: BrickColor): (number, number, number)
-        local color = brickColor.Color
-
-        return color.R, color.G, color.B
+    
+    toRGB = function(r: number, g: number, b: number): (number, number, number)
+        return
+            r / 255,
+            g / 255,
+            b / 255
     end,
 }
 
@@ -54,6 +58,37 @@ ColorTypes.CMYK = {
             (1 - c) * (1 - k),
             (1 - m) * (1 - k),
             (1 - y) * (1 - k)
+    end,
+}
+
+ColorTypes.Number = {
+    fromRGB = function(r: number, g: number, b: number): number
+        r, g, b = Round(r * 255), Round(g * 255), Round(b * 255)
+    
+        return (r * (256^2)) + (g * 256) + b
+    end,
+    
+    toRGB = function(n: number): (number, number, number)
+        assert((n >= 0) and (n <= (256^3 - 1)), "number must be between 0 and 16777215")
+
+        local r: number, g: number, b: number = bit32.rshift(n, 16), bit32.band(bit32.rshift(n, 8), 255), bit32.band(n, 255)
+    
+        return
+            r / 255,
+            g / 255,
+            b / 255
+    end,
+}
+
+ColorTypes.BrickColor = {
+    fromRGB = function(r: number, g: number, b: number): BrickColor
+        return BrickColor.new(Color3.new(r, g, b))
+    end,
+
+    toRGB = function(brickColor: BrickColor): (number, number, number)
+        local color = brickColor.Color
+
+        return color.R, color.G, color.B
     end,
 }
 
@@ -207,41 +242,6 @@ ColorTypes.HWB = {
         local s: number = (b ~= 1) and (1 - (w / br)) or 0
     
         return ColorTypes.HSB.toRGB(h % 360, s, br)
-    end,
-}
-
-ColorTypes.Number = {
-    fromRGB = function(r: number, g: number, b: number): number
-        r, g, b = Round(r * 255), Round(g * 255), Round(b * 255)
-    
-        return (r * (256^2)) + (g * 256) + b
-    end,
-    
-    toRGB = function(n: number): (number, number, number)
-        assert((n >= 0) and (n <= (256^3 - 1)), "number must be between 0 and 16777215")
-
-        local r: number, g: number, b: number = bit32.rshift(n, 16), bit32.band(bit32.rshift(n, 8), 255), bit32.band(n, 255)
-    
-        return
-            r / 255,
-            g / 255,
-            b / 255
-    end,
-}
-
-ColorTypes.RGB = {
-    fromRGB = function(r: number, g: number, b: number): (number, number, number)
-        return
-            Round(r * 255),
-            Round(g * 255),
-            Round(b * 255)
-    end,
-    
-    toRGB = function(r: number, g: number, b: number): (number, number, number)
-        return
-            r / 255,
-            g / 255,
-            b / 255
     end,
 }
 
@@ -659,6 +659,119 @@ do
 
         fromLuv = fromLuv,
         toLuv = toLuv,
+    }
+end
+
+-- Based on the Lua implementation of HSLuv/HPLuv
+-- https://github.com/hsluv/hsluv-lua
+do
+    assert(ColorTypes.LChuv.fromRGB, "RGB to LCh(uv) conversion missing")
+    assert(ColorTypes.LChuv.toRGB, "LCh(uv) to RGB conversion missing")
+
+    type SlopeIntercept = {
+        slope: number,
+        intercept: number
+    }
+
+    local matrix: {{number}} = {
+        {3.240969941904521, -1.537383177570093, -0.498610760293},
+        {-0.96924363628087, 1.87596750150772, 0.041555057407175},
+        {0.055630079696993, -0.20397695888897, 1.056971514242878}
+    }
+
+    local rayLengthFromOrigin = function(line: SlopeIntercept): number
+        return math.abs(line.intercept) / math.sqrt(line.slope^2 + 1)
+    end
+
+    local rayLengthAtIntersection = function(theta: number, line: SlopeIntercept): number
+        return line.intercept / (math.sin(theta) - line.slope * math.cos(theta))
+    end
+
+    local getBounds = function(l: number): {SlopeIntercept}
+        local result: {SlopeIntercept} = {}
+        local sub1: number = ((l + 16)^3) / 1560896
+        local sub2: number = if (sub1 > ep) then sub1 else l / ka
+
+        for i = 1, 3 do
+            local m1 = matrix[i][1]
+            local m2 = matrix[i][2]
+            local m3 = matrix[i][3]
+
+            for t = 0, 1 do
+                local top1: number = (284517 * m1 - 94839 * m3) * sub2
+                local top2: number = (838422 * m3 + 769860 * m2 + 731718 * m1) * l * sub2 - 769860 * t * l
+                local bottom: number = (632260 * m3 - 126452 * m2) * sub2 + 126452 * t
+
+                table.insert(result, {
+                    slope = top1 / bottom,
+                    intercept = top2 / bottom
+                })
+            end
+        end
+
+        return result
+    end
+
+    local lMaxSafeChroma = function(l: number): number
+        local bounds: {SlopeIntercept} = getBounds(l);
+        local min: number = math.huge;
+    
+        for i = 1, 6 do
+            local length: number = rayLengthFromOrigin(bounds[i])
+
+            if (length >= 0) then
+                min = math.min(min, length)
+            end
+        end
+
+        return min
+    end
+
+    local lhMaxSafeChroma = function(l: number, h: number): number
+        local hRad: number = math.rad(h)
+        local bounds: {SlopeIntercept} = getBounds(l)
+        local min: number = math.huge
+
+        for i = 1, 6 do
+            local bound: SlopeIntercept = bounds[i]
+            local length: number = rayLengthAtIntersection(hRad, bound)
+
+            if (length >= 0) then
+                min = math.min(min, length)
+            end
+        end
+
+        return min
+    end
+    
+    local hpLuvFromRGB = function(r: number, g: number, b: number): (number, number, number)
+        local l: number, c: number, h: number = ColorTypes.LChuv.fromRGB(r, g, b)
+
+        return h, c / lMaxSafeChroma(l * 100) * 100, l
+    end
+
+    local hsLuvFromRGB = function(r: number, g: number, b: number): (number, number, number)
+        local l: number, c: number, h: number = ColorTypes.LChuv.fromRGB(r, g, b)
+
+        return h, c / lhMaxSafeChroma(l * 100, h) * 100, l
+    end
+
+    local hpLuvToRGB = function(h: number, p: number, l: number): (number, number, number)
+        return ColorTypes.LChuv.toRGB(l, lMaxSafeChroma(l * 100) * p / 100, h)
+    end
+
+    local hsLuvToRGB = function(h: number, s: number, l: number): (number, number, number)
+        return ColorTypes.LChuv.toRGB(l, lhMaxSafeChroma(l * 100, h) * s / 100, h)
+    end
+
+    ColorTypes.HPLuv = {
+        fromRGB = hpLuvFromRGB,
+        toRGB = hpLuvToRGB,
+    }
+
+    ColorTypes.HSLuv = {
+        fromRGB = hsLuvFromRGB,
+        toRGB = hsLuvToRGB,
     }
 end
 

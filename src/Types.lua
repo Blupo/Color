@@ -36,8 +36,10 @@ export type BlendMode = SeparableBlendMode | NonSeparableBlendMode
     @interface MixableColorType
     @within Enums
     @field CMYK "CMYK"
+    @field HPLuv "HPLuv"
     @field HSB "HSB"
     @field HSL "HSL"
+    @field HSLuv "HSLuv"
     @field HSV "HSV"
     @field HWB "HWB"
     @field LCh "LCh"
@@ -56,8 +58,10 @@ export type BlendMode = SeparableBlendMode | NonSeparableBlendMode
     @field BrickColor "BrickColor"
     @field CMYK "CMYK"
     @field Color3 "Color3"
+    @field HPLuv "HPLuv"
     @field HSB "HSB"
     @field HSL "HSL"
+    @field HSLuv "HSLuv"
     @field HSV "HSV"
     @field HWB "HWB"
     @field Hex "Hex"
@@ -72,7 +76,7 @@ export type BlendMode = SeparableBlendMode | NonSeparableBlendMode
     @field xyY "xyY"
     @field XYZ "XYZ"
 ]=]
-export type MixableColorType = "CMYK" | "HSB" | "HSL" | "HSV" | "HWB" | "LCh" | "LChab" | "LChuv" | "Lab" | "Luv" | "RGB" | "xyY" | "XYZ"
+export type MixableColorType = "CMYK" | "HPLuv" | "HSB" | "HSL" | "HSLuv" | "HSV" | "HWB" | "LCh" | "LChab" | "LChuv" | "Lab" | "Luv" | "RGB" | "xyY" | "XYZ"
 export type NonMixableColorType = "BrickColor" | "Color3" | "Hex" | "Number" | "Temperature"
 export type ColorType = MixableColorType | NonMixableColorType
 

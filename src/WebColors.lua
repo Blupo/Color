@@ -1,5 +1,5 @@
 --!strict
--- https://www.w3.org/TR/2021/REC-css-color-3-20210805/#svg-color
+-- https://www.w3.org/TR/2022/REC-css-color-3-20220118/#svg-color
 
 return {
     aliceblue = "#f0f8ff",
