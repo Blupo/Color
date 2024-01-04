@@ -1,8 +1,8 @@
 ## [Unreleased]
 
 ### Added
-- `Color.black` returns a Color with all components being 0
-- `Color.white` returns a Color with all components being 1
+- `Color.black` returns a Color with components (0, 0, 0)
+- `Color.white` returns a Color with components (1, 1, 1)
 - `Color.red` returns a Color with components (1, 0, 0)
 - `Color.green` returns a Color with components (0, 1, 0)
 - `Color.blue` returns a Color with components (0, 0, 1)
@@ -38,6 +38,9 @@
 - `Color.bestContrastingColor` now requires 2 Colors to compare instead of 1
 - `Color.random` now uses a Random object instead of `math.random`
 - `Gradient.colorSequence` was renamed *back* to `Gradient.toColorSequence`
+- Changed the implementation of CMYK
+- Changed the implementation of HSB
+- Changed the implementation of xyY
 
 ### Deprecated
 - `Color.isUnclipped` will be removed in a future release, use `Color.isUnclamped` instead

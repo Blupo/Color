@@ -46,25 +46,24 @@ ColorTypes.RGB = {
     end,
 }
 
+-- Naive conversion
+-- https://www.w3.org/TR/2021/WD-css-color-4-20210601/#cmyk-rgb
 ColorTypes.CMYK = {
     fromRGB = function(r: number, g: number, b: number): (number, number, number, number)
-        local c: number = 1 - r
-        local m: number = 1 - g
-        local y: number = 1 - b
-        local k: number = math.min(c, m, y)
-    
-        c = (k < 1) and ((c - k) / (1 - k)) or 0
-        m = (k < 1) and ((m - k) / (1 - k)) or 0
-        y = (k < 1) and ((y - k) / (1 - k)) or 0
-    
+        local k: number = 1 - math.max(r, g, b)
+
+        local c: number = if (k == 1) then 0 else (1 - r - k) / (1 - k)
+        local m: number = if (k == 1) then 0 else (1 - g - k) / (1 - k)
+        local y: number = if (k == 1) then 0 else (1 - b - k) / (1 - k)
+
         return c, m, y, k
     end,
 
     toRGB = function(c: number, m: number, y: number, k: number): (number, number, number)
         return
-            (1 - c) * (1 - k),
-            (1 - m) * (1 - k),
-            (1 - y) * (1 - k)
+            1 - math.min(1, c * (1 - k) + k),
+            1 - math.min(1, m * (1 - k) + k),
+            1 - math.min(1, y * (1 - k) + k)
     end,
 }
 
@@ -149,7 +148,7 @@ ColorTypes.HSB = {
     fromRGB = function(r: number, g: number, b: number): (number, number, number)
         local br: number = math.max(r, g, b)
         local x: number = math.min(r, g, b)
-        local s: number = (br ~= 0) and ((br - x) / br) or 0
+        local s: number = if (br == 0) then 0 else (br - x) / br
     
         local h: number
         local rp: number = (br - r) / (br - x)
@@ -157,14 +156,14 @@ ColorTypes.HSB = {
         local bp: number = (br - b) / (br - x)
     
         if (r == br) then
-            h = (g == x) and (5 + bp) or (1 - gp)
+            h = if (g == x) then 5 + bp else 1 - gp
         elseif (g == br) then
-            h = (b == x) and (1 + rp) or (3 - bp)
+            h = if (b == x) then 1 + rp else 3 - bp
         else
-            h = (r == x) and (3 + gp) or (5 - rp)
+            h = if (r == x) then 3 + gp else 5 - rp
         end
     
-        return h * 60, s, br
+        return (h % 6) * 60, s, br
     end,
 
     toRGB = function(h: number, s: number, b: number): (number, number, number)
@@ -403,18 +402,20 @@ end
         xyY -> XYZ: http://www.brucelindbloom.com/Eqn_xyY_to_XYZ.html
 ]]
 do
-    local xw = 0.31271
-    local yw = 0.32902
-
     local fromXYZ = function(X: number, Y: number, Z: number): (number, number, number)
-        if ((X == 0) and (Y == 0) and (Z == 0)) then
-            return xw, yw, Y
+        local sum: number = X + Y + Z
+        local x: number, y: number
+
+        if (sum == 0) then
+            sum = D65.X + D65.Y + D65.Z
+            x = D65.X / sum
+            y = D65.Y / sum
+        else
+            x = X / sum
+            y = Y / sum
         end
     
-        return
-            X / (X + Y + Z),
-            Y / (X + Y + Z),
-            Y
+        return x, y, Y
     end
 
     local toXYZ = function(x: number, y: number, Y: number): (number, number, number)
@@ -422,8 +423,8 @@ do
             return 0, 0, 0
         end
     
-        local X = (x * Y) / y
-        local Z = (Y * (1 - x - y)) / y
+        local X = x * Y / y
+        local Z = (1 - x - y) * Y / y
     
         return X, Y, Z
     end
